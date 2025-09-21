@@ -1,3 +1,4 @@
+
 <script setup lang="ts">
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import type {
@@ -173,38 +174,25 @@ const table = useVueTable({
 </script>
 
 <template>
-    <DefaultLayout>
-  <div class="w-full bg-secondaryBackground rounded-lg px-4 py-6 lg:px-8 lg:py-6">
-    <div class="flex gap-2 items-center py-4">
-      <Input
-        class="max-w-sm"
-        placeholder="Filter emails..."
-        :model-value="table.getColumn('email')?.getFilterValue() as string"
-        @update:model-value=" table.getColumn('email')?.setFilterValue($event)"
-      />
-      <DropdownMenu>
-        <DropdownMenuTrigger as-child>
-          <Button variant="outline" class="ml-auto">
-            Columns 
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuCheckboxItem
-            v-for="column in table.getAllColumns().filter((column) => column.getCanHide())"
-            :key="column.id"
-            class="capitalize"
-            :model-value="column.getIsVisible()"
-            @update:model-value="(value) => {
-              column.toggleVisibility(!!value)
-            }"
-          >
-            {{ column.id }}
-          </DropdownMenuCheckboxItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
-    <div class="rounded-md">
-  <Table class="[&_th]:border-0 [&_td]:border-0 [&_td]:text-center [&_th]:text-center [&_th]:bg-zinc-50  [&_th]:py-4  [&_td]:py-4">
+        <div class="border flex justify-end flex-row-reverse gap-4 items-stretch py-4 px-6 mb-4 rounded-lg">
+            <div class="flex gap-2 flex-col justify-start items-end">
+                <p class="text-black text-xl font-normal">اشتراك سلة الحالي</p>
+                <div class="flex items-center flex-row-reverse gap-2">
+                    <p class="text-[#239600] bg-[#E2FFD9] rounded-full px-4 py-1 text-xs font-normal text-right">نشط</p>
+                    <p class="text-sm">متبقي 05 أيام</p>
+                </div>
+            </div>
+            <div class="rounded-lg flex-1 bg-[#FAFAFA] p-4 border-[#2AA405] border flex flex-col justify-end items-end">
+                <p class="text-sm font-bold text-black">تاريخ البداية</p>
+                <p class="text-xs font-normal text-[#9C9196]">2025-09-21</p>
+            </div>
+            <div class="rounded-lg flex-1 bg-[#FAFAFA] p-4 border-[#FC9494] border flex flex-col justify-end items-end">
+                <p class="text-sm font-bold text-black">تاريخ الانتهاء</p>
+                <p class="text-xs font-normal text-[#9C9196]">2025-09-21</p>
+            </div>
+        </div>
+        <div class="border py-4 px-6 mb-4 rounded-lg">
+            <Table class="[&_th]:border-0 [&_td]:border-0 [&_td]:text-center [&_th]:text-center [&_th]:bg-zinc-50  [&_th]:py-4  [&_td]:py-4">
     <TableHeader>
       <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
         <TableHead
@@ -250,33 +238,5 @@ const table = useVueTable({
       </TableRow>
     </TableBody>
   </Table>
-</div>
-
-
-    <div class="flex items-center justify-end space-x-2 py-4">
-      <div class="flex-1 text-sm text-muted-foreground">
-        {{ table.getFilteredSelectedRowModel().rows.length }} of
-        {{ table.getFilteredRowModel().rows.length }} row(s) selected.
-      </div>
-      <div class="space-x-2">
-        <Button
-          variant="outline"
-          size="sm"
-          :disabled="!table.getCanPreviousPage()"
-          @click="table.previousPage()"
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          :disabled="!table.getCanNextPage()"
-          @click="table.nextPage()"
-        >
-          Next
-        </Button>
-      </div>
     </div>
-  </div>
-</DefaultLayout>
 </template>

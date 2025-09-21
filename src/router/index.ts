@@ -65,9 +65,9 @@ const router = createRouter({
       meta: { requiresAuth: false }
     },
     {
-      path: '/account',
-      name: 'account',
-      component: () => import('@/views/pages/Account.vue'),
+      path: '/profile',
+      name: 'profile',
+      component: () => import('@/views/pages/Profile.vue'),
       meta: { requiresAuth: false }
     },
     {
