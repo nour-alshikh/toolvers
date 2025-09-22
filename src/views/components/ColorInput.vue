@@ -17,18 +17,16 @@ type ColorObject = {
 
 const {label, color} = defineProps({
     label:  String,
-   
     color: {
         type: Object as PropType<ColorObject>,
         required: true
     },
-       
-   
 })
 
 onMounted(() => {
     colorInput.value = color
 })
+
 const colorInput = ref<ColorObject | {
     hex: "#504F7F",
     hsv: {h: 241, s: 0.38, v: 0.5},

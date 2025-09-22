@@ -26,12 +26,12 @@
                  <swiper
                     class=""
                     loop
-               
+                    :slides-per-view="15"
                     :space-between="8"
                     :speed="400"
                     :autoplay="true"
                     >
-                    <swiper-slide v-for="tool in Array(12)" :key="tool" class="!w-fit">
+                    <swiper-slide v-for="tool in Array(20)" :key="tool" >
                         <div class=" px-6 py-4 text-center rounded-xl bg-[#F6F4F5] text-gray-500">
                             إشعارات
                         </div>  
@@ -39,7 +39,7 @@
                 </swiper>
             </div>
             <div class="p-4 rounded-lg  bg-background grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4"> 
-                <div v-for="tool in Array(12)" :key="tool" class="bg-secondaryBackground flex flex-col items-center justify-center p-4 rounded-lg">
+                <RouterLink :to="`/configure/${index}`" v-for="(tool , index) in Array(12)" :key="tool" class="bg-secondaryBackground flex flex-col items-center justify-center p-4 rounded-lg">
                         <div class="bg-background flex items-center justify-center p-2 rounded-lg w-full "> 
                             <img class="w-80" :src="widget" alt="">
                         </div>
@@ -60,7 +60,7 @@
                             </HoverCard>
                             
                         </div>
-                </div>
+                    </RouterLink>
              
             </div>
         </div>

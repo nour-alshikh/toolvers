@@ -71,6 +71,13 @@ const router = createRouter({
       meta: { requiresAuth: false }
     },
     {
+      path: '/configure/:id',
+      name: 'configure',
+      component: () => import('@/views/pages/Configure.vue'),
+      meta: { requiresAuth: false }
+    },
+
+    {
       path: '/contact',
       name: 'contact',
       component: () => import('@/views/pages/Contact.vue'),
