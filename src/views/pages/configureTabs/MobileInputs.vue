@@ -39,10 +39,8 @@ const validateFile = (file: File) => {
 // Handle color change updates
 const handleColorChange = (newColor: any, inputItem: any) => {
   // Update the input value with the new color
-  inputItem.value = newColor;
-
+  inputItem.value = newColor
 }
-
 
 interface InputItem {
   label: string
@@ -60,7 +58,6 @@ const MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs
 </script>
 
 <template>
-  
   <Collapsible
     v-for="input in MobileDisplayInputs"
     :key="input.title"
@@ -84,8 +81,17 @@ const MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-      <CollapsibleContent v-show="input.isOpen" class="overflow-hidden px-3 py-3 flex flex-wrap gap-x-4 " :class="input.class">
-        <div v-for="inputItem in input.inputs" :key="inputItem.label" class="relative" :class="inputItem.class">
+      <CollapsibleContent
+        v-show="input.isOpen"
+        class="overflow-hidden px-3 py-3 flex flex-wrap gap-x-4"
+        :class="input.class"
+      >
+        <div
+          v-for="inputItem in input.inputs"
+          :key="inputItem.label"
+          class="relative"
+          :class="inputItem.class"
+        >
           <!-- Text input -->
           <div v-if="inputItem.type === 'text'">
             <Label
@@ -105,7 +111,7 @@ const MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs
           </div>
 
           <!-- Color input -->
-          <div v-if="inputItem.type === 'color'" class="mt-5 relative ">
+          <div v-if="inputItem.type === 'color'" class="mt-5 relative">
             <ColorInput
               @updateColor="(newColor) => handleColorChange(newColor, inputItem)"
               :label="inputItem.label"
@@ -114,35 +120,33 @@ const MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs
           </div>
 
           <!-- Number input -->
-          <div v-if="inputItem.type === 'number'" class="mt-5 relative flex gap-3  flex-1">
+          <div v-if="inputItem.type === 'number'" class="mt-5 relative flex gap-3 flex-1">
             <Input
-          class="flex-1 p-4 h-12 text-right border-none shadow-none  "
-          placeholder=""
-          min="0.5"
-          max="1"
-          step="0.1"
-          v-model="inputItem.value"
-          type="range"
-          />
-            <div class="relative max-w-[70px]">
-
-              <Label
-              class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
-              for="color-input"
-            >
-            {{ inputItem.label }}
-            </Label>
-
-            <Input
-            class="p-4 h-12 text-right"
-            type="number"
-            placeholder=""
-            v-model="inputItem.value"
-            :data-id="inputItem.id"
+              class="flex-1 p-4 h-12 text-right border-none shadow-none"
+              placeholder=""
+              min="0.5"
+              max="1"
+              step="0.1"
+              v-model="inputItem.value"
+              type="range"
             />
+            <div class="relative max-w-[70px]">
+              <Label
+                class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
+                for="color-input"
+              >
+                {{ inputItem.label }}
+              </Label>
+
+              <Input
+                class="p-4 h-12 text-right"
+                type="number"
+                placeholder=""
+                v-model="inputItem.value"
+                :data-id="inputItem.id"
+              />
+            </div>
           </div>
-         
-        </div>
 
           <!-- Image input -->
           <div v-if="inputItem.type === 'image'" class="relative w-full">
@@ -187,49 +191,65 @@ const MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs
             </Tabs>
           </div>
 
-
           <div v-if="inputItem.type === 'select-position'" class="relative w-1/2 m-auto">
-                <div class="grid grid-cols-3 grid-rows-3 gap-2">
-                        <div class="col-span-1 row-span-1 bg-neutral-100  cursor-pointer w-[50px] h-[50px] rounded-lg">
-                            
-                        </div>
-                        <div class="col-span-1 row-span-1 bg-neutral-100  cursor-pointer w-[50px] h-[50px] rounded-lg">
-                            
-                        </div>
-                        <div class="col-span-1 row-span-1 bg-neutral-100  cursor-pointer w-[50px] h-[50px] rounded-lg">
-                            
-                        </div>
-                        <div class="col-span-1 row-span-1 bg-neutral-100  cursor-pointer w-[50px] h-[50px] rounded-lg">
-                            
-                        </div>
-                        <div >
-                            
-                        </div>
-                        <div class="col-span-1 row-span-1 bg-neutral-100  cursor-pointer w-[50px] h-[50px] rounded-lg">
-                            
-                        </div>
-                        <div class="col-span-1 row-span-1 bg-neutral-100  cursor-pointer w-[50px] h-[50px] rounded-lg">
-                            
-                        </div>
-                        <div class="col-span-1 row-span-1 bg-neutral-100  cursor-pointer w-[50px] h-[50px] rounded-lg">
-                            
-                        </div>
-                        <div class="col-span-1 row-span-1 bg-neutral-100  cursor-pointer w-[50px] h-[50px] rounded-lg">
-                            
-                        </div>
-                        <div class="col-span-3 row-span-3">
-                                <Button   class="border border-primary bg-transparent text-primary mt-2 hover:bg-primary hover:text-white transition-all duration-200 ease-in-out">
-                                    التحكم الحر في مكان الاشعار
-                                <img :src="icons.freeMove" alt="">
-                                
-                                </Button>
-                        </div>
-                </div>
+            <div class="grid grid-cols-3 grid-rows-3 gap-2">
+              <div
+                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+              ></div>
+              <div
+                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+              ></div>
+              <div
+                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+              ></div>
+              <div
+                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+              ></div>
+              <div></div>
+              <div
+                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+              ></div>
+              <div
+                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+              ></div>
+              <div
+                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+              ></div>
+              <div
+                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+              ></div>
+              <div class="col-span-3 row-span-3">
+                <Button
+                  class="border border-primary bg-transparent text-primary mt-2 hover:bg-primary hover:text-white transition-all duration-200 ease-in-out"
+                >
+                  التحكم الحر في مكان الاشعار
+                  <img :src="icons.freeMove" alt="" />
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="inputItem.type === 'select-pages'">
+            <Tabs default-value="all" class="flex flex-col items-center justify-center">
+                <TabsList
+                class="grid w-fit grid-cols-2 bg-[#FDF5F8] rounded-lg border border-[#F0F0F0]"
+              >
+                <TabsTrigger value="all" class="border-none"> جميع الصفحات </TabsTrigger>
+                <TabsTrigger value="selected" class="border-none"> الصفحات المحددة </TabsTrigger>
+              </TabsList>
+              <TabsContent value="all"> جميع الصفحات </TabsContent>
+              <TabsContent value="selected"> الصفحات المحددة </TabsContent>
+            </Tabs>
           </div>
         </div>
       </CollapsibleContent>
     </Transition>
   </Collapsible>
-
-
 </template>
+
+<style scoped>
+button[data-state='active'] {
+  background-color: #f0dae3;
+  color: #be185d;
+}
+</style>
