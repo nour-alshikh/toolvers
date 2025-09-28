@@ -28,7 +28,7 @@ const toggleTheme = () => {
 
 <template>
 
-    <header class="bg-secondaryBackground shadow-md py-4 px-2 lg:px-8 ">
+    <header class="bg-secondaryBackground shadow-md py-4 px-2 lg:px-8 sticky top-0 z-50">
         <div class="rounded-lg border py-3 px-2 lg:px-10 flex justify-between items-center">
 
             <div>

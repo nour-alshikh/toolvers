@@ -8,6 +8,9 @@ import { Label } from "@/components/ui/label"
 import { ColorPicker } from "vue-color-kit"
 import "vue-color-kit/dist/vue-color-kit.css"
 import { type PropType } from "vue"
+import { defineProps } from "vue"
+const emit = defineEmits(['updateColor'])
+
 
 type ColorObject = {
     hex: string
@@ -21,6 +24,7 @@ const {label, color} = defineProps({
         type: Object as PropType<ColorObject>,
         required: true
     },
+   
 })
 
 onMounted(() => {
@@ -40,6 +44,7 @@ const colorInput = ref<ColorObject | {
 
 const changeColor = (newColor: any) => {
     colorInput.value = {...newColor}
+    emit('updateColor', colorInput.value)
 }
 </script>
 <template>
@@ -66,8 +71,8 @@ const changeColor = (newColor: any) => {
         </PopoverContent>
       </Popover>
 
-      <div class="relative w-full" >
-        <Label class="text-[#AEA2A7] absolute top-0 right-2 -translate-y-1/2 bg-secondaryBackground px-2 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
+      <div class="relative flex-1" >
+        <Label class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
         for="color-input ">
           {{label}}
     </Label>
