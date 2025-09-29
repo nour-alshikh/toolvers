@@ -18,10 +18,10 @@ import { ref } from 'vue'
 // const selectedCountry = ref(countries[0])
 
 // const onSwiper = (swiper: any) => {
-//   console.log(swiper)
+
 // }
 // const onSlideChange = () => {
-//   console.log('slide change')
+
 // }
 </script>
 

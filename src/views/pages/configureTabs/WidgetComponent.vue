@@ -26,8 +26,6 @@ watch(MobileDisplayInputs as any, (newVal, oldVal) => {
 
 
 function handleInput(input: any) {
-    console.log(input);
-    
   const toolversTool = document.querySelector('.toolvers-tool')
   const el = toolversTool?.querySelector(`[data-id="${input.id}"]`)
 
@@ -36,11 +34,16 @@ function handleInput(input: any) {
       el.textContent = input.value
     }
 
-    if (input.type === 'number' && input.property === 'fontSize') {
-      el.style.fontSize =  `${input.value}px`
+    if (input.type === 'range' && input.property === 'fontSize') {
+        if (Array.isArray(input.value)) {
+
+      el.style.fontSize =  `${input.value[0]}px`
     }
-    if (input.type === 'number' && input.property === 'scale') {
-      el.style.transform =  `scale(${input.value})`
+    }
+    if (input.type === 'range' && input.property === 'scale') {
+        if (Array.isArray(input.value)) {
+    el.style.transform = `scale(${input.value[0]})`
+  }
     }
     
     if (input.type === 'color' && input.property === 'color') {

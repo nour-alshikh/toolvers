@@ -1,40 +1,20 @@
 <script setup lang="ts">
-import { inject, ref } from 'vue'
+import { inject } from 'vue'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import ColorInput from '@/views/components/ColorInput.vue'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import AllTab from './displayPagesTabs/AllTab.vue'
+import SelectedTab from './displayPagesTabs/SelectedTab.vue'
+import ImageTab from './imageTabs/ImageTab.vue'
+import IconTab from './imageTabs/IconTab.vue'
 import { icons } from '@/icons'
-function handleFileSelect(e: any) {
-  const files = e.target.files
-  if (files.length > 0) {
-    const file = files[0]
-    if (validateFile(file)) {
-      // saveImage(file);
-    }
-  }
-  e.target.value = ''
-}
+import { Switch } from "@/components/ui/switch"
+import { Slider } from "@/components/ui/slider"
 
-const validateFile = (file: File) => {
-  // Check file type
-  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
-  if (!allowedTypes.includes(file.type)) {
-    console.warn('Invalid file type:', file.type)
-    return false
-  }
 
-  // Check file size (5MB limit)
-  const maxSize = 5 * 1024 * 1024 // 5MB in bytes
-  if (file.size > maxSize) {
-    console.warn('File too large:', file.size)
-    return false
-  }
-
-  return true
-}
 
 // Handle color change updates
 const handleColorChange = (newColor: any, inputItem: any) => {
@@ -66,7 +46,7 @@ const MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs
     v-model:open="input.isOpen"
   >
     <CollapsibleTrigger
-      class="cursor-pointer p-4 flex items-center justify-between flex-row-reverse bg-background rounded-lg mb-2 w-full"
+      class="cursor-pointer p-4 flex items-center justify-between flex-row-reverse bg-background rounded-lg  w-full"
     >
       {{ input?.title }}
       <img :class="!input.isOpen ? 'rotate-180' : ''" src="@/assets/images/ArrowUp.svg" alt="" />
@@ -119,18 +99,38 @@ const MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs
             />
           </div>
 
+          <!-- Range input -->
+          <div v-if="inputItem.type === 'range'" class="mt-5 relative flex gap-3 flex-1">
+            <Slider
+    v-model="inputItem.value"
+    :min="0.5"
+    :max="1"
+    :step="0.1"
+
+    :data-id="inputItem.id"
+    :property="inputItem.property"
+  />
+            <div class="relative max-w-[70px]">
+              <Label
+                class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
+                for="color-input"
+              >
+                {{ inputItem.label }}
+              </Label>
+
+              <Input
+                class="p-4 h-12 text-right"
+                type="number"
+                placeholder=""
+                v-model="inputItem.value[0]"
+                :data-id="inputItem.id"
+              />
+            </div>
+          </div>
+
           <!-- Number input -->
           <div v-if="inputItem.type === 'number'" class="mt-5 relative flex gap-3 flex-1">
-            <Input
-              class="flex-1 p-4 h-12 text-right border-none shadow-none"
-              placeholder=""
-              min="0.5"
-              max="1"
-              step="0.1"
-              v-model="inputItem.value"
-              type="range"
-            />
-            <div class="relative max-w-[70px]">
+            <div class="relative">
               <Label
                 class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
                 for="color-input"
@@ -147,7 +147,6 @@ const MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs
               />
             </div>
           </div>
-
           <!-- Image input -->
           <div v-if="inputItem.type === 'image'" class="relative w-full">
             <Tabs default-value="image" class="flex flex-col items-center justify-center">
@@ -159,35 +158,11 @@ const MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs
               </TabsList>
 
               <TabsContent value="image">
-                <div
-                  class="rounded-lg w-full flex flex-col items-center justify-center cursor-pointer relative border border-dashed border-black/20 lg:py-6 lg:px-4 py-4 px-2"
-                >
-                  <img :src="icons.download" alt="" />
-                  <p
-                    class="text-[rgba(0,0,0,0.87)] mt-2 text-[14px] font-normal leading-[175%] tracking-[0.15px] text-center"
-                  >
-                    قم بسحب وأفلات الوسائط هنا أو اضغط للرفع
-                  </p>
-                  <p
-                    class="text-[#909090] mt-2 text-center text-[13px] font-normal leading-[130%] tracking-[0.17px]"
-                  >
-                    يدعم ملفات JPEG و JPG و PNG و GIF و WEBP بحجم أقصى 5MB
-                  </p>
-                  <Button
-                    class="border border-primary bg-transparent text-primary mt-2 hover:bg-primary hover:text-white transition-all duration-200 ease-in-out"
-                  >
-                    رفع الوسائط
-                    <img :src="icons.arrowUpDownload" alt="" />
-                  </Button>
-                  <Input
-                    type="file"
-                    @change="handleFileSelect"
-                    accept="image/*"
-                    class="opacity-0 absolute inset-0 cursor-pointer w-full h-full z-50"
-                  />
-                </div>
+               <ImageTab />
               </TabsContent>
-              <TabsContent value="icon"> icon </TabsContent>
+              <TabsContent value="icon"> 
+                <IconTab />
+              </TabsContent>
             </Tabs>
           </div>
 
@@ -229,18 +204,38 @@ const MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs
             </div>
           </div>
 
-          <div v-if="inputItem.type === 'select-pages'">
-            <Tabs default-value="all" class="flex flex-col items-center justify-center">
-                <TabsList
-                class="grid w-fit grid-cols-2 bg-[#FDF5F8] rounded-lg border border-[#F0F0F0]"
+          <div v-if="inputItem.type === 'display-pages'">
+            <Tabs default-value="all" class="flex flex-col items-end justify-center">
+              <TabsList
+                class="flex w-fit m-auto justify-center items-center bg-[#FDF5F8] rounded-lg border border-[#F0F0F0] lg:py-[10px] py-1 px-1"
               >
-                <TabsTrigger value="all" class="border-none"> جميع الصفحات </TabsTrigger>
-                <TabsTrigger value="selected" class="border-none"> الصفحات المحددة </TabsTrigger>
+                <TabsTrigger value="selected" class="border-none"> تخصيص </TabsTrigger>
+                <TabsTrigger value="all" class="border-none"> صفحات المتجر </TabsTrigger>
               </TabsList>
-              <TabsContent value="all"> جميع الصفحات </TabsContent>
-              <TabsContent value="selected"> الصفحات المحددة </TabsContent>
+              <TabsContent value="all">
+              <AllTab />
+              </TabsContent>
+
+              <TabsContent value="selected"> 
+              <SelectedTab />
+              </TabsContent>
             </Tabs>
           </div>
+
+          <div v-if="inputItem.type === 'display-settings'" class="relative flex gap-2 w-full">
+           
+
+            <div class="flex items-center justify-between  space-x-2 border  rounded-lg py-3 px-3 flex-1">
+              <Label for="display-mobile" class="text-primary"> عرض على الجوال</Label>
+              <Switch id="display-mobile"  />
+            </div>
+            <div class="flex items-center justify-between  space-x-2 border  rounded-lg py-3 px-3 flex-1">
+              <Label for="display-desktop" class="text-primary"> عرض على سطح المكتب</Label>
+              <Switch id="display-desktop" />
+            </div>
+          </div>
+
+
         </div>
       </CollapsibleContent>
     </Transition>
@@ -251,5 +246,7 @@ const MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs
 button[data-state='active'] {
   background-color: #f0dae3;
   color: #be185d;
+  padding: 8px;
+  box-shadow: none;
 }
 </style>

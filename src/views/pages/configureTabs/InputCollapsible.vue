@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { inject, ref } from 'vue'
+import { inject } from 'vue'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import Download from '@/assets/images/download.svg'
-import ArrowUpDownload from '@/assets/images/arrow-up-download.svg'
+
 import ColorInput from '@/views/components/ColorInput.vue'
-import { Button } from '@/components/ui/button'
+import ImageTab from './imageTabs/ImageTab.vue'
+import IconTab from './imageTabs/IconTab.vue'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Slider } from "@/components/ui/slider"
+
 
 interface InputItem {
   label: string
@@ -22,37 +24,7 @@ interface InputItem {
 }
 
 const inputs: InputItem[] | undefined = inject('inputs')
-const DownloadIcon = ref(Download)
-const ArrowUpDownloadIcon = ref(ArrowUpDownload)
 
-function handleFileSelect(e: any) {
-  const files = e.target.files
-  if (files.length > 0) {
-    const file = files[0]
-    if (validateFile(file)) {
-      // saveImage(file);
-    }
-  }
-  e.target.value = ''
-}
-
-const validateFile = (file: File) => {
-  // Check file type
-  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
-  if (!allowedTypes.includes(file.type)) {
-    console.warn('Invalid file type:', file.type)
-    return false
-  }
-
-  // Check file size (5MB limit)
-  const maxSize = 5 * 1024 * 1024 // 5MB in bytes
-  if (file.size > maxSize) {
-    console.warn('File too large:', file.size)
-    return false
-  }
-
-  return true
-}
 
 // Handle color change updates
 const handleColorChange = (newColor: any, inputItem: any) => {
@@ -70,7 +42,7 @@ const handleColorChange = (newColor: any, inputItem: any) => {
     v-model:open="input.isOpen"
   >
     <CollapsibleTrigger
-      class="cursor-pointer p-4 flex items-center justify-between flex-row-reverse bg-background rounded-lg mb-2 w-full"
+      class="cursor-pointer p-4 flex items-center justify-between flex-row-reverse bg-background rounded-lg w-full"
     >
       {{ input?.title }}
       <img :class="!input.isOpen ? 'rotate-180' : ''" src="@/assets/images/ArrowUp.svg" alt="" />
@@ -85,8 +57,17 @@ const handleColorChange = (newColor: any, inputItem: any) => {
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-      <CollapsibleContent v-show="input.isOpen" class="overflow-hidden px-3 py-3 flex flex-wrap gap-x-4 " :class="input.class">
-        <div v-for="inputItem in input.inputs" :key="inputItem.label" class="relative" :class="inputItem.class">
+      <CollapsibleContent
+        v-show="input.isOpen"
+        class="overflow-hidden px-3 py-3 flex flex-wrap gap-x-4"
+        :class="input.class"
+      >
+        <div
+          v-for="inputItem in input.inputs"
+          :key="inputItem.label"
+          class="relative"
+          :class="inputItem.class"
+        >
           <!-- Text input -->
           <div v-if="inputItem.type === 'text'">
             <Label
@@ -106,7 +87,7 @@ const handleColorChange = (newColor: any, inputItem: any) => {
           </div>
 
           <!-- Color input -->
-          <div v-if="inputItem.type === 'color'" class="mt-5 relative ">
+          <div v-if="inputItem.type === 'color'" class="mt-5 relative">
             <ColorInput
               @updateColor="(newColor) => handleColorChange(newColor, inputItem)"
               :label="inputItem.label"
@@ -114,36 +95,55 @@ const handleColorChange = (newColor: any, inputItem: any) => {
             />
           </div>
 
-          <!-- Number input -->
-          <div v-if="inputItem.type === 'number'" class="mt-5 relative flex gap-3  flex-1">
-            <Input
-          class="flex-1 p-4 h-12 text-right border-none shadow-none  "
-          placeholder=""
-          min="12"
-          max="24"
-          step="1"
-          v-model="inputItem.value"
-          type="range"
-          />
+          <!-- Range input -->
+          <div v-if="inputItem.type === 'range'" class="mt-5 relative flex gap-3 flex-1">
+            <Slider
+    v-model="inputItem.value"
+    :min="inputItem.min"
+    :max="inputItem.max"
+    :step="inputItem.step"
+    :data-id="inputItem.id"
+    :property="inputItem.property"
+  
+  />
             <div class="relative max-w-[70px]">
-
               <Label
-              class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
-              for="color-input"
-            >
-            {{ inputItem.label }}
-            </Label>
+                class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
+                for="color-input"
+              >
+                {{ inputItem.label }}
+              </Label>
 
-            <Input
-            class="p-4 h-12 text-right"
-            type="number"
-            placeholder=""
-            v-model="inputItem.value"
-            :data-id="inputItem.id"
-            />
+              <Input
+                class="p-4 h-12 text-right"
+                type="number"
+                placeholder=""
+                v-model="inputItem.value"
+                :data-id="inputItem.id"
+              />
+            </div>
           </div>
-         
-        </div>
+
+          <!-- Number input -->
+          <div v-if="inputItem.type === 'number'" class="mt-5 relative flex gap-3 flex-1">
+        
+            <div class="relative max-w-[70px]">
+              <Label
+                class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
+                for="color-input"
+              >
+                {{ inputItem.label }}
+              </Label>
+
+              <Input
+                class="p-4 h-12 text-right"
+                type="number"
+                placeholder=""
+                v-model="inputItem.value"
+                :data-id="inputItem.id"
+              />
+            </div>
+          </div>
 
           <!-- Image input -->
           <div v-if="inputItem.type === 'image'" class="relative w-full">
@@ -156,35 +156,11 @@ const handleColorChange = (newColor: any, inputItem: any) => {
               </TabsList>
 
               <TabsContent value="image">
-                <div
-                  class="rounded-lg w-full flex flex-col items-center justify-center cursor-pointer relative border border-dashed border-black/20 lg:py-6 lg:px-4 py-4 px-2"
-                >
-                  <img :src="DownloadIcon" alt="" />
-                  <p
-                    class="text-[rgba(0,0,0,0.87)] mt-2 text-[14px] font-normal leading-[175%] tracking-[0.15px] text-center"
-                  >
-                    قم بسحب وأفلات الوسائط هنا أو اضغط للرفع
-                  </p>
-                  <p
-                    class="text-[#909090] mt-2 text-center text-[13px] font-normal leading-[130%] tracking-[0.17px]"
-                  >
-                    يدعم ملفات JPEG و JPG و PNG و GIF و WEBP بحجم أقصى 5MB
-                  </p>
-                  <Button
-                    class="border border-primary bg-transparent text-primary mt-2 hover:bg-primary hover:text-white transition-all duration-200 ease-in-out"
-                  >
-                    رفع الوسائط
-                    <img :src="ArrowUpDownloadIcon" alt="" />
-                  </Button>
-                  <Input
-                    type="file"
-                    @change="handleFileSelect"
-                    accept="image/*"
-                    class="opacity-0 absolute inset-0 cursor-pointer w-full h-full z-50"
-                  />
-                </div>
+             <ImageTab />
               </TabsContent>
-              <TabsContent value="icon"> icon </TabsContent>
+              <TabsContent value="icon"> 
+             <IconTab />
+              </TabsContent>
             </Tabs>
           </div>
         </div>

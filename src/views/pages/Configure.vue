@@ -14,7 +14,7 @@ const { primary, black, edit, showSettings } = icons
 
 const router = useRouter()
 
-const screen = ref('mobile')
+const screen = ref('desktop')
 const tab = ref('edit')
 
 onMounted(() => {
@@ -57,8 +57,11 @@ const inputs: any = ref([
       },
       {
         label: 'حجم النص',
-        type: 'number',
-        value: '16',
+        type: 'range',
+        value: [16],
+        min: 12,
+        max: 24,
+        step: 1,
         property: 'fontSize',
         id: 'title',
         class: 'col-span-2',
@@ -89,8 +92,11 @@ const inputs: any = ref([
       },
       {
         label: 'حجم النص',
-        type: 'number',
-        value: '16',
+        type: 'range',
+        value: [16],
+        min: 12,
+        max: 24,
+        step: 1,
         property: 'fontSize',
         id: 'subtitle',
         class: 'col-span-1',
@@ -128,11 +134,11 @@ const MobileDisplayInputs: any = ref([
       },
       {
         label: 'حجم الاشعار',
-        type: 'number',
-        value: '0.5',
-        min: '0.5',
-        max: '1',
-        step: '0.1',
+        type: 'range',
+        value: [0.8],
+        min: 0.5,
+        max: 1,
+        step: 0.1,
         property: 'scale',
         id: 'dialog',
         class: 'col-span-2',
@@ -170,7 +176,7 @@ const MobileDisplayInputs: any = ref([
   },{
     title: 'مدة العرض',
     isOpen: true,
-    class: 'grid grid-cols-1 gap-x-4',
+    class: 'grid grid-cols-3 gap-x-4',
     inputs: [
     {
         label: 'مدة العرض ',
@@ -178,7 +184,7 @@ const MobileDisplayInputs: any = ref([
         value: '16',
         property: 'fontSize',
         id: 'title',
-        class: 'col-span-2',
+        class: 'col-span-1',
       },
     {
         label: 'مدة التأخير',
@@ -186,7 +192,7 @@ const MobileDisplayInputs: any = ref([
         value: '16',
         property: 'fontSize',
         id: 'title',
-        class: 'col-span-2',
+        class: 'col-span-1',
       },
     {
         label: 'عدد مرات الظهور',
@@ -194,7 +200,7 @@ const MobileDisplayInputs: any = ref([
         value: '16',
         property: 'fontSize',
         id: 'title',
-        class: 'col-span-2',
+        class: 'col-span-1',
       },
     ]
   },
@@ -205,9 +211,22 @@ const MobileDisplayInputs: any = ref([
     type: 'pages',
     inputs: [
       {
-        type: 'select-pages',
+        type: 'display-pages',
         value: 'all',
         id: 'pages',
+        class: 'col-span-1',
+      },
+    ],
+  },
+  {
+    title: 'اعدادات العرض',
+    isOpen: true,
+    class: 'grid grid-cols-1 gap-x-4',
+    type: 'display-settings',
+    inputs: [
+      {
+        type: 'display-settings',
+        id: 'display-settings',
         class: 'col-span-1',
       },
     ],
@@ -233,12 +252,16 @@ const DesktopDisplayInputs: any = ref([
 ])
 
 provide('DesktopDisplayInputs', DesktopDisplayInputs)
+
+const toggleScreen = () => {
+  screen.value = screen.value === 'desktop' ? 'mobile' : 'desktop'
+}
 </script>
 
 <template>
   <DefaultLayout>
     <div class="py-3">
-      <div class="flex flex-col lg:flex-row gap-3">
+      <div class="flex flex-col lg:flex-row gap-3 relative">
         <div class="w-[470px]">
           <Tabs v-model="tab">
             <TabsList class="grid w-full grid-cols-2 bg-secondaryBackground px-8 py-3">
@@ -268,7 +291,7 @@ provide('DesktopDisplayInputs', DesktopDisplayInputs)
                 :class="
                   screen === 'mobile' ? 'before:border-b-primary' : 'before:border-b-transparent'
                 "
-                @click="screen = 'mobile'"
+                @click="toggleScreen"
               >
                 <img :src="screen === 'mobile' ? primary.mobile : black.mobile" alt="" />
               </div>
@@ -278,7 +301,7 @@ provide('DesktopDisplayInputs', DesktopDisplayInputs)
                 :class="
                   screen === 'desktop' ? 'before:border-b-primary' : 'before:border-b-transparent'
                 "
-                @click="screen = 'desktop'"
+                @click="toggleScreen"
               >
                 <img :src="screen === 'desktop' ? primary.desktop : black.desktop" alt="" />
               </div>
@@ -293,12 +316,27 @@ provide('DesktopDisplayInputs', DesktopDisplayInputs)
             </TabsContent>
           </Tabs>
         </div>
+        <div class="relative flex-1">
+          
         <div
-          class="flex-1 rounded-lg border border-dashed border-[#E4D0D8] h-[calc(100vh-140px)] overflow-y-hidden sticky top-[140px]"
-        >
-          <WidgetComponent />
-        </div>
+  class="flex-1 rounded-lg border border-dashed border-[#E4D0D8] h-[calc(100vh-140px)] overflow-y-hidden transition-all duration-300 ease-in-out"
+  :class="screen === 'desktop' 
+    ? 'w-[calc(100vw-550px)] fixed top-[130px] left-3 ' 
+    : 'w-[390px] sticky top-[130px] mx-auto'"
+>
+  <div class="w-full h-full absolute opacity-40">
+    <iframe 
+      src="http://localhost:3000/dashboard" 
+      width="100%" 
+      height="100%" 
+      frameborder="0">
+    </iframe>
+  </div>
+  <WidgetComponent />
+</div>
+
       </div>
+    </div>
     </div>
   </DefaultLayout>
 </template>
