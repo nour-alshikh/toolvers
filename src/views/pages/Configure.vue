@@ -127,8 +127,10 @@ const DesktopDisplayInputs: any = ref([
     class: 'grid grid-cols-1 gap-x-4',
     inputs: [
       {
-        type: 'select-position',
-        value: 'top',
+        type: 'position',
+        value: 'top-left',
+        top: '0',
+        left: '0',
         id: 'position',
         class: 'col-span-1',
       },
@@ -243,7 +245,7 @@ const MobileDisplayInputs: any = ref([
     class: 'grid grid-cols-1 gap-x-4',
     inputs: [
       {
-        type: 'select-position',
+        type: 'position',
         value: 'top',
         id: 'position',
         class: 'col-span-1',
@@ -350,7 +352,6 @@ const MobileDisplayInputs: any = ref([
   },
 ])
 
-
 provide('MobileDisplayInputs', MobileDisplayInputs)
 
 const toggleScreen = () => {
@@ -418,7 +419,7 @@ const toggleScreen = () => {
         </div>
         <div class="relative flex-1">
           <div
-            class="flex-1 rounded-lg border border-dashed border-[#E4D0D8] h-[calc(100vh-140px)] overflow-y-hidden transition-all duration-300 ease-in-out"
+            class=" flex-1 rounded-lg border border-dashed border-[#E4D0D8] h-[calc(100vh-140px)] overflow-y-hidden transition-all duration-300 ease-in-out"
             :class="
               screen === 'desktop'
                 ? 'w-[calc(100vw-550px)] fixed top-[130px] left-3 '
@@ -434,7 +435,7 @@ const toggleScreen = () => {
               >
               </iframe>
             </div>
-            <WidgetComponent :screen="screen"  />
+            <WidgetComponent :screen="screen" />
           </div>
         </div>
       </div>

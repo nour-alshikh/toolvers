@@ -25,43 +25,147 @@ if (newVal === 'desktop') {
     }
   }
 )
-const inputs = inject('inputs')
+
+
+const inputs = inject('inputs') as Ref<any[]>
 const DesktopDisplayInputs = inject('DesktopDisplayInputs')
 const MobileDisplayInputs = inject('MobileDisplayInputs')
-watch(
-  inputs as any, 
-  (newVal, oldVal) => {
-    newVal.map((input: any) => {
-      input.inputs.map((inner: any) => {
-       
-       handleInput(inner)
-      })
-    })
-  },
-  { deep: true },
-)
 
-watch(DesktopDisplayInputs as any, (newVal, oldVal) => {
-  newVal.map((input: any) => {
-    input.inputs.map((inner: any) => {
-     handleInput(inner)
-    })
+inputs.value.forEach(group => {
+  group.inputs.forEach(inner => {
+    watch(
+      () => inner,          // watch this single input object
+      (newVal, oldVal) => {
+        handleInput(newVal)
+      },
+      { deep: true }
+    )
   })
-}, { deep: true })
+})
+DesktopDisplayInputs.value.forEach(group => {
+  group.inputs.forEach(inner => {
+    watch(
+      () => inner,          // watch this single input object
+      (newVal, oldVal) => {
+        handleInput(newVal)
+      },
+      { deep: true }
+    )
+  })
+})
+MobileDisplayInputs.value.forEach(group => {
+  group.inputs.forEach(inner => {
+    watch(
+      () => inner,          // watch this single input object
+      (newVal, oldVal) => {
+        handleInput(newVal)
+      },
+      { deep: true }
+    )
+  })
+})
 
-watch(MobileDisplayInputs as any, (newVal, oldVal) => {
-  newVal.map((input: any) => {
-    input.inputs.map((inner: any) => {
-     handleInput(inner)
-    })
-  })
-}, { deep: true })
 
 
 function handleInput(input: any) {
+
   const toolversTool = document.querySelector('.toolvers-tool')
   const el = toolversTool?.querySelector(`[data-id="${input.id}"]`)
+console.log("ferfefrfe");
 
+  if(input.type === 'position'){
+    let transformValue = toolversTool.style.transform || ""
+
+    if(transformValue){
+
+        transformValue = transformValue.replace(/translate\([^)]+\)/, "").trim()
+        toolversTool.style.transform = `${transformValue} translate(-50%, -50%)`
+        
+        if(input.value === 'top-left'){
+            toolversTool.style.top = `calc(${input.top} + ${toolversTool.getBoundingClientRect().height/2}px)`
+            toolversTool.style.left = `calc(${input.left} + ${toolversTool.getBoundingClientRect().width/2}px)`
+        }
+        if(input.value === 'top'){
+            toolversTool.style.top = `calc(${input.top} + ${toolversTool.getBoundingClientRect().height/2}px)`
+            toolversTool.style.left = `${input.left}`
+        }
+        if(input.value === 'top-right'){
+            toolversTool.style.top = `calc(${input.top} + ${toolversTool.getBoundingClientRect().height/2}px)`
+            toolversTool.style.left = `calc(${input.left} - ${toolversTool.getBoundingClientRect().width/2}px)`
+        }
+        
+        if(input.value === 'center-left'){
+            toolversTool.style.top = `${input.top}`
+            toolversTool.style.left = `calc(${input.left} + ${toolversTool.getBoundingClientRect().width/2}px)`
+        }
+        
+        if(input.value === 'center-right'){
+            toolversTool.style.top = `${input.top}`
+            toolversTool.style.left = `calc(${input.left} - ${toolversTool.getBoundingClientRect().width/2}px)`
+        }
+
+        if(input.value === 'bottom-left'){
+            toolversTool.style.top = `calc(${input.top} - ${toolversTool.getBoundingClientRect().height/2}px)`
+            toolversTool.style.left = `calc(${input.left} + ${toolversTool.getBoundingClientRect().width/2}px)`
+        }
+        if(input.value === 'bottom'){
+            toolversTool.style.top = `calc(${input.top} - ${toolversTool.getBoundingClientRect().height/2}px)`
+            toolversTool.style.left = `${input.left}`
+        }
+        if(input.value === 'bottom-right'){
+            toolversTool.style.top = `calc(${input.top} - ${toolversTool.getBoundingClientRect().height/2}px)`
+            toolversTool.style.left = `calc(${input.left} - ${toolversTool.getBoundingClientRect().width/2}px)`
+        }
+        
+
+
+    }
+    else{
+            toolversTool.style.transform = `translate(-50%, -50%)`
+     
+
+            
+        if(input.value === 'top-left'){
+            toolversTool.style.top = `calc(${input.top} + ${toolversTool.getBoundingClientRect().height/2}px)`
+            toolversTool.style.left = `calc(${input.left} + ${toolversTool.getBoundingClientRect().width/2}px)`
+        }
+        if(input.value === 'top'){
+            toolversTool.style.top = `${input.top} + ${toolversTool.getBoundingClientRect().height/2}px)`
+            toolversTool.style.left = `${input.left}`
+        }
+        if(input.value === 'top-right'){
+            toolversTool.style.top = `calc(${input.top} + ${toolversTool.getBoundingClientRect().height/2}px)`
+            toolversTool.style.left = `calc(${input.left} - ${toolversTool.getBoundingClientRect().width/2}px)`
+        }
+        
+        if(input.value === 'center-left'){
+            toolversTool.style.top = `${input.top}`
+            toolversTool.style.left = `calc(${input.left} + ${toolversTool.getBoundingClientRect().width/2}px)`
+        }
+        
+        if(input.value === 'center-right'){
+            toolversTool.style.top = `${input.top}`
+            toolversTool.style.left = `calc(${input.left} - ${toolversTool.getBoundingClientRect().width/2}px)`
+        }
+
+        if(input.value === 'bottom-left'){
+            toolversTool.style.top = `calc(${input.top} - ${toolversTool.getBoundingClientRect().height/2}px)`
+            toolversTool.style.left = `calc(${input.left} + ${toolversTool.getBoundingClientRect().width/2}px)`
+        }
+        if(input.value === 'bottom'){
+            toolversTool.style.top = `calc(${input.top} - ${toolversTool.getBoundingClientRect().height/2}px)`
+            toolversTool.style.left = `${input.left}`
+        }
+        if(input.value === 'bottom-right'){
+            toolversTool.style.top = `calc(${input.top} - ${toolversTool.getBoundingClientRect().height/2}px)`
+            toolversTool.style.left = `calc(${input.left} - ${toolversTool.getBoundingClientRect().width/2}px)`
+        }
+        
+
+
+        }
+    }
+ 
   if (el) {
     if (input.type === 'text') {
       el.textContent = input.value
@@ -75,7 +179,7 @@ function handleInput(input: any) {
     }
     if (input.type === 'range' && input.property === 'scale') {
         if (Array.isArray(input.value)) {
-    el.style.transform = `scale(${input.value[0]})`
+            toolversTool.style.transform = `scale(${input.value[0]})`
   }
     }
     
@@ -98,15 +202,16 @@ function handleInput(input: any) {
         el.style.backgroundColor = input.value
       }
     }
+
   }
 }
 
 </script>
 
 <template>
-    <div class="toolvers-tool">
-
-
+    <div class="relative w-full h-full">
+        
+    <div class="toolvers-tool absolute">
         <div class="coupon-dialog-one toolvers-widget" data-id="dialog" id="coupon-dialog">
             <button class="coupon-close close-banner"  data-id="close" >x</button>
 
@@ -130,6 +235,7 @@ function handleInput(input: any) {
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </template>
 

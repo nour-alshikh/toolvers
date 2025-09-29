@@ -11,10 +11,8 @@ import SelectedTab from './displayPagesTabs/SelectedTab.vue'
 import ImageTab from './imageTabs/ImageTab.vue'
 import IconTab from './imageTabs/IconTab.vue'
 import { icons } from '@/icons'
-import { Switch } from "@/components/ui/switch"
-import { Slider } from "@/components/ui/slider"
-
-
+import { Switch } from '@/components/ui/switch'
+import { Slider } from '@/components/ui/slider'
 
 // Handle color change updates
 const handleColorChange = (newColor: any, inputItem: any) => {
@@ -34,7 +32,7 @@ interface InputItem {
   class?: string
 }
 
-const   MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs')
+const MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs')
 </script>
 
 <template>
@@ -46,7 +44,7 @@ const   MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInpu
     v-model:open="input.isOpen"
   >
     <CollapsibleTrigger
-      class="cursor-pointer p-4 flex items-center justify-between flex-row-reverse bg-background rounded-lg  w-full"
+      class="cursor-pointer p-4 flex items-center justify-between flex-row-reverse bg-background rounded-lg w-full"
     >
       {{ input?.title }}
       <img :class="!input.isOpen ? 'rotate-180' : ''" src="@/assets/images/ArrowUp.svg" alt="" />
@@ -102,14 +100,13 @@ const   MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInpu
           <!-- Range input -->
           <div v-if="inputItem.type === 'range'" class="mt-5 relative flex gap-3 flex-1">
             <Slider
-    v-model="inputItem.value"
-    :min="0.5"
-    :max="1"
-    :step="0.1"
-
-    :data-id="inputItem.id"
-    :property="inputItem.property"
-  />
+              v-model="inputItem.value"
+              :min="0.5"
+              :max="1"
+              :step="0.1"
+              :data-id="inputItem.id"
+              :property="inputItem.property"
+            />
             <div class="relative max-w-[70px]">
               <Label
                 class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
@@ -158,41 +155,59 @@ const   MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInpu
               </TabsList>
 
               <TabsContent value="image">
-               <ImageTab />
+                <ImageTab />
               </TabsContent>
-              <TabsContent value="icon"> 
+              <TabsContent value="icon">
                 <IconTab />
               </TabsContent>
             </Tabs>
           </div>
 
-          <div v-if="inputItem.type === 'select-position'" class="relative w-1/2 m-auto">
+          <div v-if="inputItem.type === 'position'" class="relative w-1/2 m-auto">
             <div class="grid grid-cols-3 grid-rows-3 gap-2">
               <div
+                @click="inputItem.value = 'top-left'; inputItem.top = '0%'; inputItem.left = '0%'"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+                :class="inputItem.value === 'top-left' ? 'bg-primary/10' : ''"
               ></div>
               <div
+                @click="inputItem.value = 'top'; inputItem.top = '0%'; inputItem.left = '50%'"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-              ></div>
+                :class="inputItem.value === 'top' ? 'bg-primary/10' : ''"
+                ></div>
+                <div
+                  @click="inputItem.value = 'top-right'; inputItem.top = '0%'; inputItem.left = '100%'"
+                  class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+                  :class="inputItem.value === 'top-right' ? 'bg-primary/10' : ''"
+                ></div>
+              
               <div
+                @click="inputItem.value = 'center-left'; inputItem.top = '50%'; inputItem.left = '0%'"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-              ></div>
-              <div
-                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+                :class="inputItem.value === 'center-left' ? 'bg-primary/10' : ''"
               ></div>
               <div></div>
               <div
+                @click="inputItem.value = 'center-right'; inputItem.top = '50%'; inputItem.left = '100%'"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+                :class="inputItem.value === 'center-right' ? 'bg-primary/10' : ''"
               ></div>
               <div
+                @click="inputItem.value = 'bottom-left'; inputItem.top = '100%'; inputItem.left = '0%'"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+                :class="inputItem.value === 'bottom-left' ? 'bg-primary/10' : ''"
               ></div>
               <div
+                @click="inputItem.value = 'bottom'; inputItem.top = '100%'; inputItem.left = '50%'"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+                :class="inputItem.value === 'bottom' ? 'bg-primary/10' : ''"
               ></div>
               <div
+                @click="inputItem.value = 'bottom-right'; inputItem.top = '100%'; inputItem.left = '100%'"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+                :class="inputItem.value === 'bottom-right' ? 'bg-primary/10' : ''"
               ></div>
+
               <div class="col-span-3 row-span-3">
                 <Button
                   class="border border-primary bg-transparent text-primary mt-2 hover:bg-primary hover:text-white transition-all duration-200 ease-in-out"
@@ -213,29 +228,29 @@ const   MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInpu
                 <TabsTrigger value="all" class="border-none"> صفحات المتجر </TabsTrigger>
               </TabsList>
               <TabsContent value="all">
-              <AllTab />
+                <AllTab />
               </TabsContent>
 
-              <TabsContent value="selected"> 
-              <SelectedTab />
+              <TabsContent value="selected">
+                <SelectedTab />
               </TabsContent>
             </Tabs>
           </div>
 
           <div v-if="inputItem.type === 'display-settings'" class="relative flex gap-2 w-full">
-           
-
-            <div class="flex items-center justify-between  space-x-2 border  rounded-lg py-3 px-3 flex-1">
+            <div
+              class="flex items-center justify-between space-x-2 border rounded-lg py-3 px-3 flex-1"
+            >
               <Label for="display-mobile" class="text-primary"> عرض على الجوال</Label>
-              <Switch id="display-mobile"  />
+              <Switch id="display-mobile" />
             </div>
-            <div class="flex items-center justify-between  space-x-2 border  rounded-lg py-3 px-3 flex-1">
+            <div
+              class="flex items-center justify-between space-x-2 border rounded-lg py-3 px-3 flex-1"
+            >
               <Label for="display-desktop" class="text-primary"> عرض على سطح المكتب</Label>
               <Switch id="display-desktop" />
             </div>
           </div>
-
-
         </div>
       </CollapsibleContent>
     </Transition>
