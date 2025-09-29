@@ -34,7 +34,7 @@ interface InputItem {
   class?: string
 }
 
-const MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs')
+const   MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs')
 </script>
 
 <template>

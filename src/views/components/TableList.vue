@@ -250,8 +250,8 @@ const handleStatusChange = (status: string) => {
         <Input
           class="max-w-sm"
           placeholder="ابحث عن عنصر"
-          :model-value="table.getColumn('email')?.getFilterValue() as string"
-          @update:model-value="table.getColumn('email')?.setFilterValue($event)"
+          :model-value="table.getColumn('name')?.getFilterValue() as string"
+          @update:model-value="table.getColumn('name')?.setFilterValue($event)"
         />
       </div>
 

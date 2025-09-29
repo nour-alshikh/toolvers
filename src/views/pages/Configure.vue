@@ -120,7 +120,7 @@ const inputs: any = ref([
 
 provide('inputs', inputs)
 
-const MobileDisplayInputs: any = ref([
+const DesktopDisplayInputs: any = ref([
   {
     title: 'مكان العرض',
     isOpen: true,
@@ -173,12 +173,13 @@ const MobileDisplayInputs: any = ref([
         class: 'col-span-1',
       },
     ],
-  },{
+  },
+  {
     title: 'مدة العرض',
     isOpen: true,
     class: 'grid grid-cols-3 gap-x-4',
     inputs: [
-    {
+      {
         label: 'مدة العرض ',
         type: 'number',
         value: '16',
@@ -186,7 +187,7 @@ const MobileDisplayInputs: any = ref([
         id: 'title',
         class: 'col-span-1',
       },
-    {
+      {
         label: 'مدة التأخير',
         type: 'number',
         value: '16',
@@ -194,7 +195,7 @@ const MobileDisplayInputs: any = ref([
         id: 'title',
         class: 'col-span-1',
       },
-    {
+      {
         label: 'عدد مرات الظهور',
         type: 'number',
         value: '16',
@@ -202,7 +203,7 @@ const MobileDisplayInputs: any = ref([
         id: 'title',
         class: 'col-span-1',
       },
-    ]
+    ],
   },
   {
     title: 'صفحات العرض',
@@ -233,13 +234,13 @@ const MobileDisplayInputs: any = ref([
   },
 ])
 
-provide('MobileDisplayInputs', MobileDisplayInputs)
+provide('DesktopDisplayInputs', DesktopDisplayInputs)
 
-const DesktopDisplayInputs: any = ref([
+const MobileDisplayInputs: any = ref([
   {
     title: 'مكان العرض',
     isOpen: true,
-    class: 'grid grid-cols-2 gap-x-4',
+    class: 'grid grid-cols-1 gap-x-4',
     inputs: [
       {
         type: 'select-position',
@@ -247,11 +248,110 @@ const DesktopDisplayInputs: any = ref([
         id: 'position',
         class: 'col-span-1',
       },
+      {
+        label: 'حجم الاشعار',
+        type: 'range',
+        value: [0.6],
+        min: 0.5,
+        max: 1,
+        step: 0.1,
+        property: 'scale',
+        id: 'dialog',
+        class: 'col-span-2',
+      },
+    ],
+  },
+  {
+    title: 'اسم الاشعار',
+    isOpen: true,
+    class: 'grid grid-cols-1 gap-x-4',
+    inputs: [
+      {
+        type: 'text',
+        value: 'اشعار',
+        id: 'title',
+        class: 'col-span-1',
+      },
+    ],
+  },
+  {
+    title: 'لون الخلفية ',
+    isOpen: true,
+    class: 'grid grid-cols-1 gap-x-4',
+    inputs: [
+      {
+        type: 'color',
+        value: {
+          hex: '#f00',
+        },
+        id: 'dialog',
+        property: 'backgroundColor',
+        class: 'col-span-1',
+      },
+    ],
+  },
+  {
+    title: 'مدة العرض',
+    isOpen: true,
+    class: 'grid grid-cols-3 gap-x-4',
+    inputs: [
+      {
+        label: 'مدة العرض ',
+        type: 'number',
+        value: '16',
+        property: 'fontSize',
+        id: 'title',
+        class: 'col-span-1',
+      },
+      {
+        label: 'مدة التأخير',
+        type: 'number',
+        value: '16',
+        property: 'fontSize',
+        id: 'title',
+        class: 'col-span-1',
+      },
+      {
+        label: 'عدد مرات الظهور',
+        type: 'number',
+        value: '16',
+        property: 'fontSize',
+        id: 'title',
+        class: 'col-span-1',
+      },
+    ],
+  },
+  {
+    title: 'صفحات العرض',
+    isOpen: true,
+    class: 'grid grid-cols-1 gap-x-4',
+    type: 'pages',
+    inputs: [
+      {
+        type: 'display-pages',
+        value: 'all',
+        id: 'pages',
+        class: 'col-span-1',
+      },
+    ],
+  },
+  {
+    title: 'اعدادات العرض',
+    isOpen: true,
+    class: 'grid grid-cols-1 gap-x-4',
+    type: 'display-settings',
+    inputs: [
+      {
+        type: 'display-settings',
+        id: 'display-settings',
+        class: 'col-span-1',
+      },
     ],
   },
 ])
 
-provide('DesktopDisplayInputs', DesktopDisplayInputs)
+
+provide('MobileDisplayInputs', MobileDisplayInputs)
 
 const toggleScreen = () => {
   screen.value = screen.value === 'desktop' ? 'mobile' : 'desktop'
@@ -317,26 +417,27 @@ const toggleScreen = () => {
           </Tabs>
         </div>
         <div class="relative flex-1">
-          
-        <div
-  class="flex-1 rounded-lg border border-dashed border-[#E4D0D8] h-[calc(100vh-140px)] overflow-y-hidden transition-all duration-300 ease-in-out"
-  :class="screen === 'desktop' 
-    ? 'w-[calc(100vw-550px)] fixed top-[130px] left-3 ' 
-    : 'w-[390px] sticky top-[130px] mx-auto'"
->
-  <div class="w-full h-full absolute opacity-40">
-    <iframe 
-      src="http://localhost:3000/dashboard" 
-      width="100%" 
-      height="100%" 
-      frameborder="0">
-    </iframe>
-  </div>
-  <WidgetComponent />
-</div>
-
+          <div
+            class="flex-1 rounded-lg border border-dashed border-[#E4D0D8] h-[calc(100vh-140px)] overflow-y-hidden transition-all duration-300 ease-in-out"
+            :class="
+              screen === 'desktop'
+                ? 'w-[calc(100vw-550px)] fixed top-[130px] left-3 '
+                : 'w-[390px] sticky top-[130px] mx-auto'
+            "
+          >
+            <div class="w-full h-full absolute opacity-40">
+              <iframe
+                src="http://localhost:3000/dashboard"
+                width="100%"
+                height="100%"
+                frameborder="0"
+              >
+              </iframe>
+            </div>
+            <WidgetComponent :screen="screen"  />
+          </div>
+        </div>
       </div>
-    </div>
     </div>
   </DefaultLayout>
 </template>

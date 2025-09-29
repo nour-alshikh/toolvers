@@ -1,7 +1,32 @@
 <script setup lang="ts">
 import { inject, watch } from 'vue'
 
+const props = defineProps<{
+  screen: 'mobile' | 'desktop'
+}>()
+
+watch(
+  () => props.screen,
+  (newVal) => {
+    if (newVal === 'mobile') {
+        MobileDisplayInputs.value.map((input: any) => {
+    input.inputs.map((inner: any) => {
+     handleInput(inner)
+    })
+  })
+}
+if (newVal === 'desktop') {
+    
+    DesktopDisplayInputs.value.map((input: any) => {
+    input.inputs.map((inner: any) => {
+    handleInput(inner)
+    })
+    })
+    }
+  }
+)
 const inputs = inject('inputs')
+const DesktopDisplayInputs = inject('DesktopDisplayInputs')
 const MobileDisplayInputs = inject('MobileDisplayInputs')
 watch(
   inputs as any, 
@@ -15,6 +40,14 @@ watch(
   },
   { deep: true },
 )
+
+watch(DesktopDisplayInputs as any, (newVal, oldVal) => {
+  newVal.map((input: any) => {
+    input.inputs.map((inner: any) => {
+     handleInput(inner)
+    })
+  })
+}, { deep: true })
 
 watch(MobileDisplayInputs as any, (newVal, oldVal) => {
   newVal.map((input: any) => {
