@@ -101,8 +101,8 @@ const MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs
           <div v-if="inputItem.type === 'range'" class="mt-5 relative flex gap-3 flex-1">
             <Slider
               v-model="inputItem.value"
-              :min="0.5"
-              :max="1"
+              :min="0.3"
+              :max="0.6"
               :step="0.1"
               :data-id="inputItem.id"
               :property="inputItem.property"

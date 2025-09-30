@@ -101,8 +101,8 @@ const DesktopDisplayInputs: InputItem[] | undefined = inject('DesktopDisplayInpu
           <div v-if="inputItem.type === 'range'" class="mt-5 relative flex gap-3 flex-1">
             <Slider
               v-model="inputItem.value"
-              :min="0.5"
-              :max="1"
+              :min="0.4"
+              :max="0.8"
               :step="0.1"
               :data-id="inputItem.id"
               :property="inputItem.property"
@@ -166,44 +166,44 @@ const DesktopDisplayInputs: InputItem[] | undefined = inject('DesktopDisplayInpu
           <div v-if="inputItem.type === 'position'" class="relative w-1/2 m-auto">
             <div class="grid grid-cols-3 grid-rows-3 gap-2">
               <div
-                @click="inputItem.value = 'top-left'; inputItem.top = '0%'; inputItem.left = '0%'"
+                @click="inputItem.value = 'top-left'; inputItem.top = '0%'; inputItem.left = '0%' ; "
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.value === 'top-left' ? 'bg-primary/10' : ''"
               ></div>
               <div
-                @click="inputItem.value = 'top'; inputItem.top = '0%'; inputItem.left = '50%'"
+                @click="inputItem.value = 'top'; inputItem.top = '0%'; inputItem.left = '50%' ; "
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.value === 'top' ? 'bg-primary/10' : ''"
                 ></div>
                 <div
-                  @click="inputItem.value = 'top-right'; inputItem.top = '0%'; inputItem.left = '100%'"
+                  @click="inputItem.value = 'top-right'; inputItem.top = '0%'; inputItem.left = '100%' ; "
                   class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                   :class="inputItem.value === 'top-right' ? 'bg-primary/10' : ''"
                 ></div>
               
               <div
-                @click="inputItem.value = 'center-left'; inputItem.top = '50%'; inputItem.left = '0%'"
+                @click="inputItem.value = 'center-left'; inputItem.top = '50%'; inputItem.left = '0%' ; "
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.value === 'center-left' ? 'bg-primary/10' : ''"
               ></div>
               <div></div>
               <div
-                @click="inputItem.value = 'center-right'; inputItem.top = '50%'; inputItem.left = '100%'"
+                @click="inputItem.value = 'center-right'; inputItem.top = '50%'; inputItem.left = '100%' ; "
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.value === 'center-right' ? 'bg-primary/10' : ''"
               ></div>
               <div
-                @click="inputItem.value = 'bottom-left'; inputItem.top = '100%'; inputItem.left = '0%'"
+                @click="inputItem.value = 'bottom-left'; inputItem.top = '100%'; inputItem.left = '0%' ; "
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.value === 'bottom-left' ? 'bg-primary/10' : ''"
               ></div>
               <div
-                @click="inputItem.value = 'bottom'; inputItem.top = '100%'; inputItem.left = '50%'"
+                @click="inputItem.value = 'bottom'; inputItem.top = '100%'; inputItem.left = '50%' ; "
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.value === 'bottom' ? 'bg-primary/10' : ''"
               ></div>
               <div
-                @click="inputItem.value = 'bottom-right'; inputItem.top = '100%'; inputItem.left = '100%'"
+                @click="inputItem.value = 'bottom-right'; inputItem.top = '100%'; inputItem.left = '100%' ; "
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.value === 'bottom-right' ? 'bg-primary/10' : ''"
               ></div>
