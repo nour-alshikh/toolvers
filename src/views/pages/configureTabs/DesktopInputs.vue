@@ -33,6 +33,9 @@ interface InputItem {
 }
 
 const DesktopDisplayInputs: InputItem[] | undefined = inject('DesktopDisplayInputs')
+
+const isDesktopDraggable = inject('isDesktopDraggable')
+
 </script>
 
 <template>
@@ -210,6 +213,7 @@ const DesktopDisplayInputs: InputItem[] | undefined = inject('DesktopDisplayInpu
 
               <div class="col-span-3 row-span-3">
                 <Button
+                  @click="isDesktopDraggable = !isDesktopDraggable"
                   class="border border-primary bg-transparent text-primary mt-2 hover:bg-primary hover:text-white transition-all duration-200 ease-in-out"
                 >
                   التحكم الحر في مكان الاشعار

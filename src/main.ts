@@ -1,5 +1,5 @@
 import './assets/main.css'
-import 'vue-select/dist/vue-select.css';
+// import 'vue-select/dist/vue-select.css';
 
 // Import Swiper styles
 import 'swiper/css'
@@ -17,6 +17,9 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import ToastPlugin from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-bootstrap.css';
 
+import Vue3DraggableResizable from 'vue3-draggable-resizable'
+import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
+
 import vSelect from 'vue-select'
 
 
@@ -32,4 +35,6 @@ app.use(router)
 app.use(pinia)
 app.use(plugin, defaultConfig(config))
 app.component('v-select', vSelect)
+
+app.component('vue3-draggable-resizable', Vue3DraggableResizable)
 app.mount('#app')

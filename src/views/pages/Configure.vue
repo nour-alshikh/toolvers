@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
-import { onMounted, provide, ref } from 'vue'
+import { onMounted, provide, ref , watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import InputCollapsible from './configureTabs/InputCollapsible.vue'
@@ -10,12 +10,22 @@ import WidgetComponent from './configureTabs/WidgetComponent.vue'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { icons } from '@/icons'
 
+
 const { primary, black, edit, showSettings } = icons
 
 const router = useRouter()
 
 const screen = ref('desktop')
 const tab = ref('edit')
+
+// Dragging control
+const isDesktopDraggable = ref(true)
+
+provide('isDesktopDraggable', isDesktopDraggable)
+
+// const isMobileDraggable = ref(false)
+
+// provide('isMobileDraggable', isMobileDraggable)
 
 onMounted(() => {
   const toolId = router.currentRoute.value.params.id
@@ -412,7 +422,8 @@ const toggleScreen = () => {
               <InputCollapsible />
             </TabsContent>
             <TabsContent value="display">
-              <DesktopInputs v-if="screen === 'desktop'" />
+          
+              <DesktopInputs  v-if="screen === 'desktop'" />
               <MobileInputs v-else />
             </TabsContent>
           </Tabs>
@@ -435,7 +446,8 @@ const toggleScreen = () => {
               >
               </iframe>
             </div>
-            <WidgetComponent :screen="screen" />
+        <WidgetComponent :screen="screen" />
+    
           </div>
         </div>
       </div>
@@ -448,4 +460,5 @@ button[data-state='active'] {
   background-color: #f0dae3;
   color: #be185d;
 }
+
 </style>

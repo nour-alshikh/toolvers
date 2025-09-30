@@ -1,5 +1,56 @@
 <script setup lang="ts">
-import { inject, watch } from 'vue'
+import { inject, watch , ref } from 'vue'
+
+
+
+
+// ***************************** Widget Position - x => to be converted to percentage 
+const x = ref(100)
+// ***************************** Widget Position - y => to be converted to percentage
+const y = ref(100)
+
+// ***************************** Widget Width
+const w = ref(620)
+// ***************************** Widget Hight
+const h = ref(259)
+
+// ***************************** Container Width - widget width
+const containerWidth = ref(770)
+// ***************************** Container Hight - widget hight
+const containerHeight = ref(561)
+
+const desktopDraggable = inject('isDesktopDraggable')
+
+
+const parentRef = ref<HTMLElement>()
+
+// Dragging control
+const isDraggable = ref(true)
+
+// Toggle dragging on/off
+const toggleDragging = () => {
+  isDraggable.value = !isDraggable.value
+}
+
+// Track position changes
+watch([x, y], ([newX, newY]) => {
+//   console.log('Position changed:', { x: newX, y: newY })
+  // You can emit this to parent component or save to store
+})
+
+// Drag event handlers
+const onDragStart = () => {
+//   console.log('Drag started at:', { x: x.value, y: y.value })
+}
+
+const onDragging = (left: number, top: number) => {
+//   console.log('Dragging to:', { x: left, y: top })
+}
+
+const onDragEnd = () => {
+  console.log('Drag ended at:', { x: x.value, y: y.value })
+  // Save position to database or store here
+}
 
 const props = defineProps<{
   screen: 'mobile' | 'desktop'
@@ -16,7 +67,6 @@ watch(
   })
 }
 if (newVal === 'desktop') {
-    
     DesktopDisplayInputs.value.map((input: any) => {
     input.inputs.map((inner: any) => {
     handleInput(inner)
@@ -95,11 +145,8 @@ function handleInput(input: any) {
               } else{
                 toolversTool.style.transform = `scale(${input.value[0]})`
               }
-
-              console.log("1");
-              
-              handlePosition(input , toolversTool)
-    
+ 
+              handlePosition(input , toolversTool)    
   }
     }
     
@@ -239,9 +286,24 @@ function handlePosition(input: any, toolversTool: HTMLElement){
 
 </script>
 
+
 <template>
-    <div class="relative w-full h-full">
-        
+   
+    <div class="relative parent-container" :style="{ width: containerWidth + 'px', height: containerHeight + 'px' }">
+       
+      <vue3-draggable-resizable
+        v-model:x="x"
+        v-model:y="y"
+        v-model:w="w"
+        v-model:h="h"
+        :parent="true"
+        :draggable="desktopDraggable"
+         :class-name-dragging="'my-dragging-class'"
+        :resizable="false"
+        @drag-start="onDragStart"
+        @dragging="onDragging"
+        @drag-end="onDragEnd"
+      >
     <div class="toolvers-tool absolute origin-top-left">
         <div class="coupon-dialog-one toolvers-widget" data-id="dialog" id="coupon-dialog">
             <button class="coupon-close close-banner"  data-id="close" >x</button>
@@ -267,7 +329,9 @@ function handlePosition(input: any, toolversTool: HTMLElement){
             </div>
         </div>
     </div>
+    </vue3-draggable-resizable>
     </div>
+
 </template>
 
 <style scoped>
@@ -503,5 +567,9 @@ function handlePosition(input: any, toolversTool: HTMLElement){
     .coupon-code {
         font-size: 16px;
     }
+}
+
+.my-dragging-class {
+    opacity: 0.5;
 }
 </style>
