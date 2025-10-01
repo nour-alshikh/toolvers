@@ -128,7 +128,7 @@ const DesktopDisplayInputs: any = ref([
     inputs: [
       {
         type: 'position',
-        value: 'top-left',
+      
         top: '0',
         left: '0',
         id: 'position',
@@ -246,7 +246,9 @@ const MobileDisplayInputs: any = ref([
     inputs: [
       {
         type: 'position',
-        value: 'top',
+       
+        top: '0',
+        left: '0',
         id: 'position',
         class: 'col-span-1',
       },
@@ -353,6 +355,13 @@ const MobileDisplayInputs: any = ref([
 ])
 
 provide('MobileDisplayInputs', MobileDisplayInputs)
+
+
+const desktopDragging = ref(false)
+const mobileDragging = ref(false)
+
+provide('desktopDragging', desktopDragging)
+provide('mobileDragging', mobileDragging)
 
 const toggleScreen = () => {
   screen.value = screen.value === 'desktop' ? 'mobile' : 'desktop'
