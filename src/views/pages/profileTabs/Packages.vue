@@ -1,8 +1,6 @@
 
 <script setup lang="ts">
 
-import ArrowLeftIcon from '@/views/icons/ArrowLeftIcon.vue'
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -45,9 +43,9 @@ import { icons } from '@/icons';
                 
                 <AlertDialog>
                         <AlertDialogTrigger as-child>
-                        <Button variant="outline" class="rounded-lg w-full text-primary border-primary font-bold px-6 py-2 hover:bg-primary hover:text-white group">
+                        <Button variant="outline" class="rounded-lg w-full text-primary border-primary font-bold px-6 py-2 hover:bg-primary/10 hover:text-primary group">
                             الاشعارات المتاحة
-                            <ArrowLeftIcon  class="group-hover:stroke-white stroke-primary group-hover:transition" />
+                          <img :src="icons.arrowLeft" alt="">
                         </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
@@ -127,9 +125,9 @@ import { icons } from '@/icons';
                 
                 <AlertDialog>
                         <AlertDialogTrigger as-child>
-                        <Button variant="outline" class="rounded-lg w-full text-primary border-primary font-bold px-6 py-2 hover:bg-primary hover:text-white group">
+                        <Button variant="outline" class="rounded-lg w-full text-primary border-primary font-bold px-6 py-2 hover:bg-primary/10 hover:text-primary group">
                             الاشعارات المتاحة
-                            <ArrowLeftIcon  class="group-hover:stroke-white stroke-primary group-hover:transition" />
+                            <img :src="icons.arrowLeft" alt="">
                         </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
@@ -209,9 +207,9 @@ import { icons } from '@/icons';
                 
                 <AlertDialog>
                         <AlertDialogTrigger as-child>
-                        <Button  class="rounded-lg w-full text-white bg-primary border-primary font-bold px-6 py-2 hover:bg-white hover:text-primary group">
+                        <Button  class="rounded-lg w-full text-white bg-primary border-primary font-bold px-6 py-2 hover:bg-primary/90 hover:text-white group">
                             الاشعارات المتاحة
-                            <ArrowLeftIcon  class="group-hover:stroke-primary stroke-white group-hover:transition" />
+                           <img :src="icons.arrowLeftWhite" alt="">
                         </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
@@ -291,9 +289,9 @@ import { icons } from '@/icons';
                 
                 <AlertDialog>
                         <AlertDialogTrigger as-child>
-                        <Button variant="outline" class="rounded-lg w-full text-primary border-primary font-bold px-6 py-2 hover:bg-primary hover:text-white group">
+                        <Button variant="outline" class="rounded-lg w-full text-primary border-primary font-bold px-6 py-2 hover:bg-primary/10 hover:text-primary group">
                             الاشعارات المتاحة
-                            <ArrowLeftIcon  class="group-hover:stroke-white stroke-primary group-hover:transition" />
+                           <img :src="icons.arrowLeft" alt="">
                         </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>

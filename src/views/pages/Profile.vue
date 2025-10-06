@@ -52,7 +52,7 @@ const tabValue = ref('general')
           </TabsTrigger>
           <TabsTrigger value="packages">
             <span class="text-sm"> الباقات </span>
-              <img :src="icons.packages" alt="">
+              <img :src="tabValue === 'packages' ? icons.packagesWhite : icons.packages" alt="">
           </TabsTrigger>
         </TabsList>
 

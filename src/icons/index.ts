@@ -32,9 +32,12 @@ import salla from '@/assets/images/salla.svg'
 import settings from '@/assets/images/settings.svg'
 import gear from '@/assets/images/gear.svg'
 import packages from '@/assets/images/packages.svg'
+import packagesWhite from '@/assets/images/packages-white.svg'
 import stack from '@/assets/images/stack.svg'
 import check from '@/assets/images/Check.svg'
 import rocket from '@/assets/images/rocket.svg'
+import arrowLeft from '@/assets/images/arrow-left.svg'
+import arrowLeftWhite from '@/assets/images/arrow-left-white.svg'
 
 // نوع موحد للأيقونات اللي فيها active/inactive
 type StateIcons = {
@@ -78,9 +81,12 @@ export const icons: {
   settings: string
   gear: string
   packages: string
+  packagesWhite: string
   stack: string
   check: string
   rocket: string
+  arrowLeft: string
+  arrowLeftWhite: string
   } = {
   primary: {
     mobile: PrimaryMobile,
@@ -123,7 +129,10 @@ export const icons: {
   settings: settings,
   gear: gear,
   packages: packages,
+  packagesWhite: packagesWhite,
   stack: stack,
   check: check,
   rocket: rocket,
+  arrowLeft: arrowLeft,
+  arrowLeftWhite: arrowLeftWhite,
   }
