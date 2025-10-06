@@ -9,9 +9,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-import { UserIcon } from '@heroicons/vue/24/solid'
-import { PhoneIcon } from '@heroicons/vue/24/solid'
-import { ArrowLeftEndOnRectangleIcon } from '@heroicons/vue/24/solid'
 
 import { icons } from '@/icons'
 
@@ -41,23 +38,23 @@ import { icons } from '@/icons'
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
         <DropdownMenuItem class="justify-end px-0">
-          <RouterLink class="flex items-center gap-2 justify-end" to="/profile">
+          <RouterLink class="flex items-center gap-3 justify-end" to="/profile">
              ادارة الحساب
-            <UserIcon class="mr-2 h-4 w-4 shrink-0 text-primary" />
+            <img :src="icons.profile" alt="">
           </RouterLink>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem class="justify-end px-0">
-          <RouterLink class="flex items-center gap-2 justify-end" to="/contact">
+          <RouterLink class="flex items-center gap-3 justify-end" to="/contact">
             اتصل بنا
-            <PhoneIcon class="mr-2 h-4 w-4 shrink-0 text-primary" />
+            <img :src="icons.phone" alt="">
           </RouterLink>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem class="justify-end px-0">
-          <RouterLink class="flex items-center gap-2 justify-end" to="/logout">
+          <RouterLink class="flex items-center gap-3 justify-end" to="/logout">
             تسجيل الخروج
-            <ArrowLeftEndOnRectangleIcon class="mr-2 h-4 w-4 shrink-0 font-bold text-primary" />
+            <img :src="icons.logout" alt="">
           </RouterLink>
         </DropdownMenuItem>
       </DropdownMenuGroup>

@@ -25,6 +25,17 @@ import show from '@/assets/images/show.svg'
 import path from '@/assets/images/Path.svg'
 import filter from '@/assets/images/filter.svg'
 import plus from '@/assets/images/plus.svg'
+import profile from '@/assets/images/profile.svg'
+import logout from '@/assets/images/logout.svg'
+import phone from '@/assets/images/phone.svg'
+import salla from '@/assets/images/salla.svg'
+import settings from '@/assets/images/settings.svg'
+import gear from '@/assets/images/gear.svg'
+import packages from '@/assets/images/packages.svg'
+import stack from '@/assets/images/stack.svg'
+import check from '@/assets/images/Check.svg'
+import rocket from '@/assets/images/rocket.svg'
+
 // نوع موحد للأيقونات اللي فيها active/inactive
 type StateIcons = {
   active: string
@@ -60,7 +71,17 @@ export const icons: {
   path: string
   filter: string
   plus: string
-} = {
+  profile: string
+  logout: string
+  phone: string 
+  salla: string
+  settings: string
+  gear: string
+  packages: string
+  stack: string
+  check: string
+  rocket: string
+  } = {
   primary: {
     mobile: PrimaryMobile,
     desktop: PrimaryDesktop,
@@ -95,4 +116,14 @@ export const icons: {
   path: path,
   filter: filter,
   plus: plus,
-}
+  profile: profile,
+  logout: logout,
+  phone: phone,
+  salla: salla,
+  settings: settings,
+  gear: gear,
+  packages: packages,
+  stack: stack,
+  check: check,
+  rocket: rocket,
+  }
