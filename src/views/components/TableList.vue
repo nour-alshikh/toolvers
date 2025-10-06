@@ -15,14 +15,13 @@ import {
   getSortedRowModel,
   useVueTable,
 } from '@tanstack/vue-table'
-import { ArrowsUpDownIcon } from '@heroicons/vue/24/outline'
+import { ArrowsUpDownIcon } from '@heroicons/vue/24/outline' // Import new icons
 import { h, ref } from 'vue'
 import { cn, valueUpdater } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
   DropdownMenuItem,
@@ -37,10 +36,11 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-import show from '@/assets/images/show.svg'
-import path from '@/assets/images/Path.svg'
-import filter from '@/assets/images/filter.svg'
-import plus from '@/assets/images/plus.svg'
+
+
+import { icons } from '@/icons'
+
+const { editIcon, statisticsIcon, deleteIcon, copyIcon } = icons
 
 export interface Tool {
   id: string
@@ -146,7 +146,7 @@ const columns = [
         Button,
         {
           variant: 'ghost',
-          class: 'w-full hover:bg-transparent hover:text-gray-500',
+          class: 'w-full hover:bg-transparent text-base font-boldhover:text-gray-500',
           onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
         },
         () => ['اسم العنصر', h(ArrowsUpDownIcon, { class: 'ml-2 h-4 w-4' })],
@@ -170,6 +170,71 @@ const columns = [
     header: () => h('div', { class: 'text-right' }, 'حالة النشر '),
     cell: ({ row }) => {
       return h('div', { class: 'text-right font-medium' }, row.getValue('status'))
+    },
+  }),
+  // --- New Actions Column ---
+  columnHelper.display({
+    id: 'actions',
+    header: () => h('div', { class: 'text-center' }, 'الإجراءات'),
+    cell: ({ row }) => {
+      // You can add logic here to handle the button clicks (e.g., open a modal, navigate)
+      const handleAction = (action: string) => {
+        console.log(`${action} action triggered for row ID: ${row.original.id}`)
+        // Implement your actual logic for edit, delete, copy, statistics
+      }
+
+      return h('div', { class: 'flex justify-center space-x-2 space-x-reverse' }, [
+        // Edit Button
+        h(
+          Button,
+          {
+            variant: 'outline',
+            size: 'icon',
+            class: 'p-1 h-8 w-8 bg-primary/20 hover:bg-primary/30 border-none ',
+            title: 'تعديل',
+            onClick: () => handleAction('Edit'),
+          },
+          () => h('img', { src: editIcon, alt: 'Edit', class: 'h-4 w-4' }),
+        ),
+
+        // Copy Button
+        h(
+          Button,
+          {
+            variant: 'outline',
+            size: 'icon',
+            class: 'p-1 h-8 w-8 bg-green-500/20 hover:bg-green-500/30 border-none ',
+            title: 'نسخ',
+            onClick: () => handleAction('Copy'),
+          },
+          () => h('img', { src: copyIcon, alt: 'Copy', class: 'h-4 w-4' }),
+        ),
+
+        // Statistics Button
+        h(
+          Button,
+          {
+            variant: 'outline',
+            size: 'icon',
+            class: 'p-1 h-8 w-8 bg-yellow-500/20 hover:bg-yellow-500/30 border-none ',
+            title: 'الإحصائيات',
+            onClick: () => handleAction('Statistics'),
+          },
+          () => h('img', { src: statisticsIcon, alt: 'Statistics', class: 'h-4 w-4' }),
+        ),
+        // Delete Button
+        h(
+          Button,
+          {
+            variant: 'outline',
+            size: 'icon',
+            class: 'p-1 h-8 w-8 bg-red-500/20 hover:bg-red-500/30 border-none ',
+            title: 'حذف',
+            onClick: () => handleAction('Delete'),
+          },
+          () => h('img', { src: deleteIcon, alt: 'Delete', class: 'h-4 w-4' }),
+        ),
+      ])
     },
   }),
 ]
@@ -243,7 +308,7 @@ const handleStatusChange = (status: string) => {
     <div class="grid grid-cols-2 gap-2 items-center justify-between w-full py-4">
       <div class="col-span-2 lg:col-span-1 flex items-center gap-2 flex-1">
         <p
-          class="text-black text-right w-fit font-almarai text-[16px] font-normal leading-[24px] tracking-[0]"
+          class="text-foreground text-right w-fit font-almarai text-[16px] font-normal leading-[24px] tracking-[0]"
         >
           قائمةالاشعارات المثبتة
         </p>
@@ -257,13 +322,12 @@ const handleStatusChange = (status: string) => {
 
       <div class="flex gap-2 items-center col-span-2 lg:col-span-1 lg:justify-end">
         <div class="justify-end lg:flex grid grid-cols-3 gap-2 flex-1 items-center">
-          <!-- Page Size Dropdown -->
           <DropdownMenu>
             <DropdownMenuTrigger as-child>
               <Button class="bg-transparent border-none col-span-1 shadow-none" variant="outline">
-                <img :src="show" alt="" />
+                <img :src="icons.show" alt="" />
                 عرض ({{ currentPageSize }})
-                <img :src="path" alt="" />
+                <img :src="icons.path" alt="" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -277,13 +341,15 @@ const handleStatusChange = (status: string) => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <!-- filter Dropdown -->
           <DropdownMenu>
             <DropdownMenuTrigger as-child>
-              <Button class="bg-transparent border-none col-span-1 shadow-none relative py-3 px-6 before:absolute before:right-0 before:top-0 before:w-[1px] before:h-full before:bg-[#E3E3E3] before:content-['']" variant="outline">
-                <img :src="filter" alt="" />
+              <Button
+                class="bg-transparent border-none col-span-1 shadow-none relative py-3 px-6 before:absolute before:right-0 before:top-0 before:w-[1px] before:h-full before:bg-[#E3E3E3] before:content-['']"
+                variant="outline"
+              >
+                <img :src="icons.filter" alt="" />
                 حالة الاشعار ({{ currentPageSize }})
-                <img :src="path" alt="" />
+                <img :src="icons.path" alt="" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -301,40 +367,16 @@ const handleStatusChange = (status: string) => {
             to="/tools-list"
             class="px-3 col-span-2 lg:col-span-1 py-3 flex items-center gap-2 bg-primary text-white rounded-lg shadow-sm hover:bg-primary/90 transition-colors duration-200"
           >
-            <img :src="plus" alt="" />
+            <img :src="icons.plus" alt="" />
             اضافة عنصر جديد
           </RouterLink>
-          <!-- Columns Dropdown -->
-          <!--
-        
-        <DropdownMenu>
-          <DropdownMenuTrigger as-child>
-            <Button class="bg-transparent border-none shadow-none" variant="outline">
-             
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuCheckboxItem
-              v-for="column in table.getAllColumns().filter((column) => column.getCanHide())"
-              :key="column.id"
-              class="capitalize"
-              :model-value="column.getIsVisible()"
-              @update:model-value="(value) => {
-                column.toggleVisibility(!!value)
-              }"
-            >
-              {{ column.id }}
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      -->
         </div>
       </div>
     </div>
 
     <div class="rounded-md">
       <Table
-        class="[&_th]:border-0 [&_td]:border-0 [&_td]:text-center [&_th]:text-center [&_th]:bg-zinc-50 [&_th]:py-4 [&_td]:py-4"
+        class="[&_th]:border-0 [&_td]:border-0 [&_td]:text-center [&_th]:text-base [&_th]:font-bold [&_th]:text-center [&_th]:bg-background [&_th]:py-4 [&_td]:py-4"
       >
         <TableHeader>
           <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
@@ -405,7 +447,7 @@ const handleStatusChange = (status: string) => {
             'mx-1 px-3 py-1 rounded-md text-center shadow-none border-none ',
             table.getState().pagination.pageIndex === page - 1
               ? 'bg-primary text-white'
-              : 'bg-transparent text-[#846D76] hover:bg-primary  hover:text-white',
+              : 'bg-transparent text-[#846D76] hover:bg-primaryhover:text-white',
           ]"
         >
           {{ page }}
