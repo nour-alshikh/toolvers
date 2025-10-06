@@ -11,6 +11,7 @@ import Download from '@/assets/images/download.svg'
 import ArrowUpDownload from '@/assets/images/arrow-up-download.svg'
 import freeMove from '@/assets/images/free-move.svg'
 import addCircle from '@/assets/images/add-circle.svg'
+import arrowFilled from '@/assets/images/arrow-filled.svg'
 // نوع موحد للأيقونات اللي فيها active/inactive
 type StateIcons = {
   active: string
@@ -32,6 +33,7 @@ export const icons: {
   arrowUpDownload: string
   freeMove: string
   addCircle: string
+  arrowFilled: string
 } = {
   primary: {
     mobile: PrimaryMobile,
@@ -53,4 +55,5 @@ export const icons: {
   arrowUpDownload: ArrowUpDownload,
   freeMove: freeMove,
   addCircle: addCircle,
+  arrowFilled: arrowFilled,
 }

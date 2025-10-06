@@ -10,12 +10,12 @@ import TableList from '@/views/components/TableList.vue'
         <Stats />
 
         <!-- Charts -->
-        <div class="bg-secondaryBackground rounded-lg border p-4 mt-4">
+        <div class="bg-secondaryBackground rounded-lg py-4 px-16 mt-4">
           <QuickChart />
         </div>
 
         <!-- Installed Tools Table -->
-        <div class="bg-secondaryBackground rounded-lg border p-4 mt-4">
+        <div class="bg-secondaryBackground rounded-lg py-4 px-16 mt-4 ">
             <TableList />
         </div>
     </DefaultLayout>

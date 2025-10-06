@@ -2,9 +2,7 @@
 import { ref } from 'vue';
 
 import favorite from '@/assets/images/favorite.png'
-import ArrowLongLeftIcon from '@heroicons/vue/24/solid/ArrowLongLeftIcon'
- 
-
+import { icons } from '@/icons'
 const favoriteImage = ref(favorite)
 
 const stats = [
@@ -44,9 +42,7 @@ const stats = [
                 </div>
                 <div>
                     <RouterLink :to="{ name: stat.to, replace: true }">
-                    <div class="size-8 bg-primary/30  rounded-full flex items-center justify-center">
-                            <ArrowLongLeftIcon class="size-4 text-primary" />
-                        </div>
+                        <img :src="icons.arrowFilled" alt="">
                     </RouterLink>
                 </div>
             </div>

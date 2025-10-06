@@ -255,8 +255,8 @@ const handleStatusChange = (status: string) => {
         />
       </div>
 
-      <div class="flex gap-2 items-center col-span-2 lg:col-span-1">
-        <div class="justify-end grid grid-cols-2 lg:grid-cols-3 gap-2 flex-1 items-center">
+      <div class="flex gap-2 items-center col-span-2 lg:col-span-1 lg:justify-end">
+        <div class="justify-end lg:flex grid grid-cols-3 gap-2 flex-1 items-center">
           <!-- Page Size Dropdown -->
           <DropdownMenu>
             <DropdownMenuTrigger as-child>
@@ -280,7 +280,7 @@ const handleStatusChange = (status: string) => {
           <!-- filter Dropdown -->
           <DropdownMenu>
             <DropdownMenuTrigger as-child>
-              <Button class="bg-transparent border-none col-span-1 shadow-none" variant="outline">
+              <Button class="bg-transparent border-none col-span-1 shadow-none relative py-3 px-6 before:absolute before:right-0 before:top-0 before:w-[1px] before:h-full before:bg-[#E3E3E3] before:content-['']" variant="outline">
                 <img :src="filter" alt="" />
                 حالة الاشعار ({{ currentPageSize }})
                 <img :src="path" alt="" />
@@ -386,23 +386,38 @@ const handleStatusChange = (status: string) => {
       </Table>
     </div>
 
-    <div class="flex items-center justify-end space-x-2 py-4">
+    <div class="flex items-center justify-start space-x-2 py-4">
       <div class="space-x-2">
         <Button
+          class="bg-transparent border-none shadow-none text-[#846D76] disabled:text-[#C9BAC0]"
           variant="outline"
           size="sm"
           :disabled="!table.getCanPreviousPage()"
           @click="table.previousPage()"
         >
-          Previous
+          السابق
         </Button>
         <Button
+          v-for="page in table.getPageCount()"
+          :key="page"
+          @click="table.setPageIndex(page - 1)"
+          :class="[
+            'mx-1 px-3 py-1 rounded-md text-center shadow-none border-none ',
+            table.getState().pagination.pageIndex === page - 1
+              ? 'bg-primary text-white'
+              : 'bg-transparent text-[#846D76] hover:bg-primary  hover:text-white',
+          ]"
+        >
+          {{ page }}
+        </Button>
+        <Button
+          class="bg-transparent border-none shadow-none text-[#846D76] disabled:text-[#C9BAC0]"
           variant="outline"
           size="sm"
           :disabled="!table.getCanNextPage()"
           @click="table.nextPage()"
         >
-          Next
+          التالي
         </Button>
       </div>
     </div>
