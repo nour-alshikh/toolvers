@@ -9,8 +9,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-
+import { useAuthStore } from '@/store/auth'
 import { icons } from '@/icons'
+
+const { logout } = useAuthStore()
 
 </script>
 
@@ -37,25 +39,25 @@ import { icons } from '@/icons'
     </div>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
-        <DropdownMenuItem class="justify-end px-0">
-          <RouterLink class="flex items-center gap-3 justify-end" to="/profile">
+        <DropdownMenuItem class="justify-end p-0">
+          <RouterLink class="flex items-center py-2 hover:bg-[#F6F4F5] gap-3 justify-end w-full h-full rounded-lg" to="/profile">
              ادارة الحساب
             <img :src="icons.profile" alt="">
           </RouterLink>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem class="justify-end px-0">
-          <RouterLink class="flex items-center gap-3 justify-end" to="/contact">
+        <DropdownMenuItem class="justify-end p-0">
+          <RouterLink class="flex items-center py-2 hover:bg-[#F6F4F5] gap-3 justify-end w-full h-full rounded-lg" to="/contact">
             اتصل بنا
             <img :src="icons.phone" alt="">
           </RouterLink>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem class="justify-end px-0">
-          <RouterLink class="flex items-center gap-3 justify-end" to="/logout">
+        <DropdownMenuItem class="justify-end p-0">
+          <button @click="logout" class="flex items-center py-2 hover:bg-[#F6F4F5] gap-3 justify-end w-full h-full rounded-lg">
             تسجيل الخروج
             <img :src="icons.logout" alt="">
-          </RouterLink>
+          </button>
         </DropdownMenuItem>
       </DropdownMenuGroup>
  

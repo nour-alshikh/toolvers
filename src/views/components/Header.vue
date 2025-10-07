@@ -24,7 +24,7 @@ const toggleTheme = () => {
 </script>
 
 <template>
-  <header class="bg-secondaryBackground py-4 px-2 lg:px-8 sticky top-0 z-50">
+  <header class="bg-secondaryBackground py-4 px-2 lg:px-8 sticky top-0 z-40">
     <div class="rounded-lg border py-3 px-2 lg:px-10 flex justify-between items-center">
       <div>
         <img :src="isDark ? icons.darkLogo : icons.logo" alt="Logo" class="w-24" />

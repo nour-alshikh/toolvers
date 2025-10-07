@@ -1,35 +1,59 @@
 <script setup lang="ts">
-import GuestLayout from '@/layouts/GuestLayout.vue';
-import { useAuthStore } from '@/store/auth';
+import GuestLayout from '@/layouts/GuestLayout.vue'
+import { useAuthStore } from '@/store/auth'
+import { reactive } from 'vue'
+import AuthLoading from '../components/AuthLoading.vue'
 
-const{ login }=useAuthStore()
+const data = useAuthStore()
 
+const loginData = reactive({
+  email: '',
+  password: '',
+})
 </script>
 
 <template>
   <GuestLayout>
-    
-<FormKit type="form" @submit="login"   submit-label="Login">
-    <FormKit 
-    type="email" 
-    label="Email" 
-    name="email"  
-    help="Enter your email address"
-    validation="required|email"
-    outer-class="mb-5"
-    label-class="block mb-1 text-sm font-bold"
-    inner-class="max-w-md mb-1 overflow-hidden border border-gray-400 rounded-lg focus-within:!ring-orange-500 focus-within:!border-orange-500"
-    input-class="w-full h-10 px-3 text-base text-gray-700 placeholder-gray-400 border-none focus:outline-none focus:ring-0 focus:border-transparent"
-    help-class="text-xs text-gray-500" />
-    
-    <FormKit type="password" label="Password" name="password"  help="Enter your password"
-    validation="required|password"
-    outer-class="mb-5"
-    label-class="block mb-1 text-sm font-bold"
-    inner-class="max-w-md mb-1 overflow-hidden border border-gray-400 rounded-lg focus-within:!ring-orange-500 focus-within:!border-orange-500"
-    input-class="w-full h-10 px-3 text-base text-gray-700 placeholder-gray-400 border-none focus:outline-none focus:ring-0 focus:border-transparent"
-    help-class="text-xs text-gray-500" />
-</FormKit>
+    <div class="text-center">
+      <h1 class="text-gray-900 font-bold text-3xl mb-3">تسجيل الدخول</h1>
+    </div>
 
-</GuestLayout>
+    <form @submit.prevent="data.login(loginData)">
+      <div class="mb-8">
+        <input
+          type="text"
+          class="border border-gray-300 rounded w-full p-2 mb-2"
+          v-model="loginData.email"
+          placeholder="البريد الالكتروني"
+        />
+        <div v-if="data.errors && data.errors.email">
+          <span class="text-red-500 text-xs" v-for="error in data.errors.email">{{ error }}</span>
+        </div>
+      </div>
+      <div class="mb-8">
+        <input
+          type="password"
+          class="border border-gray-300 rounded w-full p-2 mb-2"
+          v-model="loginData.password"
+          placeholder="  كلمه المرور"
+        />
+        <div v-if="data.errors && data.errors.password">
+          <span class="text-red-500 text-xs" v-for="error in data.errors.password">{{
+            error
+          }}</span>
+        </div>
+      </div>
+      <!--
+    <RouterLink to="/register">نسيت كلمه المرور؟</RouterLink>
+  -->
+      <button
+        type="submit"
+        class="bg-primary relative hover:bg-primary/90 text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-100"
+        :disabled="data.isLoading"
+      >
+        <span v-if="!data.isLoading"> تسجيل الدخول </span>
+        <AuthLoading v-else />
+      </button>
+    </form>
+  </GuestLayout>
 </template>
