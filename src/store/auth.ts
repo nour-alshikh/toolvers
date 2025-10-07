@@ -102,28 +102,20 @@ export const useAuthStore = defineStore(
       }
     }
     
-    // const getUser = async () => {
+    const getUser = async () => {
 
-    //     await axiosInstance.get('/sanctum/csrf-cookie', {
-    //         baseURL: 'http://localhost:8000'
-    //     });
+      try {
+          const response = await axiosInstance.get('/api/auth/me', {
+              headers: {
+                authorization: `Bearer ${token.value}`,
+              },
+          });
 
-    //     try {
-    //         const response = await axiosInstance.get('/user');
-
-    //         user.value = response.data
-    //         isLoggedIn.value = true
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
-
-    // const logout = async () => {
-    //     await axiosInstance.post('/logout')
-    //     user.value = null;
-    //     isLoggedIn.value = false
-    //     router.push('/login')
-    // }
+          user.value = response.data.data
+        } catch (error) {
+          console.error(error);
+      }
+    }
 
     const setToken = (newToken: string) => {
       token.value = newToken
@@ -145,7 +137,8 @@ export const useAuthStore = defineStore(
       cleanState,
       isLoading,
       errors,
-      changePassword
+      changePassword  ,
+      getUser
     }
   },
   {

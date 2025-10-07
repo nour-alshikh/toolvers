@@ -3,11 +3,11 @@ import Header from '@/views/components/Header.vue'
 import Footer from '@/views/components/Footer.vue'
 import { useAuthStore } from '@/store/auth';
 import Loading from '@/views/components/Loading.vue'
-const data = useAuthStore()
+const authData = useAuthStore()
 </script>
 
 <template>
-  <Loading v-if="data.isLoading" />
+  <Loading v-if="authData.isLoading" />
   <div>
     <Header />
     <div class="py-4 px-2 lg:px-8">

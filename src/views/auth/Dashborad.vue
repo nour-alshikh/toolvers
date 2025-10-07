@@ -3,6 +3,8 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import Stats from '@/views/components/Stats.vue'
 import QuickChart from '@/views/components/QuickChart.vue'
 import TableList from '@/views/components/TableList.vue'
+
+
 </script>
 <template>
     <DefaultLayout>

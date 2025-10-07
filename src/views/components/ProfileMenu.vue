@@ -12,9 +12,9 @@ import {
 import { useAuthStore } from '@/store/auth'
 import { icons } from '@/icons'
 
-const data = useAuthStore()
+const authData = useAuthStore()
 
-const {name , email} = data?.user ?? {}
+const {name , email} = authData?.user ?? {}
 
 </script>
 
@@ -56,7 +56,7 @@ const {name , email} = data?.user ?? {}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem class="justify-end p-0">
-          <button @click="data.logout" class="flex items-center py-2 hover:bg-[#F6F4F5] gap-3 justify-end w-full h-full rounded-lg">
+          <button @click="authData.logout" class="flex items-center py-2 hover:bg-[#F6F4F5] gap-3 justify-end w-full h-full rounded-lg">
             تسجيل الخروج
             <img :src="icons.logout" alt="">
           </button>

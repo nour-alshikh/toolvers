@@ -8,10 +8,17 @@
     HoverCardContent,
     HoverCardTrigger,
     } from "@/components/ui/hover-card"
-    import { ref } from 'vue'
+    import { onMounted, ref } from 'vue'
     import widgetImage from '@/assets/images/widget.png'
+import { useToolsStore } from '@/store/tool'
 
     const widget = ref(widgetImage)
+
+const toolData = useToolsStore()
+    onMounted(() => {
+        toolData.getTools()
+    })
+
 </script>
 
 <template>

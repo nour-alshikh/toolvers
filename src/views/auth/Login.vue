@@ -5,7 +5,7 @@ import { reactive } from 'vue'
 import AuthLoading from '../components/AuthLoading.vue'
 import Input from '@/components/ui/input/Input.vue'
 
-const data = useAuthStore()
+const authData = useAuthStore()
 
 const loginData = reactive({
   email: '',
@@ -19,7 +19,7 @@ const loginData = reactive({
       <h1 class="text-gray-900 font-bold text-3xl mb-3">تسجيل الدخول</h1>
     </div>
 
-    <form @submit.prevent="data.login(loginData)">
+    <form @submit.prevent="authData.login(loginData)">
       <div class="mb-8">
         <Input
           type="text"
@@ -27,8 +27,8 @@ const loginData = reactive({
           placeholder="البريد الالكتروني"
         />
 
-        <div v-if="data.errors && data.errors.email">
-          <span class="text-red-500 text-xs" v-for="error in data.errors.email">{{ error }}</span>
+        <div v-if="authData.errors && authData.errors.email">
+          <span class="text-red-500 text-xs" v-for="error in authData.errors.email">{{ error }}</span>
         </div>
       </div>
       <div class="mb-8">
@@ -37,8 +37,8 @@ const loginData = reactive({
           v-model="loginData.password"
           placeholder="  كلمه المرور"
         />
-        <div v-if="data.errors && data.errors.password">
-          <span class="text-red-500 text-xs" v-for="error in data.errors.password">{{
+        <div v-if="authData.errors && authData.errors.password">
+          <span class="text-red-500 text-xs" v-for="error in authData.errors.password">{{
             error
           }}</span>
         </div>
@@ -49,9 +49,9 @@ const loginData = reactive({
       <button
         type="submit"
         class="bg-primary relative hover:bg-primary/90 text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-100"
-        :disabled="data.isLoading"
+        :disabled="authData.isLoading"
       >
-        <span v-if="!data.isLoading"> تسجيل الدخول </span>
+        <span v-if="!authData.isLoading"> تسجيل الدخول </span>
         <AuthLoading v-else />
       </button>
     </form>

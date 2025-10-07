@@ -18,9 +18,9 @@ import { useAuthStore } from '@/store/auth'
 import { ref } from 'vue'
 import AuthLoading from '@/views/components/AuthLoading.vue'
 
-const data = useAuthStore()
+const authData   = useAuthStore()
 
-const user = data?.user
+const user =  authData?.user
 const salla_store = user?.salla_store
 
 const email = user?.email
@@ -39,7 +39,6 @@ const formData = ref({
   new_password_confirmation: "",
 })
 
-console.log(data.user)
 </script>
 
 <template>
@@ -95,15 +94,15 @@ console.log(data.user)
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
-              <form @submit.prevent="data.changePassword(formData)">
+              <form @submit.prevent="authData.changePassword(formData)">
                 <AlertDialogHeader>
                   <div class="space-y-1 my-2">
                     <Label class="text-right block mb-2 w-full" for="password"
                       >كلمة المرور الحالية</Label
                     >
                     <Input v-model="formData.current_password" id="password" />
-                    <div v-if="data.errors && data.errors.current_password">
-                      <span class="text-red-500 text-xs"  v-for="error in data.errors.current_password">
+                    <div v-if="authData.errors && authData.errors.current_password">
+                      <span class="text-red-500 text-xs"  v-for="error in authData.errors.current_password">
                         {{ error }}
                       </span>
                     </div>
@@ -113,8 +112,8 @@ console.log(data.user)
                       >كلمة المرور الجديدة</Label
                     >
                     <Input v-model="formData.new_password" id="new_password" />
-                    <div v-if="data.errors && data.errors.new_password">
-                      <span class="text-red-500 text-xs"  v-for="error in data.errors.new_password">
+                    <div v-if="authData.errors && authData.errors.new_password">
+                      <span class="text-red-500 text-xs"  v-for="error in authData.errors.new_password">
                         {{ error }}
                       </span>
                     </div>
@@ -124,8 +123,8 @@ console.log(data.user)
                       >تاكيد كلمة المرور</Label
                     >
                     <Input v-model="formData.new_password_confirmation" id="new_password_confirmation" />
-                    <div v-if="data.errors && data.errors.new_password_confirmation">
-                      <span class="text-red-500 text-xs"  v-for="error in data.errors.new_password_confirmation">
+                    <div v-if="authData.errors && authData.errors.new_password_confirmation">
+                      <span class="text-red-500 text-xs"  v-for="error in authData.errors.new_password_confirmation">
                         {{ error }}
                       </span>
                     </div>
@@ -136,9 +135,9 @@ console.log(data.user)
                   <button
                     type="submit"
                     class="bg-primary relative hover:bg-primary/90 text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-100"
-                    :disabled="data.isLoading"
+                    :disabled="authData.isLoading"
                   >
-                    <span v-if="!data.isLoading">تأكيد  </span>
+                    <span v-if="!authData.isLoading">تأكيد  </span>
                     <AuthLoading v-else />
                   </button>
                 </AlertDialogFooter>
