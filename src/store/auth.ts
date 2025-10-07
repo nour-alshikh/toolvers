@@ -6,6 +6,7 @@ import axiosInstance from '@/lib/axios'
 import router from '@/router'
 import type { LoginData } from '@/types'
 import type { AxiosError } from 'axios'
+import { useToast } from 'vue-toast-notification'
 
 export const useAuthStore = defineStore(
   'auth',
@@ -18,8 +19,10 @@ export const useAuthStore = defineStore(
     const isLoading = ref<boolean>(false)
     // login function
     const login = async (formData: LoginData) => {
-      isLoading.value = true
+      const $toast = useToast();
+
       try {
+        isLoading.value = true
         const response = await axiosInstance.post('/api/auth/login', formData)
         if (response.status === 200) {
           user.value = response.data.data.user
@@ -27,17 +30,22 @@ export const useAuthStore = defineStore(
           router.push('/')
           setToken(response.data.data.token)
 
+          $toast.success('تم تسجيل الدخول بنجاح')
           errors.value = null
         }
       } catch (error) {
         const err = error as AxiosError<{ errors?: Record<string, string[]> }>
         errors.value = err.response?.data?.errors ?? null
+        $toast.error('خطأ في تسجيل الدخول')
       } finally {
         isLoading.value = false
       }
     }
     // logout function
     const logout = async () => {
+
+      const $toast = useToast();
+
       try {
         isLoading.value = true
         const response = await axiosInstance.post(
@@ -55,9 +63,40 @@ export const useAuthStore = defineStore(
           router.push('/login')
 
           localStorage.removeItem('token')
+
+          $toast.success('تم تسجيل الخروج بنجاح')
         }
       } catch (error) {
         console.error(error)
+        $toast.error('خطأ في تسجيل الخروج')
+      } finally {
+        isLoading.value = false
+      }
+    }
+
+    const changePassword = async(formData : {current_password : string , new_password : string , new_password_confirmation : string})=>{
+      const $toast = useToast();
+
+      if(formData.new_password !== formData.new_password_confirmation){
+        $toast.error('كلمة المرور غير مطابقة')
+        return
+      }
+      
+      try {
+        isLoading.value = true
+        const response = await axiosInstance.post('/api/auth/change-password', formData, {
+          headers: {
+            authorization: `Bearer ${token.value}`,
+          },
+        },)
+        if (response.status === 200) {
+          $toast.success('تم تغيير كلمة المرور بنجاح')
+          errors.value = null
+        }
+      } catch (error) {
+        const err = error as AxiosError<{ errors?: Record<string, string[]> }>
+        errors.value = err.response?.data?.errors ?? null
+        $toast.error('خطأ في تغيير كلمة المرور')
       } finally {
         isLoading.value = false
       }
@@ -106,6 +145,7 @@ export const useAuthStore = defineStore(
       cleanState,
       isLoading,
       errors,
+      changePassword
     }
   },
   {

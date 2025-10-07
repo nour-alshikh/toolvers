@@ -12,13 +12,15 @@ import {
 import { useAuthStore } from '@/store/auth'
 import { icons } from '@/icons'
 
-const { logout } = useAuthStore()
+const data = useAuthStore()
+
+const {name , email} = data?.user ?? {}
 
 </script>
 
 <template>
-  <DropdownMenu>
-    <DropdownMenuTrigger as-child class="p-2 justify-between ">
+  <DropdownMenu class="min-w-fit">
+    <DropdownMenuTrigger as-child class="p-2 justify-between min-w-fit">
       <Button variant="outline" class="rounded-full h-10 w-20 bg-background text-[#7C5968] border-none">
        
         <img :src="icons.headerArrowDown" alt="">
@@ -27,14 +29,14 @@ const { logout } = useAuthStore()
         </div>
       </Button>
     </DropdownMenuTrigger>
-    <DropdownMenuContent class="w-48 p-2">
-    <div class="bg-[#F6F4F5] rounded-lg p-2 flex flex-col items-center justify-center" >
+    <DropdownMenuContent class="w-48 min-w-fit  p-2">
+    <div class="bg-[#F6F4F5] rounded-lg p-2 flex flex-col items-center justify-center min-w-fit" >
       <div class="mb-2 bg-gray-200 rounded-full inset-2">
           <img src="" class="size-8 rounded-full" alt="">
         </div>
         <div>
-            <p class="text-[#231F21] text-base font-medium text-center">مرحبا بعودتك ,demo</p>
-            <p class="text-[#7B6E73] text-sm font-normal text-center">demo@gmail.com</p>
+            <p class="text-[#231F21] text-base font-medium text-center">مرحبا بعودتك ,{{ name }}</p>
+            <p class="text-[#7B6E73] text-sm font-normal text-center">{{ email }}</p>
         </div>
     </div>
       <DropdownMenuSeparator />
@@ -54,14 +56,12 @@ const { logout } = useAuthStore()
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem class="justify-end p-0">
-          <button @click="logout" class="flex items-center py-2 hover:bg-[#F6F4F5] gap-3 justify-end w-full h-full rounded-lg">
+          <button @click="data.logout" class="flex items-center py-2 hover:bg-[#F6F4F5] gap-3 justify-end w-full h-full rounded-lg">
             تسجيل الخروج
             <img :src="icons.logout" alt="">
           </button>
         </DropdownMenuItem>
       </DropdownMenuGroup>
- 
-
     </DropdownMenuContent>
   </DropdownMenu>
 </template>

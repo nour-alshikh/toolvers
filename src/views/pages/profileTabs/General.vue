@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { Switch } from '@/components/ui/switch'
 import {
   AlertDialog,
@@ -15,9 +14,32 @@ import { Label } from '@/components/ui/label'
 
 import { icons } from '@/icons'
 import Button from '@/components/ui/button/Button.vue'
-const userImage = ref(
-  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-)
+import { useAuthStore } from '@/store/auth'
+import { ref } from 'vue'
+import AuthLoading from '@/views/components/AuthLoading.vue'
+
+const data = useAuthStore()
+
+const user = data?.user
+const salla_store = user?.salla_store
+
+const email = user?.email
+const has_active_salla_subscription = user?.has_active_salla_subscription
+const name = user?.name
+
+const avatar = salla_store?.avatar
+const domain = salla_store?.domain
+const merchant_id = salla_store?.merchant_id
+const salla_id = salla_store?.salla_id
+const merchant_name = salla_store?.merchant_name
+
+const formData = ref({
+  current_password: "",
+  new_password: "",
+  new_password_confirmation: "",
+})
+
+console.log(data.user)
 </script>
 
 <template>
@@ -28,11 +50,11 @@ const userImage = ref(
           <div
             class="size-20 rounded-full overflow-hidden bg-white flex justify-center items-center"
           >
-            <img :src="userImage" class="size-16 rounded-full" alt="" />
+            <img :src="avatar" class="size-16 rounded-full" alt="" />
           </div>
         </div>
         <div>
-          <p class="text-black text-base mb-2 font-bold text-right">Demo</p>
+          <p class="text-black text-base mb-2 font-bold text-right">{{ name }}</p>
           <p
             class="text-[#239600] bg-[#E2FFD9] rounded-full px-4 py-1 text-xs font-normal text-right"
           >
@@ -41,15 +63,17 @@ const userImage = ref(
         </div>
       </div>
 
+      <!-- api? -->
       <div class="flex items-end gap-2 flex-col bg-[#FAFAFA] rounded-lg p-4">
         <p class="text-black text-xs font-bold">رقم الحساب</p>
         <p class="text-[#9C9196] text-xs font-normal">ID-3</p>
       </div>
       <div class="flex items-end gap-2 flex-col bg-[#FAFAFA] rounded-lg p-4">
         <p class="text-black text-xs font-bold">البريد الالكتروني</p>
-        <p class="text-[#9C9196] text-xs font-normal">h7okhzlogqi3jl71@email.partners</p>
+        <p class="text-[#9C9196] text-xs font-normal">{{ email }}</p>
       </div>
       <div class="flex items-end gap-2 flex-col bg-[#FAFAFA] rounded-lg p-4">
+        <!-- api? -->
         <p class="text-black text-xs font-bold">رقم الهاتف</p>
         <p class="text-[#9C9196] text-xs font-normal">+966500000000</p>
       </div>
@@ -71,22 +95,54 @@ const userImage = ref(
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
-              <AlertDialogHeader>
-                <div class="space-y-1">
-                  <Label class="text-right block mb-2 w-full" for="password">كلمة المرور</Label>
-                  <Input id="password" />
-                </div>
-                <div class="space-y-1">
-                  <Label class="text-right block mb-2 w-full" for="password_confirmation"
-                    >تاكيد كلمة المرور</Label
+              <form @submit.prevent="data.changePassword(formData)">
+                <AlertDialogHeader>
+                  <div class="space-y-1 my-2">
+                    <Label class="text-right block mb-2 w-full" for="password"
+                      >كلمة المرور الحالية</Label
+                    >
+                    <Input v-model="formData.current_password" id="password" />
+                    <div v-if="data.errors && data.errors.current_password">
+                      <span class="text-red-500 text-xs"  v-for="error in data.errors.current_password">
+                        {{ error }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="space-y-1 my-2">
+                    <Label class="text-right block mb-2 w-full" for="new_password"
+                      >كلمة المرور الجديدة</Label
+                    >
+                    <Input v-model="formData.new_password" id="new_password" />
+                    <div v-if="data.errors && data.errors.new_password">
+                      <span class="text-red-500 text-xs"  v-for="error in data.errors.new_password">
+                        {{ error }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="space-y-1 my-2">
+                    <Label class="text-right block mb-2 w-full" for="new_password_confirmation"
+                      >تاكيد كلمة المرور</Label
+                    >
+                    <Input v-model="formData.new_password_confirmation" id="new_password_confirmation" />
+                    <div v-if="data.errors && data.errors.new_password_confirmation">
+                      <span class="text-red-500 text-xs"  v-for="error in data.errors.new_password_confirmation">
+                        {{ error }}
+                      </span>
+                    </div>
+                  </div>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>الغاء</AlertDialogCancel>
+                  <button
+                    type="submit"
+                    class="bg-primary relative hover:bg-primary/90 text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-100"
+                    :disabled="data.isLoading"
                   >
-                  <Input id="password_confirmation" />
-                </div>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction>Continue</AlertDialogAction>
-              </AlertDialogFooter>
+                    <span v-if="!data.isLoading">تأكيد  </span>
+                    <AuthLoading v-else />
+                  </button>
+                </AlertDialogFooter>
+              </form>
             </AlertDialogContent>
           </AlertDialog>
         </div>
@@ -97,10 +153,10 @@ const userImage = ref(
       <div class="flex items-center flex-row-reverse justify-between">
         <div>
           <div class="flex items-center flex-row-reverse gap-2">
-            <img :src="icons.salla" alt="">
+            <img :src="icons.salla" alt="" />
             <div>
               <p class="text-black text-xs text-right font-bold">متجر سلة</p>
-              <p class="text-[#9C9196] text-xs text-right font-normal">متجر تجريبي</p>
+              <p class="text-[#9C9196] text-xs text-right font-normal">{{ merchant_name }}</p>
             </div>
           </div>
         </div>
@@ -110,19 +166,28 @@ const userImage = ref(
       </div>
       <div class="flex items-end gap-2 flex-col bg-[#FAFAFA] rounded-lg p-4">
         <p class="text-black text-xs font-bold">رقم المتجر</p>
-        <p class="text-[#9C9196] text-xs font-normal">1755478421</p>
+        <p class="text-[#9C9196] text-xs font-normal">{{ salla_id }}</p>
       </div>
       <div class="flex items-end gap-2 flex-col bg-[#FAFAFA] rounded-lg p-4">
         <p class="text-black text-xs font-bold">رقم التاجر</p>
-        <p class="text-[#9C9196] text-xs font-normal">602664048</p>
+        <p class="text-[#9C9196] text-xs font-normal">{{ merchant_id }}</p>
       </div>
       <div class="flex items-end gap-2 flex-col bg-[#FAFAFA] rounded-lg p-4">
         <p class="text-black text-xs font-bold">النطاق</p>
-        <p class="text-[#9C9196] text-xs font-normal">https://salla.sa/dev-h7okhzlogqi3jl71</p>
+        <p class="text-[#9C9196] text-xs font-normal">{{ domain }}</p>
       </div>
       <div class="flex items-end gap-2 flex-col bg-[#FAFAFA] rounded-lg p-4">
         <p class="text-black text-xs font-bold">الحالة</p>
-        <p class="text-[#239600] bg-[#E2FFD9] rounded-full px-4 py-1 text-xs font-normal">نشط</p>
+        <p
+          class="rounded-full px-4 py-1 text-xs font-normal"
+          :class="
+            has_active_salla_subscription
+              ? 'text-[#239600] bg-[#E2FFD9] '
+              : 'text-[#960500] bg-[#E2FFD9] '
+          "
+        >
+          {{ has_active_salla_subscription ? 'نشط' : 'غير نشط' }}
+        </p>
       </div>
     </div>
   </div>

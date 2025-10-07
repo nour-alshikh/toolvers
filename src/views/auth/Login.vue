@@ -3,6 +3,7 @@ import GuestLayout from '@/layouts/GuestLayout.vue'
 import { useAuthStore } from '@/store/auth'
 import { reactive } from 'vue'
 import AuthLoading from '../components/AuthLoading.vue'
+import Input from '@/components/ui/input/Input.vue'
 
 const data = useAuthStore()
 
@@ -20,20 +21,19 @@ const loginData = reactive({
 
     <form @submit.prevent="data.login(loginData)">
       <div class="mb-8">
-        <input
+        <Input
           type="text"
-          class="border border-gray-300 rounded w-full p-2 mb-2"
           v-model="loginData.email"
           placeholder="البريد الالكتروني"
         />
+
         <div v-if="data.errors && data.errors.email">
           <span class="text-red-500 text-xs" v-for="error in data.errors.email">{{ error }}</span>
         </div>
       </div>
       <div class="mb-8">
-        <input
+        <Input
           type="password"
-          class="border border-gray-300 rounded w-full p-2 mb-2"
           v-model="loginData.password"
           placeholder="  كلمه المرور"
         />
