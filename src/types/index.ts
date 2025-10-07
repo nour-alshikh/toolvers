@@ -134,4 +134,12 @@ export interface User {
     has_active_salla_subscription: boolean
     created_at: string
   }
-  
+  export interface Tool {
+    id: number,
+    name: string,
+    description?: string,
+    type: string,
+    identifier: string,
+    is_available_in_package: boolean,
+    installation_count: number
+    }

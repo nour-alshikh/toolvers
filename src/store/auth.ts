@@ -138,7 +138,8 @@ export const useAuthStore = defineStore(
       isLoading,
       errors,
       changePassword  ,
-      getUser
+      getUser,
+      token
     }
   },
   {
