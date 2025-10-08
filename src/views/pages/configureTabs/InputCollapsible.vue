@@ -54,8 +54,6 @@ const props = defineProps<{
         class="overflow-hidden px-3 py-3 flex flex-wrap gap-x-4"
         :class="input.class"
       >
-
-
         <div
           v-for="inputItem in input.inputs"
           :key="inputItem.name"
@@ -76,6 +74,7 @@ const props = defineProps<{
               v-model="inputItem.default_value"
               @input="handleTextInputChange"
               :data-id="inputItem.id"
+              :data-property="inputItem.property"
             />
           </div>
 
