@@ -1,0 +1,16 @@
+export function useTextInputHandler() {
+    const handleTextInputChange = (event: Event) => {
+      const target = event.target as HTMLInputElement
+      const id = target.dataset.id
+      const value = target.value
+  
+      const toolversTool = document.querySelector('.toolvers-tool')
+      const el = toolversTool?.querySelector(`[data-id="${id}"]`)
+  
+      if (el) {
+        el.textContent = value
+      }
+    }
+  
+    return { handleTextInputChange }
+  }

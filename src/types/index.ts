@@ -143,3 +143,40 @@ export interface User {
     is_available_in_package: boolean,
     installation_count: number
     }
+
+   export interface ToolInputField {
+      name: string;
+      type: string;
+      default_value: string | number ;
+      min?: number;
+      max?: number;
+      step?: number;
+      class: string;
+      id: string;
+      property?: string;
+    }
+    
+   export interface ToolInputGroup {
+      title: string;
+      isOpen: boolean;
+      class: string;
+      inputs: ToolInputField[];
+    }
+    
+    interface ToolData {
+      id: number;
+      name: string;
+      description: string | null;
+      type: string;
+      identifier: string;
+      inputs: ToolInputGroup[];
+      content: string;
+      installation_count: number;
+    }
+    
+    export interface ToolDetails {
+    
+        tool: ToolData;
+        rendered_html: string;
+      
+    }

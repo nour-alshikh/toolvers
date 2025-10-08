@@ -1,11 +1,9 @@
 
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, watch, watchEffect } from 'vue'
 
 import axiosInstance from '@/lib/axios'
-import router from '@/router'
 import type { AxiosError } from 'axios'
-import { useToast } from 'vue-toast-notification'
 import { useAuthStore } from './auth'
 import type { Tool } from '@/types'
 
@@ -24,6 +22,8 @@ export const useToolsStore = defineStore(
       })
       return Array.from(types)
     })
+
+    const toolDetails = ref<any>({})
 
     const getTools = async (): Promise<Tool[]>  => {
 
@@ -55,12 +55,57 @@ export const useToolsStore = defineStore(
       }
     }
 
+    const getToolDetails = async (toolId : number) =>{
+      const authStore = useAuthStore()
+      const token = authStore.token
+      
+      try {
+        isLoading.value = true
+
+        const response = await axiosInstance.get(`/api/clients/tools/${toolId}`,{
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        })
+      
+        if(response.status === 200){
+          toolDetails.value = response.data.data
+          
+          return toolDetails.value
+        }
+
+        return []
+      } catch (error) {
+        const err = error as AxiosError<{ errors?: Record<string, string[]> }>
+        errors.value = err.response?.data?.errors ?? null
+        return []
+      } finally {
+        isLoading.value = false
+      }
+
+
+
+
+
+
+    }
+   
+    // watch(
+    //   () => toolDetails.value?.tool?.inputs,
+    //   (newInputs, oldInputs) => {
+    //     console.log('A default_value changed', newInputs)
+    //     // perform logic here: re-render preview, send update, etc.
+    //   },
+    //   { deep: true }
+    // )
+
     return {
       tools,
+      toolDetails,
       toolsTypes,
       isLoading,
       errors,
-      getTools
+      getTools,getToolDetails
     }
   },
   {
