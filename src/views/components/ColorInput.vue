@@ -48,7 +48,7 @@ const changeColor = (newColor: ColorObject) => {
 </script>
 
 <template>
-  <div class="grid gap-2 mb-8">
+  <div class="grid gap-2 mb-2">
     <div class="flex items-center flex-row-reverse gap-2">
       <Popover class="w-fit">
         <PopoverTrigger as-child>

@@ -89,15 +89,6 @@ export const useToolsStore = defineStore(
 
 
     }
-   
-    // watch(
-    //   () => toolDetails.value?.tool?.inputs,
-    //   (newInputs, oldInputs) => {
-    //     console.log('A default_value changed', newInputs)
-    //     // perform logic here: re-render preview, send update, etc.
-    //   },
-    //   { deep: true }
-    // )
 
     return {
       tools,

@@ -23,10 +23,6 @@ function handleInput(input: any) {
 }
 
   if (el instanceof HTMLElement ) {
-    if (input.type === 'text') {
-      el.textContent = input.value
-    }
-
     if (input.type === 'range' && input.property === 'fontSize') {
         if (Array.isArray(input.value)) {
 
