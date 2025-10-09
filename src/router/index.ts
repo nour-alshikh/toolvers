@@ -1,8 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import Login from '@/views/auth/Login.vue'
-import Register from '@/views/auth/Register.vue'
 import Dashborad from '@/views/auth/Dashborad.vue'
+import ForgetPassword from '@/views/auth/ForgetPassword.vue'
 import { useAuthStore } from '@/store/auth'
 
 
@@ -14,13 +13,13 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      redirect: '/dashboard'
     },
 
     {
-      path: '/register',
-      name: 'register',
-      component: Register,
+      path: '/forget-password',
+      name: 'forget-password',
+      component: ForgetPassword,
       meta: { requiresGuest: true }
     },
     {
@@ -34,54 +33,54 @@ const router = createRouter({
       path: '/dashboard',
       name: 'dashboard',
       component: Dashborad,
-      meta: { requiresAuth: false }
+      meta: { requiresAuth: true }
     },
 
     {
       path: '/tools-list',
       name: 'tools-list',
       component: () => import('@/views/pages/ToolsList.vue'),
-      meta: { requiresAuth: false }
+      meta: { requiresAuth: true }
     },
 
     {
       path: '/installed-tools',
       name: 'installed-tools',
       component: () => import('@/views/pages/InstalledTools.vue'),
-      meta: { requiresAuth: false }
+      meta: { requiresAuth: true }
     },
 
     {
       path: '/ratings',
       name: 'ratings',
       component: () => import('@/views/pages/Ratings.vue'),
-      meta: { requiresAuth: false }
+      meta: { requiresAuth: true }
     },
 
     {
       path: '/data-collector',
       name: 'data-collector',
       component: () => import('@/views/pages/DataCollector.vue'),
-      meta: { requiresAuth: false }
+      meta: { requiresAuth: true }
     },
     {
       path: '/profile',
       name: 'profile',
       component: () => import('@/views/pages/Profile.vue'),
-      meta: { requiresAuth: false }
+      meta: { requiresAuth: true }
     },
     {
       path: '/configure/:id',
       name: 'configure',
       component: () => import('@/views/pages/Configure.vue'),
-      meta: { requiresAuth: false }
+      meta: { requiresAuth: true }
     },
 
     {
       path: '/contact',
       name: 'contact',
       component: () => import('@/views/pages/Contact.vue'),
-      meta: { requiresAuth: false }
+      meta: { requiresAuth: true }
     },
 
     {

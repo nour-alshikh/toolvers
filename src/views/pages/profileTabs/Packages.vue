@@ -1,8 +1,5 @@
 
 <script setup lang="ts">
-import RocketIcon from '@/views/icons/RocketIcon.vue'
-import StackIcon from '@/views/icons/StackIcon.vue'
-import ArrowLeftIcon from '@/views/icons/ArrowLeftIcon.vue'
 
 import {
   AlertDialog,
@@ -15,11 +12,9 @@ import {
 } from "@/components/ui/alert-dialog"
 
 import Button from '@/components/ui/button/Button.vue';
-import { ref } from 'vue'
 
-import check from '@/assets/images/Check.svg'
+import { icons } from '@/icons';
 
-    const checkIcon = ref(check)
 </script>
 
 <template>
@@ -28,7 +23,7 @@ import check from '@/assets/images/Check.svg'
         <div class="rounded-lg border">
             <div class="flex flex-row items-center justify-between  px-4 pt-4">
                 <div class="size-14 rounded-lg bg-[#F8F7F7] flex justify-center items-center">
-                 <RocketIcon />
+                <img :src="icons.rocket" alt="">
                 </div>
                 <div class="text-[#4E4146] text-xl pl-11 font-bold relative before:content-['/اسبوع'] before:absolute before:left-0 before:top-[65%]  before:text-xs before:text-[#A07F8D]">
                     ريال
@@ -48,9 +43,9 @@ import check from '@/assets/images/Check.svg'
                 
                 <AlertDialog>
                         <AlertDialogTrigger as-child>
-                        <Button variant="outline" class="rounded-lg w-full text-primary border-primary font-bold px-6 py-2 hover:bg-primary hover:text-white group">
+                        <Button variant="outline" class="rounded-lg w-full text-primary border-primary font-bold px-6 py-2 hover:bg-primary/10 hover:text-primary group">
                             الاشعارات المتاحة
-                            <ArrowLeftIcon  class="group-hover:stroke-white stroke-primary group-hover:transition" />
+                          <img :src="icons.arrowLeft" alt="">
                         </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
@@ -68,7 +63,7 @@ import check from '@/assets/images/Check.svg'
             <div class="flex items-center gap-2 mb-2 px-4 py-1">
 
                 <div class="flex  bg-[#E7F5E8] items-center justify-center size-8 rounded-full">
-                    <img :src="checkIcon" alt="">
+                    <img :src="icons.check" alt="">
                 </div>
                 <p class="text-[#3A2F34] text-right w-fit  text-[14px] not-italic font-normal leading-[21px]"
                 >
@@ -78,7 +73,7 @@ import check from '@/assets/images/Check.svg'
             <div class="flex items-center gap-2 mb-2 px-4 py-1">
 
                 <div class="flex  bg-[#E7F5E8] items-center justify-center size-8 rounded-full">
-                    <img :src="checkIcon" alt="">
+                    <img :src="icons.check" alt="">
                 </div>
                 <p class="text-[#3A2F34] text-right w-fit  text-[14px] not-italic font-normal leading-[21px]"
                 >
@@ -88,7 +83,7 @@ import check from '@/assets/images/Check.svg'
             <div class="flex items-center gap-2 mb-2 px-4 py-1">
 
                 <div class="flex  bg-[#E7F5E8] items-center justify-center size-8 rounded-full">
-                    <img :src="checkIcon" alt="">
+                    <img :src="icons.check" alt="">
                 </div>
                 <p class="text-[#3A2F34] text-right w-fit  text-[14px] not-italic font-normal leading-[21px]"
                 >
@@ -98,7 +93,7 @@ import check from '@/assets/images/Check.svg'
             <div class="flex items-center gap-2 mb-2 px-4 py-1">
 
                 <div class="flex  bg-[#E7F5E8] items-center justify-center size-8 rounded-full">
-                    <img :src="checkIcon" alt="">
+                    <img :src="icons.check" alt="">
                 </div>
                 <p class="text-[#3A2F34] text-right w-fit  text-[14px] not-italic font-normal leading-[21px]"
                 >
@@ -110,7 +105,7 @@ import check from '@/assets/images/Check.svg'
         <div class="rounded-lg border">
             <div class="flex flex-row items-center justify-between  px-4 pt-4">
                 <div class="size-14 rounded-lg bg-[#F8F7F7] flex justify-center items-center">
-                 <RocketIcon />
+                <img :src="icons.rocket" alt="">
                 </div>
                 <div class="text-[#4E4146] text-xl pl-11 font-bold relative before:content-['/اسبوع'] before:absolute before:left-0 before:top-[65%]  before:text-xs before:text-[#A07F8D]">
                     ريال
@@ -130,9 +125,9 @@ import check from '@/assets/images/Check.svg'
                 
                 <AlertDialog>
                         <AlertDialogTrigger as-child>
-                        <Button variant="outline" class="rounded-lg w-full text-primary border-primary font-bold px-6 py-2 hover:bg-primary hover:text-white group">
+                        <Button variant="outline" class="rounded-lg w-full text-primary border-primary font-bold px-6 py-2 hover:bg-primary/10 hover:text-primary group">
                             الاشعارات المتاحة
-                            <ArrowLeftIcon  class="group-hover:stroke-white stroke-primary group-hover:transition" />
+                            <img :src="icons.arrowLeft" alt="">
                         </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
@@ -150,7 +145,7 @@ import check from '@/assets/images/Check.svg'
             <div class="flex items-center gap-2 mb-2 px-4 py-1">
 
                 <div class="flex  bg-[#E7F5E8] items-center justify-center size-8 rounded-full">
-                    <img :src="checkIcon" alt="">
+                    <img :src="icons.check" alt="">
                 </div>
                 <p class="text-[#3A2F34] text-right w-fit  text-[14px] not-italic font-normal leading-[21px]"
                 >
@@ -160,7 +155,7 @@ import check from '@/assets/images/Check.svg'
             <div class="flex items-center gap-2 mb-2 px-4 py-1">
 
                 <div class="flex  bg-[#E7F5E8] items-center justify-center size-8 rounded-full">
-                    <img :src="checkIcon" alt="">
+                    <img :src="icons.check" alt="">
                 </div>
                 <p class="text-[#3A2F34] text-right w-fit  text-[14px] not-italic font-normal leading-[21px]"
                 >
@@ -170,7 +165,7 @@ import check from '@/assets/images/Check.svg'
             <div class="flex items-center gap-2 mb-2 px-4 py-1">
 
                 <div class="flex  bg-[#E7F5E8] items-center justify-center size-8 rounded-full">
-                    <img :src="checkIcon" alt="">
+                    <img :src="icons.check" alt="">
                 </div>
                 <p class="text-[#3A2F34] text-right w-fit  text-[14px] not-italic font-normal leading-[21px]"
                 >
@@ -180,7 +175,7 @@ import check from '@/assets/images/Check.svg'
             <div class="flex items-center gap-2 mb-2 px-4 py-1">
 
                 <div class="flex  bg-[#E7F5E8] items-center justify-center size-8 rounded-full">
-                    <img :src="checkIcon" alt="">
+                    <img :src="icons.check" alt="">
                 </div>
                 <p class="text-[#3A2F34] text-right w-fit  text-[14px] not-italic font-normal leading-[21px]"
                 >
@@ -192,7 +187,7 @@ import check from '@/assets/images/Check.svg'
         <div class="rounded-lg border">
             <div class="flex flex-row items-center justify-between  px-4 pt-4">
                 <div class="size-14 rounded-lg bg-pink-50 flex justify-center items-center">
-                 <StackIcon />
+               <img :src="icons.stack" alt="">
                 </div>
                 <div class="text-[#4E4146] text-xl pl-11 font-bold relative before:content-['/اسبوع'] before:absolute before:left-0 before:top-[65%]  before:text-xs before:text-[#A07F8D]">
                     ريال
@@ -212,9 +207,9 @@ import check from '@/assets/images/Check.svg'
                 
                 <AlertDialog>
                         <AlertDialogTrigger as-child>
-                        <Button  class="rounded-lg w-full text-white bg-primary border-primary font-bold px-6 py-2 hover:bg-white hover:text-primary group">
+                        <Button  class="rounded-lg w-full text-white bg-primary border-primary font-bold px-6 py-2 hover:bg-primary/90 hover:text-white group">
                             الاشعارات المتاحة
-                            <ArrowLeftIcon  class="group-hover:stroke-primary stroke-white group-hover:transition" />
+                           <img :src="icons.arrowLeftWhite" alt="">
                         </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
@@ -232,7 +227,7 @@ import check from '@/assets/images/Check.svg'
             <div class="flex items-center gap-2 mb-2 px-4 py-1">
 
                 <div class="flex  bg-[#E7F5E8] items-center justify-center size-8 rounded-full">
-                    <img :src="checkIcon" alt="">
+                    <img :src="icons.check" alt="">
                 </div>
                 <p class="text-[#3A2F34] text-right w-fit  text-[14px] not-italic font-normal leading-[21px]"
                 >
@@ -242,7 +237,7 @@ import check from '@/assets/images/Check.svg'
             <div class="flex items-center gap-2 mb-2 px-4 py-1">
 
                 <div class="flex  bg-[#E7F5E8] items-center justify-center size-8 rounded-full">
-                    <img :src="checkIcon" alt="">
+                    <img :src="icons.check" alt="">
                 </div>
                 <p class="text-[#3A2F34] text-right w-fit  text-[14px] not-italic font-normal leading-[21px]"
                 >
@@ -252,7 +247,7 @@ import check from '@/assets/images/Check.svg'
             <div class="flex items-center gap-2 mb-2 px-4 py-1">
 
                 <div class="flex  bg-[#E7F5E8] items-center justify-center size-8 rounded-full">
-                    <img :src="checkIcon" alt="">
+                    <img :src="icons.check" alt="">
                 </div>
                 <p class="text-[#3A2F34] text-right w-fit  text-[14px] not-italic font-normal leading-[21px]"
                 >
@@ -262,7 +257,7 @@ import check from '@/assets/images/Check.svg'
             <div class="flex items-center gap-2 mb-2 px-4 py-1">
 
                 <div class="flex  bg-[#E7F5E8] items-center justify-center size-8 rounded-full">
-                    <img :src="checkIcon" alt="">
+                    <img :src="icons.check" alt="">
                 </div>
                 <p class="text-[#3A2F34] text-right w-fit  text-[14px] not-italic font-normal leading-[21px]"
                 >
@@ -274,7 +269,7 @@ import check from '@/assets/images/Check.svg'
         <div class="rounded-lg border">
             <div class="flex flex-row items-center justify-between  px-4 pt-4">
                 <div class="size-14 rounded-lg bg-[#F8F7F7] flex justify-center items-center">
-                 <RocketIcon />
+                <img :src="icons.rocket" alt="">
                 </div>
                 <div class="text-[#4E4146] text-xl pl-11 font-bold relative before:content-['/اسبوع'] before:absolute before:left-0 before:top-[65%]  before:text-xs before:text-[#A07F8D]">
                     ريال
@@ -294,9 +289,9 @@ import check from '@/assets/images/Check.svg'
                 
                 <AlertDialog>
                         <AlertDialogTrigger as-child>
-                        <Button variant="outline" class="rounded-lg w-full text-primary border-primary font-bold px-6 py-2 hover:bg-primary hover:text-white group">
+                        <Button variant="outline" class="rounded-lg w-full text-primary border-primary font-bold px-6 py-2 hover:bg-primary/10 hover:text-primary group">
                             الاشعارات المتاحة
-                            <ArrowLeftIcon  class="group-hover:stroke-white stroke-primary group-hover:transition" />
+                           <img :src="icons.arrowLeft" alt="">
                         </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
@@ -314,7 +309,7 @@ import check from '@/assets/images/Check.svg'
             <div class="flex items-center gap-2 mb-2 px-4 py-1">
 
                 <div class="flex  bg-[#E7F5E8] items-center justify-center size-8 rounded-full">
-                    <img :src="checkIcon" alt="">
+                    <img :src="icons.check" alt="">
                 </div>
                 <p class="text-[#3A2F34] text-right w-fit  text-[14px] not-italic font-normal leading-[21px]"
                 >
@@ -324,7 +319,7 @@ import check from '@/assets/images/Check.svg'
             <div class="flex items-center gap-2 mb-2 px-4 py-1">
 
                 <div class="flex  bg-[#E7F5E8] items-center justify-center size-8 rounded-full">
-                    <img :src="checkIcon" alt="">
+                    <img :src="icons.check" alt="">
                 </div>
                 <p class="text-[#3A2F34] text-right w-fit  text-[14px] not-italic font-normal leading-[21px]"
                 >
@@ -334,7 +329,7 @@ import check from '@/assets/images/Check.svg'
             <div class="flex items-center gap-2 mb-2 px-4 py-1">
 
                 <div class="flex  bg-[#E7F5E8] items-center justify-center size-8 rounded-full">
-                    <img :src="checkIcon" alt="">
+                    <img :src="icons.check" alt="">
                 </div>
                 <p class="text-[#3A2F34] text-right w-fit  text-[14px] not-italic font-normal leading-[21px]"
                 >
@@ -344,7 +339,7 @@ import check from '@/assets/images/Check.svg'
             <div class="flex items-center gap-2 mb-2 px-4 py-1">
 
                 <div class="flex  bg-[#E7F5E8] items-center justify-center size-8 rounded-full">
-                    <img :src="checkIcon" alt="">
+                    <img :src="icons.check" alt="">
                 </div>
                 <p class="text-[#3A2F34] text-right w-fit  text-[14px] not-italic font-normal leading-[21px]"
                 >

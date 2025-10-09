@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
-import { onMounted, provide, ref } from 'vue'
+import { onMounted, provide, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import InputCollapsible from './configureTabs/InputCollapsible.vue'
@@ -9,6 +9,8 @@ import MobileInputs from './configureTabs/MobileInputs.vue'
 import WidgetComponent from './configureTabs/WidgetComponent.vue'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { icons } from '@/icons'
+import { useToolsStore } from '@/store/tool'
+import type { ToolDetails } from '@/types'
 
 const { primary, black, edit, showSettings } = icons
 
@@ -17,351 +19,12 @@ const router = useRouter()
 const screen = ref('desktop')
 const tab = ref('edit')
 
-onMounted(() => {
+const toolDetails = ref<ToolDetails | null>()
+
+onMounted(async () => {
   const toolId = router.currentRoute.value.params.id
-  // get tool data from api
+  toolDetails.value = await useToolsStore().getToolDetails(Number(toolId))
 })
-
-const inputs: any = ref([
-  {
-    title: 'العنوان',
-    isOpen: true,
-    class: 'grid grid-cols-2 gap-x-4',
-    inputs: [
-      {
-        label: 'نسبة الخصم',
-        type: 'text',
-        value: '!خصم 35%',
-        id: 'title',
-        class: 'col-span-2',
-      },
-      {
-        label: 'لون النص',
-        type: 'color',
-        value: {
-          hex: '#f00',
-        },
-        property: 'color',
-        id: 'title',
-        class: 'col-span-1',
-      },
-      {
-        label: 'لون الخلفية',
-        type: 'color',
-        value: {
-          hex: '#f00',
-        },
-        property: 'backgroundColor',
-        id: 'title',
-        class: 'col-span-1',
-      },
-      {
-        label: 'حجم النص',
-        type: 'range',
-        value: [16],
-        min: 12,
-        max: 24,
-        step: 1,
-        property: 'fontSize',
-        id: 'title',
-        class: 'col-span-2',
-      },
-    ],
-  },
-  {
-    title: 'الوصف',
-    isOpen: true,
-    class: 'grid grid-cols-2 gap-x-4',
-    inputs: [
-      {
-        label: 'العنوان الفرعي',
-        type: 'text',
-        value: 'قسيمة تخفيضات سارية لمدة ٤٨ ساعة !',
-        id: 'subtitle',
-        class: 'col-span-2',
-      },
-      {
-        label: 'لون النص',
-        type: 'color',
-        value: {
-          hex: '#f00',
-        },
-        property: 'color',
-        id: 'subtitle',
-        class: 'col-span-1',
-      },
-      {
-        label: 'حجم النص',
-        type: 'range',
-        value: [16],
-        min: 12,
-        max: 24,
-        step: 1,
-        property: 'fontSize',
-        id: 'subtitle',
-        class: 'col-span-1',
-      },
-    ],
-  },
-  {
-    title: 'الرموز التعبيرية',
-    isOpen: true,
-    class: 'grid grid-cols-1 gap-x-4',
-    inputs: [
-      {
-        label: 'رمز التعبير',
-        type: 'image',
-        id: 'icon',
-        class: 'col-span-1',
-      },
-    ],
-  },
-])
-
-provide('inputs', inputs)
-
-const DesktopDisplayInputs: any = ref([
-  {
-    title: 'مكان العرض',
-    isOpen: true,
-    class: 'grid grid-cols-1 gap-x-4',
-    inputs: [
-      {
-        type: 'position',
-      
-        top: '0',
-        left: '0',
-        id: 'position',
-        class: 'col-span-1',
-      },
-      {
-        label: 'حجم الاشعار',
-        type: 'range',
-        value: [0.6],
-        min: 0.4,
-        max: 0.8,
-        step: 0.1,
-        property: 'scale',
-        id: 'dialog',
-        class: 'col-span-2',
-      },
-    ],
-  },
-  {
-    title: 'اسم الاشعار',
-    isOpen: true,
-    class: 'grid grid-cols-1 gap-x-4',
-    inputs: [
-      {
-        type: 'text',
-        value: 'اشعار',
-        id: 'title',
-        class: 'col-span-1',
-      },
-    ],
-  },
-  {
-    title: 'لون الخلفية ',
-    isOpen: true,
-    class: 'grid grid-cols-1 gap-x-4',
-    inputs: [
-      {
-        type: 'color',
-        value: {
-          hex: '#f00',
-        },
-        id: 'dialog',
-        property: 'backgroundColor',
-        class: 'col-span-1',
-      },
-    ],
-  },
-  {
-    title: 'مدة العرض',
-    isOpen: true,
-    class: 'grid grid-cols-3 gap-x-4',
-    inputs: [
-      {
-        label: 'مدة العرض ',
-        type: 'number',
-        value: '16',
-        property: 'fontSize',
-        id: 'title',
-        class: 'col-span-1',
-      },
-      {
-        label: 'مدة التأخير',
-        type: 'number',
-        value: '16',
-        property: 'fontSize',
-        id: 'title',
-        class: 'col-span-1',
-      },
-      {
-        label: 'عدد مرات الظهور',
-        type: 'number',
-        value: '16',
-        property: 'fontSize',
-        id: 'title',
-        class: 'col-span-1',
-      },
-    ],
-  },
-  {
-    title: 'صفحات العرض',
-    isOpen: true,
-    class: 'grid grid-cols-1 gap-x-4',
-    type: 'pages',
-    inputs: [
-      {
-        type: 'display-pages',
-        value: 'all',
-        id: 'pages',
-        class: 'col-span-1',
-      },
-    ],
-  },
-  {
-    title: 'اعدادات العرض',
-    isOpen: true,
-    class: 'grid grid-cols-1 gap-x-4',
-    type: 'display-settings',
-    inputs: [
-      {
-        type: 'display-settings',
-        id: 'display-settings',
-        class: 'col-span-1',
-      },
-    ],
-  },
-])
-
-provide('DesktopDisplayInputs', DesktopDisplayInputs)
-
-const MobileDisplayInputs: any = ref([
-  {
-    title: 'مكان العرض',
-    isOpen: true,
-    class: 'grid grid-cols-1 gap-x-4',
-    inputs: [
-      {
-        type: 'position',
-       
-        top: '0',
-        left: '0',
-        id: 'position',
-        class: 'col-span-1',
-      },
-      {
-        label: 'حجم الاشعار',
-        type: 'range',
-        value: [0.6],
-        min: 0.3,
-        max: 0.7,
-        step: 0.1,
-        property: 'scale',
-        id: 'dialog',
-        class: 'col-span-2',
-      },
-    ],
-  },
-  {
-    title: 'اسم الاشعار',
-    isOpen: true,
-    class: 'grid grid-cols-1 gap-x-4',
-    inputs: [
-      {
-        type: 'text',
-        value: 'اشعار',
-        id: 'title',
-        class: 'col-span-1',
-      },
-    ],
-  },
-  {
-    title: 'لون الخلفية ',
-    isOpen: true,
-    class: 'grid grid-cols-1 gap-x-4',
-    inputs: [
-      {
-        type: 'color',
-        value: {
-          hex: '#f00',
-        },
-        id: 'dialog',
-        property: 'backgroundColor',
-        class: 'col-span-1',
-      },
-    ],
-  },
-  {
-    title: 'مدة العرض',
-    isOpen: true,
-    class: 'grid grid-cols-3 gap-x-4',
-    inputs: [
-      {
-        label: 'مدة العرض ',
-        type: 'number',
-        value: '16',
-        property: 'fontSize',
-        id: 'title',
-        class: 'col-span-1',
-      },
-      {
-        label: 'مدة التأخير',
-        type: 'number',
-        value: '16',
-        property: 'fontSize',
-        id: 'title',
-        class: 'col-span-1',
-      },
-      {
-        label: 'عدد مرات الظهور',
-        type: 'number',
-        value: '16',
-        property: 'fontSize',
-        id: 'title',
-        class: 'col-span-1',
-      },
-    ],
-  },
-  {
-    title: 'صفحات العرض',
-    isOpen: true,
-    class: 'grid grid-cols-1 gap-x-4',
-    type: 'pages',
-    inputs: [
-      {
-        type: 'display-pages',
-        value: 'all',
-        id: 'pages',
-        class: 'col-span-1',
-      },
-    ],
-  },
-  {
-    title: 'اعدادات العرض',
-    isOpen: true,
-    class: 'grid grid-cols-1 gap-x-4',
-    type: 'display-settings',
-    inputs: [
-      {
-        type: 'display-settings',
-        id: 'display-settings',
-        class: 'col-span-1',
-      },
-    ],
-  },
-])
-
-provide('MobileDisplayInputs', MobileDisplayInputs)
-
-
-const desktopDragging = ref(false)
-const mobileDragging = ref(false)
-
-provide('desktopDragging', desktopDragging)
-provide('mobileDragging', mobileDragging)
 
 const toggleScreen = () => {
   screen.value = screen.value === 'desktop' ? 'mobile' : 'desktop'
@@ -418,7 +81,7 @@ const toggleScreen = () => {
             </div>
 
             <TabsContent value="edit">
-              <InputCollapsible />
+              <InputCollapsible :inputs="toolDetails?.tool.inputs ?? []" />
             </TabsContent>
             <TabsContent value="display">
               <DesktopInputs v-if="screen === 'desktop'" />
@@ -428,7 +91,7 @@ const toggleScreen = () => {
         </div>
         <div class="relative flex-1">
           <div
-            class=" flex-1 rounded-lg border border-dashed border-[#E4D0D8] h-[calc(100vh-140px)] overflow-y-hidden transition-all duration-300 ease-in-out"
+            class="flex-1 rounded-lg border border-dashed border-[#E4D0D8] h-[calc(100vh-140px)] overflow-y-hidden transition-all duration-300 ease-in-out"
             :class="
               screen === 'desktop'
                 ? 'w-[calc(100vw-550px)] fixed top-[130px] left-3 '
@@ -444,7 +107,7 @@ const toggleScreen = () => {
               >
               </iframe>
             </div>
-            <WidgetComponent :screen="screen" />
+            <WidgetComponent :widget="toolDetails?.rendered_html ?? ''" :screen="screen" />
           </div>
         </div>
       </div>

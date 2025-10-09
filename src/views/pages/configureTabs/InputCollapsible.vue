@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { inject } from 'vue'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -8,36 +7,29 @@ import ColorInput from '@/views/components/ColorInput.vue'
 import ImageTab from './imageTabs/ImageTab.vue'
 import IconTab from './imageTabs/IconTab.vue'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Slider } from "@/components/ui/slider"
+import { Slider } from '@/components/ui/slider'
 
+import type { ToolInputGroup } from '@/types'
 
-interface InputItem {
-  label: string
-  type: string
-  value: string
-  id: string
-  property?: string
-  isOpen?: boolean
-  title?: string
-  inputs?: InputItem[]
-  class?: string
-}
+import { useTextInputHandler } from '@/composables/useTextInputHandler'
+import { useColorHandler } from '@/composables/useColorInputHandler'
+import { useRangeNumberInputHandler } from '@/composables/useRangeNumberInputHandler'
 
-const inputs: InputItem[] | undefined = inject('inputs')
+const { handleTextInputChange } = useTextInputHandler()
+const { handleColorChange } = useColorHandler()
+const { handleRangeNumberInput } = useRangeNumberInputHandler()
 
-
-// Handle color change updates
-const handleColorChange = (newColor: any, inputItem: any) => {
-  // Update the input value with the new color
-  inputItem.value = newColor
-}
+const props = defineProps<{
+  inputs: ToolInputGroup[]
+}>()
 </script>
 
 <template>
+
+
   <Collapsible
     v-for="input in inputs"
     :key="input.title"
-    :input="input"
     class="bg-secondaryBackground mb-2 rounded-lg p-2"
     v-model:open="input.isOpen"
   >
@@ -50,8 +42,8 @@ const handleColorChange = (newColor: any, inputItem: any) => {
 
     <!-- Add transition -->
     <Transition
-      enter-active-class="transition-all duration-300 ease-in-out"
-      leave-active-class="transition-all duration-300 ease-in-out"
+      enter-active-class="transition-all duration-100 ease-in-out"
+      leave-active-class="transition-all duration-100 ease-in-out"
       enter-from-class="opacity-0"
       enter-to-class="opacity-100"
       leave-from-class="opacity-100"
@@ -64,7 +56,7 @@ const handleColorChange = (newColor: any, inputItem: any) => {
       >
         <div
           v-for="inputItem in input.inputs"
-          :key="inputItem.label"
+          :key="inputItem.name"
           class="relative"
           :class="inputItem.class"
         >
@@ -74,15 +66,15 @@ const handleColorChange = (newColor: any, inputItem: any) => {
               class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
               for="color-input "
             >
-              {{ inputItem.label }}
             </Label>
-
-            <!-- Hex input -->
+       
             <Input
               class="flex-1 p-4 h-12 text-right"
               placeholder=""
-              v-model="inputItem.value"
+              v-model="inputItem.default_value"
+              @input="handleTextInputChange"
               :data-id="inputItem.id"
+              :data-property="inputItem.property"
             />
           </div>
 
@@ -90,56 +82,65 @@ const handleColorChange = (newColor: any, inputItem: any) => {
           <div v-if="inputItem.type === 'color'" class="mt-5 relative">
             <ColorInput
               @updateColor="(newColor) => handleColorChange(newColor, inputItem)"
-              :label="inputItem.label"
-              :color="inputItem.value"
+              :label="inputItem.name"
+              :color="{ hex: String(inputItem.default_value) }"
             />
           </div>
 
           <!-- Range input -->
           <div v-if="inputItem.type === 'range'" class="mt-5 relative flex gap-3 flex-1">
             <Slider
-    v-model="inputItem.value"
-    :min="inputItem.min"
-    :max="inputItem.max"
-    :step="inputItem.step"
-    :data-id="inputItem.id"
-    :property="inputItem.property"
-  
-  />
+              :model-value="[Number(inputItem.default_value) || 0]"
+              @update:model-value="
+                (val) => {
+                  inputItem.default_value = Number(val[0])
+                  handleRangeNumberInput(inputItem)
+                }
+              "
+              :min="Number(inputItem.min) || 12"
+              :max="Number(inputItem.max) || 24"
+              :step="Number(inputItem.step) || 1"
+              :data-id="inputItem.id"
+              :property="inputItem.property"
+            />
             <div class="relative max-w-[70px]">
               <Label
                 class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
                 for="color-input"
               >
-                {{ inputItem.label }}
+                {{ inputItem.name }}
               </Label>
 
               <Input
                 class="p-4 h-12 text-right"
                 type="number"
                 placeholder=""
-                v-model="inputItem.value"
+                :min="Number(inputItem.min) || 12"
+                :max="Number(inputItem.max) || 24"
+                :step="Number(inputItem.step) || 1"
+                v-model="inputItem.default_value"
                 :data-id="inputItem.id"
+                @input="handleRangeNumberInput(inputItem)"
+                @change="handleRangeNumberInput(inputItem)"
               />
             </div>
           </div>
 
           <!-- Number input -->
           <div v-if="inputItem.type === 'number'" class="mt-5 relative flex gap-3 flex-1">
-        
             <div class="relative max-w-[70px]">
               <Label
                 class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
                 for="color-input"
               >
-                {{ inputItem.label }}
+                {{ inputItem.name }}
               </Label>
 
               <Input
                 class="p-4 h-12 text-right"
                 type="number"
                 placeholder=""
-                v-model="inputItem.value"
+                v-model="inputItem.default_value"
                 :data-id="inputItem.id"
               />
             </div>
@@ -156,10 +157,10 @@ const handleColorChange = (newColor: any, inputItem: any) => {
               </TabsList>
 
               <TabsContent value="image">
-             <ImageTab />
+                <ImageTab />
               </TabsContent>
-              <TabsContent value="icon"> 
-             <IconTab />
+              <TabsContent value="icon">
+                <IconTab />
               </TabsContent>
             </Tabs>
           </div>

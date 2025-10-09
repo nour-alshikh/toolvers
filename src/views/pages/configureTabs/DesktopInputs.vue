@@ -34,7 +34,7 @@ interface InputItem {
 
 const DesktopDisplayInputs: InputItem[] | undefined = inject('DesktopDisplayInputs')
 
-const desktopDragging = inject('desktopDragging')
+const isDesktopDraggable = inject('isDesktopDraggable')
 </script>
 
 <template>
@@ -168,50 +168,83 @@ const desktopDragging = inject('desktopDragging')
           <div v-if="inputItem.type === 'position'" class="relative w-1/2 m-auto">
             <div class="grid grid-cols-3 grid-rows-3 gap-2">
               <div
-                @click="inputItem.value = 'top-left'; inputItem.top = '0%'; inputItem.left = '0%' ; "
+                @click="
+                  inputItem.value = 'top-left'
+                  inputItem.top = '0%'
+                  inputItem.left = '0%'
+                "
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.value === 'top-left' ? 'bg-primary/10' : ''"
               ></div>
               <div
-                @click="inputItem.value = 'top'; inputItem.top = '0%'; inputItem.left = '50%' ; "
+                @click="
+                  inputItem.value = 'top'
+                  inputItem.top = '0%'
+                  inputItem.left = '50%'
+                "
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.value === 'top' ? 'bg-primary/10' : ''"
-                ></div>
-                <div
-                  @click="inputItem.value = 'top-right'; inputItem.top = '0%'; inputItem.left = '100%' ; "
-                  class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-                  :class="inputItem.value === 'top-right' ? 'bg-primary/10' : ''"
-                ></div>
-              
+              ></div>
               <div
-                @click="inputItem.value = 'center-left'; inputItem.top = '50%'; inputItem.left = '0%' ; "
+                @click="
+                  inputItem.value = 'top-right'
+                  inputItem.top = '0%'
+                  inputItem.left = '100%'
+                "
+                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+                :class="inputItem.value === 'top-right' ? 'bg-primary/10' : ''"
+              ></div>
+
+              <div
+                @click="
+                  inputItem.value = 'center-left'
+                  inputItem.top = '50%'
+                  inputItem.left = '0%'
+                "
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.value === 'center-left' ? 'bg-primary/10' : ''"
               ></div>
               <div></div>
               <div
-                @click="inputItem.value = 'center-right'; inputItem.top = '50%'; inputItem.left = '100%' ; "
+                @click="
+                  inputItem.value = 'center-right'
+                  inputItem.top = '50%'
+                  inputItem.left = '100%'
+                "
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.value === 'center-right' ? 'bg-primary/10' : ''"
               ></div>
               <div
-                @click="inputItem.value = 'bottom-left'; inputItem.top = '100%'; inputItem.left = '0%' ; "
+                @click="
+                  inputItem.value = 'bottom-left'
+                  inputItem.top = '100%'
+                  inputItem.left = '0%'
+                "
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.value === 'bottom-left' ? 'bg-primary/10' : ''"
               ></div>
               <div
-                @click="inputItem.value = 'bottom'; inputItem.top = '100%'; inputItem.left = '50%' ; "
+                @click="
+                  inputItem.value = 'bottom'
+                  inputItem.top = '100%'
+                  inputItem.left = '50%'
+                "
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.value === 'bottom' ? 'bg-primary/10' : ''"
               ></div>
               <div
-                @click="inputItem.value = 'bottom-right'; inputItem.top = '100%'; inputItem.left = '100%' ; "
+                @click="
+                  inputItem.value = 'bottom-right'
+                  inputItem.top = '100%'
+                  inputItem.left = '100%'
+                "
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.value === 'bottom-right' ? 'bg-primary/10' : ''"
               ></div>
 
               <div class="col-span-3 row-span-3">
-                <Button @click="desktopDragging = !desktopDragging"
+                <Button
+                  @click="isDesktopDraggable = !isDesktopDraggable"
                   class="border border-primary bg-transparent text-primary mt-2 hover:bg-primary hover:text-white transition-all duration-200 ease-in-out"
                 >
                   التحكم الحر في مكان الاشعار
