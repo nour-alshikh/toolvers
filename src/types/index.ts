@@ -173,6 +173,7 @@ export interface User {
       inputs: ToolInputGroup[];
       desktop_inputs: ToolInputGroup[];
       mobile_inputs: ToolInputGroup[];
+      main_inputs: ToolInputGroup[];
       content: string;
       installation_count: number;
     }

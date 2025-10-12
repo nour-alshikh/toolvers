@@ -40,6 +40,8 @@ const saveTool = async () => {
 
   const toolInputs = toolDetails.value?.tool?.inputs
   const desktopInputs = toolDetails.value?.tool?.desktop_inputs
+  const mobileInputs = toolDetails.value?.tool?.mobile_inputs
+  const mainInputs = toolDetails.value?.tool?.main_inputs
 
   toolInputs?.forEach((input) => {
     input.inputs.forEach((inputItem) => {
@@ -48,6 +50,18 @@ const saveTool = async () => {
   })
 
   desktopInputs?.forEach((input) => {
+    input.inputs.forEach((inputItem) => {
+      form.append(inputItem.name, String(inputItem.default_value))
+    })
+  })
+
+  mobileInputs?.forEach((input) => {
+    input.inputs.forEach((inputItem) => {
+      form.append(inputItem.name, String(inputItem.default_value))
+    })
+  })
+
+  mainInputs?.forEach((input) => {
     input.inputs.forEach((inputItem) => {
       form.append(inputItem.name, String(inputItem.default_value))
     })
@@ -128,8 +142,9 @@ const saveTool = async () => {
               <DesktopInputs
                 v-if="screen === 'desktop'"
                 :inputs="toolDetails?.tool.desktop_inputs ?? []"
+                :main-inputs="toolDetails?.tool.main_inputs ?? []"
               />
-              <MobileInputs v-else :inputs="toolDetails?.tool.mobile_inputs ?? []" />
+              <MobileInputs v-else :inputs="toolDetails?.tool.mobile_inputs ?? []" :main-inputs="toolDetails?.tool.main_inputs ?? []" />
             </TabsContent>
           </Tabs>
         </div>
