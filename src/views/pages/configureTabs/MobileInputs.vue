@@ -33,6 +33,9 @@ interface InputItem {
 }
 
 const MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs')
+
+const mobileDragging = inject('mobileDragging')
+
 </script>
 
 <template>
@@ -209,7 +212,7 @@ const MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs
               ></div>
 
               <div class="col-span-3 row-span-3">
-                <Button
+                <Button  @click="mobileDragging = !mobileDragging"
                   class="border border-primary bg-transparent text-primary mt-2 hover:bg-primary hover:text-white transition-all duration-200 ease-in-out"
                 >
                   التحكم الحر في مكان الاشعار

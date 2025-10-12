@@ -165,6 +165,40 @@ const props = defineProps<{
               </TabsContent>
             </Tabs>
           </div>
+
+
+          <div v-if="inputItem.type === 'display-pages'">
+            <Tabs default-value="all" class="flex flex-col items-end justify-center">
+              <TabsList
+                class="flex w-fit m-auto justify-center items-center bg-[#FDF5F8] rounded-lg border border-[#F0F0F0] lg:py-[10px] py-1 px-1"
+              >
+                <TabsTrigger value="selected" class="border-none"> تخصيص </TabsTrigger>
+                <TabsTrigger value="all" class="border-none"> صفحات المتجر </TabsTrigger>
+              </TabsList>
+              <TabsContent value="all">
+                <AllTab />
+              </TabsContent>
+
+              <TabsContent value="selected">
+                <SelectedTab />
+              </TabsContent>
+            </Tabs>
+          </div>
+
+          <div v-if="inputItem.type === 'display-settings'" class="relative flex gap-2 w-full">
+            <div
+              class="flex items-center justify-between space-x-2 border rounded-lg py-3 px-3 flex-1"
+            >
+              <Label for="display-mobile" class="text-primary"> عرض على الجوال</Label>
+              <Switch id="display-mobile" />
+            </div>
+            <div
+              class="flex items-center justify-between space-x-2 border rounded-lg py-3 px-3 flex-1"
+            >
+              <Label for="display-desktop" class="text-primary"> عرض على سطح المكتب</Label>
+              <Switch id="display-desktop" />
+            </div>
+          </div>
         </div>
       </CollapsibleContent>
     </Transition>
