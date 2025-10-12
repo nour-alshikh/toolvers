@@ -6,8 +6,8 @@ export function useColorHandler() {
    * @param inputItem - The input item containing id and property info
    */
   const handleColorChange = (newColor: any, inputItem: any) => {
-    // Update the local input item value
-    inputItem.value = newColor
+    // Update the local input item default_value (not value)
+    inputItem.default_value = newColor.hex
 
     const { id, property } = inputItem
     const toolversTool = document.querySelector('.toolvers-tool')
@@ -19,7 +19,7 @@ export function useColorHandler() {
         if (el && property) {
           if (el instanceof HTMLElement) {
             el.style[property as any] = newColor.hex
-          }else if(el instanceof SVGElement){
+          } else if (el instanceof SVGElement) {
             (el as SVGElement).style.fill = newColor.hex
           }
         }
@@ -32,7 +32,7 @@ export function useColorHandler() {
         if (el instanceof SVGElement) {
           (el as SVGElement).style.fill = newColor.hex
         } else if (el instanceof HTMLElement) {
-          (el.style as any)[property] = newColor.hex;
+          (el.style as any)[property] = newColor.hex
         }
       }
     }

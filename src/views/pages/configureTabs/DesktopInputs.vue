@@ -25,8 +25,6 @@ const props = defineProps<{
 </script>
 
 <template>
-
-
   <Collapsible
     v-for="input in inputs"
     :key="input.title"
@@ -68,7 +66,7 @@ const props = defineProps<{
             >
               {{ inputItem.label }}
             </Label>
-       
+
             <Input
               class="flex-1 p-4 h-auto text-right"
               placeholder=""
@@ -165,7 +163,6 @@ const props = defineProps<{
               </TabsContent>
             </Tabs>
           </div>
-
 
           <div v-if="inputItem.type === 'display-pages'">
             <Tabs default-value="all" class="flex flex-col items-end justify-center">

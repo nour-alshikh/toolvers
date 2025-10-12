@@ -15,7 +15,7 @@ import Button from '@/components/ui/button/Button.vue'
 import { useToast } from 'vue-toast-notification'
 import Loading from '@/views/components/Loading.vue'
 
-const { primary, black, edit, showSettings , backArrow , eye } = icons
+const { primary, black, edit, showSettings, backArrow, eye } = icons
 
 const router = useRouter()
 
@@ -38,44 +38,42 @@ const saveTool = async () => {
 
   form.append('name', toolDetails.value?.tool?.name ?? '')
 
-  
   const toolInputs = toolDetails.value?.tool?.inputs
   const desktopInputs = toolDetails.value?.tool?.desktop_inputs
-  
- 
+
   toolInputs?.forEach((input) => {
-   input.inputs.forEach((inputItem) => {
-    form.append(inputItem.name, String(inputItem.default_value))
-   })
+    input.inputs.forEach((inputItem) => {
+      form.append(inputItem.name, String(inputItem.default_value))
+    })
   })
-  
+
   desktopInputs?.forEach((input) => {
-   input.inputs.forEach((inputItem) => {
-    form.append(inputItem.name, String(inputItem.default_value))
-   })
+    input.inputs.forEach((inputItem) => {
+      form.append(inputItem.name, String(inputItem.default_value))
+    })
   })
- 
-if(toolDetails.value?.tool?.id){
-  await useToolsStore().installTool(toolDetails.value?.tool?.id , form).then(() => {
-    router.push('/dashboard')
-  }).then(() => {
-    
-    const $toast = useToast();
-    $toast.success('تم اضافة الاشعار بنجاح')
-  }).catch((error) => {
-    console.log(error)
-  })
+
+  if (toolDetails.value?.tool?.id) {
+    await useToolsStore()
+      .installTool(toolDetails.value?.tool?.id, form)
+      .then(() => {
+        router.push('/dashboard')
+      })
+      .then(() => {
+        const $toast = useToast()
+        $toast.success('تم اضافة الاشعار بنجاح')
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
 }
-
-}
-
-
 </script>
 
 <template>
   <DefaultLayout>
     <Loading v-if="useToolsStore().isLoading" />
-    
+
     <div class="py-3">
       <div class="flex flex-col lg:flex-row gap-3 relative">
         <div class="w-[470px]">
@@ -127,7 +125,10 @@ if(toolDetails.value?.tool?.id){
               <InputCollapsible :inputs="toolDetails?.tool.inputs ?? []" />
             </TabsContent>
             <TabsContent value="display">
-              <DesktopInputs v-if="screen === 'desktop'" :inputs="toolDetails?.tool.desktop_inputs ?? []" />
+              <DesktopInputs
+                v-if="screen === 'desktop'"
+                :inputs="toolDetails?.tool.desktop_inputs ?? []"
+              />
               <MobileInputs v-else :inputs="toolDetails?.tool.mobile_inputs ?? []" />
             </TabsContent>
           </Tabs>
@@ -137,13 +138,18 @@ if(toolDetails.value?.tool?.id){
             <div
               class="text-[#8F707D] font-[Almarai] text-[13px] font-normal leading-[20px] hover:underline decoration-solid decoration-auto underline-offset-auto flex gap-2 items-center cursor-pointer"
             >
-            <img :src="eye" alt="">
+              <img :src="eye" alt="" />
               معاينة على المتجر
             </div>
             <div class="flex gap-2">
-              <Button @click="saveTool" class="bg-transparent border-primary border text-primary hover:bg-primary hover:text-white"> حفظ</Button>
-              <Button class="bg-transparent border-none w-fit p-0"> 
-                <img :src="backArrow" alt="">
+              <Button
+                @click="saveTool"
+                class="bg-transparent border-primary border text-primary hover:bg-primary hover:text-white"
+              >
+                حفظ</Button
+              >
+              <Button class="bg-transparent border-none w-fit p-0">
+                <img :src="backArrow" alt="" />
               </Button>
             </div>
           </div>
