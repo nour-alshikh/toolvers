@@ -146,6 +146,7 @@ export interface User {
 
    export interface ToolInputField {
       name: string;
+      label: string;
       type: string;
       default_value: string | number ;
       min?: number;
@@ -170,12 +171,13 @@ export interface User {
       type: string;
       identifier: string;
       inputs: ToolInputGroup[];
+      desktop_inputs: ToolInputGroup[];
+      mobile_inputs: ToolInputGroup[];
       content: string;
       installation_count: number;
     }
     
     export interface ToolDetails {
-    
         tool: ToolData;
         rendered_html: string;
       

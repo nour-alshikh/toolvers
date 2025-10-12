@@ -81,7 +81,7 @@ const MobileDisplayInputs: InputItem[] | undefined = inject('MobileDisplayInputs
 
             <!-- Hex input -->
             <Input
-              class="flex-1 p-4 h-12 text-right"
+              class="flex-1 p-4 h-auto text-right"
               placeholder=""
               v-model="inputItem.value"
               :data-id="inputItem.id"

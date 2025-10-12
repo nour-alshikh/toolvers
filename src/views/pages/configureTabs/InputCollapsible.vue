@@ -56,7 +56,7 @@ const props = defineProps<{
       >
         <div
           v-for="inputItem in input.inputs"
-          :key="inputItem.name"
+          :key="inputItem.label"
           class="relative"
           :class="inputItem.class"
         >
@@ -66,10 +66,11 @@ const props = defineProps<{
               class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
               for="color-input "
             >
+              {{ inputItem.label }}
             </Label>
        
             <Input
-              class="flex-1 p-4 h-12 text-right"
+              class="flex-1 p-4 h-auto text-right"
               placeholder=""
               v-model="inputItem.default_value"
               @input="handleTextInputChange"
@@ -82,7 +83,7 @@ const props = defineProps<{
           <div v-if="inputItem.type === 'color'" class="mt-5 relative">
             <ColorInput
               @updateColor="(newColor) => handleColorChange(newColor, inputItem)"
-              :label="inputItem.name"
+              :label="inputItem.label"
               :color="{ hex: String(inputItem.default_value) }"
             />
           </div>
@@ -108,7 +109,7 @@ const props = defineProps<{
                 class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
                 for="color-input"
               >
-                {{ inputItem.name }}
+                {{ inputItem.label }}
               </Label>
 
               <Input
@@ -133,7 +134,7 @@ const props = defineProps<{
                 class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
                 for="color-input"
               >
-                {{ inputItem.name }}
+                {{ inputItem.label }}
               </Label>
 
               <Input

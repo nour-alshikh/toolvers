@@ -16,15 +16,24 @@ export function useColorHandler() {
     if (Array.isArray(id)) {
       id.forEach((i: string) => {
         const el = toolversTool?.querySelector(`[data-id="${i}"]`)
-        if (el instanceof HTMLElement && property) {
-          el.style[property as any] = newColor.hex
+        if (el && property) {
+          if (el instanceof HTMLElement) {
+            el.style[property as any] = newColor.hex
+          }else if(el instanceof SVGElement){
+            (el as SVGElement).style.fill = newColor.hex
+          }
         }
       })
     } else {
       // Single id
       const el = toolversTool?.querySelector(`[data-id="${id}"]`)
-      if (el instanceof HTMLElement && property) {
-        el.style[property as any] = newColor.hex
+
+      if (el && property) {
+        if (el instanceof SVGElement) {
+          (el as SVGElement).style.fill = newColor.hex
+        } else if (el instanceof HTMLElement) {
+          (el.style as any)[property] = newColor.hex;
+        }
       }
     }
   }

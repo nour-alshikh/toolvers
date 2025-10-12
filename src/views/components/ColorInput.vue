@@ -26,13 +26,13 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'updateColor', value: ColorObject): void
+  (e: "updateColor", value: ColorObject): void
 }>()
 
-// Reactive color model (clone from props)
+// Local state
 const colorInput = ref<ColorObject>({ ...props.color })
 
-// Sync when parent updates color prop
+// Watch for external color updates
 watch(
   () => props.color,
   (newColor) => {
@@ -41,12 +41,19 @@ watch(
   { deep: true }
 )
 
+// Trigger parent update only when color picker changes
 const changeColor = (newColor: ColorObject) => {
   colorInput.value = { ...newColor }
-  emit('updateColor', colorInput.value)
+  emit("updateColor", colorInput.value)
+}
+
+// Optional: allow user to manually type in input but not emit until valid
+const handleManualInput = () => {
+  // Only update local model (no emit)
+  // You could add hex validation here if needed
+  colorInput.value.hex = colorInput.value.hex.trim()
 }
 </script>
-
 <template>
   <div class="grid gap-2 mb-2">
     <div class="flex items-center flex-row-reverse gap-2">
@@ -59,6 +66,7 @@ const changeColor = (newColor: ColorObject) => {
             :style="{ backgroundColor: colorInput.hex }"
           />
         </PopoverTrigger>
+
         <PopoverContent class="p-0 w-fit">
           <ColorPicker
             theme="light"
@@ -79,8 +87,9 @@ const changeColor = (newColor: ColorObject) => {
         <Input
           id="color-input"
           v-model="colorInput.hex"
-          class="flex-1 p-4 h-12 text-right"
+          class="flex-1 p-4 h-auto text-right"
           placeholder="#000000"
+          @input="handleManualInput"
         />
       </div>
     </div>

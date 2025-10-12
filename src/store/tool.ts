@@ -90,13 +90,46 @@ export const useToolsStore = defineStore(
 
     }
 
+    const installTool = async (toolId : number , formData : FormData) => {
+      const authStore = useAuthStore()
+      const token = authStore.token
+      
+      try {
+        isLoading.value = true
+
+        const response = await axiosInstance.post(`/api/clients/tools/${toolId}/install` , formData,{
+        
+          headers: {
+            authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        })
+      
+        if(response.status === 200){
+          toolDetails.value = response.data.data
+          
+          return toolDetails.value
+          
+        }
+
+        return []
+      } catch (error) {
+        const err = error as AxiosError<{ errors?: Record<string, string[]> }>
+        errors.value = err.response?.data?.errors ?? null
+        return []
+      } finally {
+        isLoading.value = false
+      }
+    }
+
     return {
       tools,
       toolDetails,
       toolsTypes,
       isLoading,
       errors,
-      getTools,getToolDetails
+      getTools,getToolDetails,installTool
     }
   },
   {

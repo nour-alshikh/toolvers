@@ -5,6 +5,11 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 import { useToolsStore } from '@/store/tool'
 import ToolListItem from './ToolListItem.vue'
 import { Skeleton } from '@/components/ui/skeleton'
+// Import all images in your icons folder
+const images = import.meta.glob<{ default: string }>(
+  '@/assets/icons/*',
+  { eager: true, import: 'default' }
+)
 
 const toolData = useToolsStore()
 
@@ -98,7 +103,7 @@ const hanleToolTypes = (toolType: string) => {
         </template>
 
         <template v-else>
-          <ToolListItem v-for="tool in selectedToolType" :key="tool.id" :tool="tool" />
+          <ToolListItem v-for="tool in selectedToolType" :key="tool.id" :tool="tool" :images="images" />
         </template>
       </div>
     </div>

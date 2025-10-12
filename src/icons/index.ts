@@ -39,6 +39,8 @@ import rocket from '@/assets/images/rocket.svg'
 import arrowLeft from '@/assets/images/arrow-left.svg'
 import arrowLeftWhite from '@/assets/images/arrow-left-white.svg'
 import authBg from '@/assets/images/auth-bg.jpg'
+import backArrow from '@/assets/images/back-arrow.svg'
+  import eye from '@/assets/images/eye.svg'
 
 // نوع موحد للأيقونات اللي فيها active/inactive
 type StateIcons = {
@@ -89,6 +91,8 @@ export const icons: {
   arrowLeft: string
   arrowLeftWhite: string
   authBg: string
+  backArrow: string
+  eye: string
     } = {
   primary: {
     mobile: PrimaryMobile,
@@ -138,4 +142,6 @@ export const icons: {
   arrowLeft: arrowLeft,
   arrowLeftWhite: arrowLeftWhite,
   authBg: authBg,
+  backArrow: backArrow,
+  eye: eye,
   }

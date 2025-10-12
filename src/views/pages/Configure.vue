@@ -11,8 +11,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { icons } from '@/icons'
 import { useToolsStore } from '@/store/tool'
 import type { ToolDetails } from '@/types'
+import Button from '@/components/ui/button/Button.vue'
+import { useToast } from 'vue-toast-notification'
+import Loading from '@/views/components/Loading.vue'
 
-const { primary, black, edit, showSettings } = icons
+const { primary, black, edit, showSettings , backArrow , eye } = icons
 
 const router = useRouter()
 
@@ -29,11 +32,50 @@ onMounted(async () => {
 const toggleScreen = () => {
   screen.value = screen.value === 'desktop' ? 'mobile' : 'desktop'
 }
+
+const saveTool = async () => {
+  const form = new FormData()
+
+  form.append('name', toolDetails.value?.tool?.name ?? '')
+
+  
+  const toolInputs = toolDetails.value?.tool?.inputs
+  const desktopInputs = toolDetails.value?.tool?.desktop_inputs
+  
+ 
+  toolInputs?.forEach((input) => {
+   input.inputs.forEach((inputItem) => {
+    form.append(inputItem.name, String(inputItem.default_value))
+   })
+  })
+  
+  desktopInputs?.forEach((input) => {
+   input.inputs.forEach((inputItem) => {
+    form.append(inputItem.name, String(inputItem.default_value))
+   })
+  })
+ 
+if(toolDetails.value?.tool?.id){
+  await useToolsStore().installTool(toolDetails.value?.tool?.id , form).then(() => {
+    router.push('/dashboard')
+  }).then(() => {
+    
+    const $toast = useToast();
+    $toast.success('تم اضافة الاشعار بنجاح')
+  }).catch((error) => {
+    console.log(error)
+  })
+}
+
+}
+
+
 </script>
 
 <template>
-
   <DefaultLayout>
+    <Loading v-if="useToolsStore().isLoading" />
+    
     <div class="py-3">
       <div class="flex flex-col lg:flex-row gap-3 relative">
         <div class="w-[470px]">
@@ -85,14 +127,28 @@ const toggleScreen = () => {
               <InputCollapsible :inputs="toolDetails?.tool.inputs ?? []" />
             </TabsContent>
             <TabsContent value="display">
-              <DesktopInputs v-if="screen === 'desktop'" />
-              <MobileInputs v-else />
+              <DesktopInputs v-if="screen === 'desktop'" :inputs="toolDetails?.tool.desktop_inputs ?? []" />
+              <MobileInputs v-else :inputs="toolDetails?.tool.mobile_inputs ?? []" />
             </TabsContent>
           </Tabs>
         </div>
         <div class="relative flex-1">
+          <div class="rounded-lg bg-secondaryBackground flex justify-between py-3 px-8">
+            <div
+              class="text-[#8F707D] font-[Almarai] text-[13px] font-normal leading-[20px] hover:underline decoration-solid decoration-auto underline-offset-auto flex gap-2 items-center cursor-pointer"
+            >
+            <img :src="eye" alt="">
+              معاينة على المتجر
+            </div>
+            <div class="flex gap-2">
+              <Button @click="saveTool" class="bg-transparent border-primary border text-primary hover:bg-primary hover:text-white"> حفظ</Button>
+              <Button class="bg-transparent border-none w-fit p-0"> 
+                <img :src="backArrow" alt="">
+              </Button>
+            </div>
+          </div>
           <div
-            class="flex-1 rounded-lg border border-dashed border-[#E4D0D8] h-[calc(100vh-140px)] overflow-y-hidden transition-all duration-300 ease-in-out"
+            class="flex-1 mt-[67px] rounded-lg border border-dashed border-[#E4D0D8] h-[calc(100vh-140px)] overflow-y-hidden transition-all duration-300 ease-in-out"
             :class="
               screen === 'desktop'
                 ? 'w-[calc(100vw-550px)] fixed top-[130px] left-3 '
