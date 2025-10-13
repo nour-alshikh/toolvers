@@ -83,5 +83,8 @@
   body {
     @apply bg-background text-foreground font-almarai;
   }
+  .col-span-3 {
+    grid-column: span 3 / span 3;
+  }
 }
 

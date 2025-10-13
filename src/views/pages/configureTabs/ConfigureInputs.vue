@@ -103,7 +103,7 @@ const props = defineProps<{
               :data-id="inputItem.id"
               :property="inputItem.property"
             />
-            <div class="relative max-w-[70px]">
+            <div class="relative ">
               <Label
                 class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
                 for="color-input"
@@ -128,7 +128,7 @@ const props = defineProps<{
 
           <!-- Number input -->
           <div v-if="inputItem.type === 'number'" class="mt-5 relative flex gap-3 flex-1">
-            <div class="relative max-w-[70px]">
+            <div class="relative">
               <Label
                 class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
                 for="color-input"
