@@ -36,13 +36,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-
+import LoadingSm from '@/views/components/LoadingSm.vue'
 import { icons } from '@/icons'
 import { useToolsStore } from '@/store/tool'
 import type { InstalledTool } from '@/types'
 const { editIcon, statisticsIcon, deleteIcon, copyIcon } = icons
 
 const toolData = useToolsStore()
+
+const isLoading = ref<boolean>(false)
 
 const allTools = ref<InstalledTool[]>([])
 
@@ -100,13 +102,21 @@ const columns = [
         allTools.value = [...allTools.value]
 
         try {
+          isLoading.value = true
           await toolData.toggleToolStatus(row?.original?.id)
         } catch (error) {
           row.original.active = previousStatus
           allTools.value = [...allTools.value]
+        } finally {
+          isLoading.value = false
         }
       }
-
+      
+      // if (isLoading.value) {
+      //   return h('div', { class: 'flex justify-center items-center' }, [
+      //     h(LoadingSm, { class: 'w-4 h-4 text-primary' }),
+      //   ])
+      // }
       return h('div', { class: '' }, [
         h(Switch, {
           modelValue: currentStatus,

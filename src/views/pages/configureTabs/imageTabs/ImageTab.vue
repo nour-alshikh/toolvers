@@ -6,24 +6,21 @@ import { useToolsStore } from '@/store/tool'
 import { onMounted, ref } from 'vue'
 import Loading from '@/views/components/Loading.vue'
 
-const emit = defineEmits(['updateDefaultValue'])
+const emit = defineEmits<{
+  (e: 'updateDefaultValue', value: string): void
+}>()
 
-const modelValue = defineModel<string>({ default: '' })
-const props = defineProps({
-  dataId: {
-    type: Number,
-    required: false,
-  },
-  dataProperty: {
-    type: String,
-    required: false,
-  },
-})
+// Use a string model
+const modelValue = defineModel<string | number>({ default: '' })
+const props = defineProps<{
+  dataId?: string
+  dataProperty?: string
+}>()
 
-const ImagePath = ref('')
+const ImagePath = ref<string>('')
 
 onMounted(() => {
-  ImagePath.value = modelValue.value ?? ''
+  ImagePath.value = String(modelValue.value ?? '')
 })
 const handleFileSelect = async (e: any) => {
   const files = e.target.files

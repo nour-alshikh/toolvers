@@ -23,6 +23,8 @@ const props = defineProps<{
   inputs: ToolInputGroup[]
  
 }>()
+
+
 </script>
 
 <template>
