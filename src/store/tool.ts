@@ -80,41 +80,43 @@ export const useToolsStore = defineStore(
         isLoading.value = false
       }
     }
-const toggleToolStatus = async (userToolId: number) => {
-    // NOTE: Renamed argument for clarity: `userTool` -> `userToolId`
-    const authStore = useAuthStore()
-    const token = authStore.token
 
-    const $toast = useToast()
+    const toggleToolStatus = async (userToolId: number) => {
+      // NOTE: Renamed argument for clarity: `userTool` -> `userToolId`
+      const authStore = useAuthStore()
+      const token = authStore.token
 
-    try {
+      const $toast = useToast()
+
+      try {
         isLoading.value = true
 
         const response = await axiosInstance.patch(
-            // Use the passed ID in the endpoint
-            `/api/clients/user-tools/${userToolId}/toggle-active`,
-            {},
-            {
-                headers: {
-                    authorization: `Bearer ${token}`,
-                },
+          // Use the passed ID in the endpoint
+          `/api/clients/user-tools/${userToolId}/toggle-active`,
+          {},
+          {
+            headers: {
+              authorization: `Bearer ${token}`,
             },
+          },
         )
 
         if (response.status === 200) {
-            $toast.success('تم تغيير حالة العنصر بنجاح')
+          $toast.success('تم تغيير حالة العنصر بنجاح')
         }
-    } catch (error) {
+      } catch (error) {
         $toast.error('حدث خطأ أثناء تغيير حالة العنصر')
         const err = error as AxiosError<{ errors?: Record<string, string[]> }>
         errors.value = err.response?.data?.errors ?? null
-        
+
         // CRITICAL: Ensure the error is thrown so `handleToggle` can catch it
-        throw error 
-    } finally {
+        throw error
+      } finally {
         isLoading.value = false
+      }
     }
-}
+
     const getToolDetails = async (toolId: number) => {
       const authStore = useAuthStore()
       const token = authStore.token
@@ -179,6 +181,38 @@ const toggleToolStatus = async (userToolId: number) => {
       }
     }
 
+    const uploadImage = async (formData: FormData) => {
+      const authStore = useAuthStore()
+      const token = authStore.token
+
+      try {
+        isLoading.value = true
+
+        const response = await axiosInstance.post(
+          `/api/clients/tools/upload`,
+          formData,
+          {
+            headers: {
+              authorization: `Bearer ${token}`,
+            
+              Accept: 'application/json',
+            },
+          },
+        )
+
+        if (response.status === 200) {
+          return response.data.path
+        }
+
+        return;
+      } catch (error) {
+        const err = error as AxiosError<{ errors?: Record<string, string[]> }>
+        errors.value = err.response?.data?.errors ?? null
+        return []
+      } finally {
+        isLoading.value = false
+      }
+    }
     return {
       tools,
       toolDetails,
@@ -190,6 +224,7 @@ const toggleToolStatus = async (userToolId: number) => {
       installTool,
       getInstalledTools,
       toggleToolStatus,
+      uploadImage
     }
   },
   {

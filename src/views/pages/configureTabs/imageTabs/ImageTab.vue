@@ -2,33 +2,49 @@
 import { icons } from '@/icons'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-function handleFileSelect(e: any) {
+import { useToolsStore } from '@/store/tool'
+import { onMounted, ref } from 'vue'
+import Loading from '@/views/components/Loading.vue'
+
+const emit = defineEmits(['updateDefaultValue'])
+
+const modelValue = defineModel<string>({ default: '' })
+const props = defineProps({
+  dataId: {
+    type: Number,
+    required: false,
+  },
+  dataProperty: {
+    type: String,
+    required: false,
+  },
+})
+
+const ImagePath = ref('')
+
+onMounted(() => {
+  ImagePath.value = modelValue.value ?? ''
+})
+const handleFileSelect = async (e: any) => {
   const files = e.target.files
   if (files.length > 0) {
     const file = files[0]
-    if (validateFile(file)) {
-      // saveImage(file);
+    const formData = new FormData()
+    formData.append('image', file)
+
+    const toolStore = useToolsStore()
+    const res = await toolStore.uploadImage(formData)
+
+    const toolversTool = document.querySelector('.toolvers-tool')
+    const el = toolversTool?.querySelector(`[data-id="${props.dataId}"]`)
+
+    if (el && props.dataProperty === 'src') {
+      el.setAttribute('src', res)
     }
-  }
-  e.target.value = ''
-}
 
-const validateFile = (file: File) => {
-  // Check file type
-  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
-  if (!allowedTypes.includes(file.type)) {
-    console.warn('Invalid file type:', file.type)
-    return false
+    ImagePath.value = res
+    modelValue.value = res
   }
-
-  // Check file size (5MB limit)
-  const maxSize = 5 * 1024 * 1024 // 5MB in bytes
-  if (file.size > maxSize) {
-    console.warn('File too large:', file.size)
-    return false
-  }
-
-  return true
 }
 </script>
 
@@ -36,6 +52,9 @@ const validateFile = (file: File) => {
   <div
     class="rounded-lg w-full flex flex-col items-center justify-center cursor-pointer relative border border-dashed border-black/20 lg:py-6 lg:px-4 py-4 px-2"
   >
+    <div v-if="useToolsStore().isLoading">
+      <Loading />
+    </div>
     <img :src="icons.download" alt="" />
     <p
       class="text-[rgba(0,0,0,0.87)] mt-2 text-[14px] font-normal leading-[175%] tracking-[0.15px] text-center"
@@ -60,4 +79,6 @@ const validateFile = (file: File) => {
       class="opacity-0 absolute inset-0 cursor-pointer w-full h-full z-50"
     />
   </div>
+
+  <img :src="ImagePath" alt="" />
 </template>

@@ -157,7 +157,10 @@ const props = defineProps<{
               </TabsList>
 
               <TabsContent value="image">
-                <ImageTab />
+                <ImageTab   
+                v-model="inputItem.default_value"
+                :data-id="inputItem.id"
+                :data-property="inputItem.property" />
               </TabsContent>
               <TabsContent value="icon">
                 <IconTab />
