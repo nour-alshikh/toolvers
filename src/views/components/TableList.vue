@@ -16,10 +16,11 @@ import {
   useVueTable,
 } from '@tanstack/vue-table'
 import { ArrowsUpDownIcon } from '@heroicons/vue/24/outline' // Import new icons
-import { h, ref } from 'vue'
+import { h, onMounted, ref } from 'vue'
 import { cn, valueUpdater } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
+import { Switch } from '@/components/ui/switch'
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,117 +37,30 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-
-
 import { icons } from '@/icons'
-
+import { useToolsStore } from '@/store/tool'
+import type { InstalledTool } from '@/types'
 const { editIcon, statisticsIcon, deleteIcon, copyIcon } = icons
 
-export interface Tool {
-  id: string
-  name: string
-  type: string
-  startingDate: string
-  status: string
-}
+const toolData = useToolsStore()
 
-const data: Tool[] = [
-  {
-    id: 'm5gr84i9',
-    name: 'اشعار كوبون خصم كلاسيك جديد',
-    type: 'اااكوبونات الخصم',
-    startingDate: '2022-01-01',
-    status: 'نشط',
-  },
-  {
-    id: 'm5gr84i9',
-    name: 'اشعار كوبون خصم كلاسيك جديد',
-    type: 'كوبونات الخصم',
-    startingDate: '2022-01-01',
-    status: 'نشط',
-  },
-  {
-    id: 'm5gr84i9',
-    name: 'اشعار كوبون خصم كلاسيك جديد',
-    type: 'كوبونات الخصم',
-    startingDate: '2022-01-01',
-    status: 'نشط',
-  },
-  {
-    id: 'm5gr84i9',
-    name: 'اشعار كوبون خصم كلاسيك جديد',
-    type: 'كوبونات الخصم',
-    startingDate: '2022-01-01',
-    status: 'نشط',
-  },
-  {
-    id: 'm5gr84i9',
-    name: 'اشعار كوبون خصم كلاسيك جديد',
-    type: 'كوبونات الخصم',
-    startingDate: '2022-01-01',
-    status: 'نشط',
-  },
-  {
-    id: 'm5gr84i9',
-    name: 'اشعار كوبون خصم كلاسيك جديد',
-    type: 'كوبونات الخصم',
-    startingDate: '2022-01-01',
-    status: 'نشط',
-  },
-  {
-    id: 'm5gr84i9',
-    name: 'اشعار كوبون خصم كلاسيك جديد',
-    type: 'كوبونات الخصم',
-    startingDate: '2022-01-01',
-    status: 'نشط',
-  },
-  {
-    id: 'm5gr84i9',
-    name: 'اشعار كوبون خصم كلاسيك جديد',
-    type: 'كوبونات الخصم',
-    startingDate: '2022-01-01',
-    status: 'نشط',
-  },
-  {
-    id: 'm5gr84i9',
-    name: 'اشعار كوبون خصم كلاسيك جديد',
-    type: 'كوبونات الخصم',
-    startingDate: '2022-01-01',
-    status: 'نشط',
-  },
-]
+const allTools = ref<InstalledTool[]>([])
 
-const columnHelper = createColumnHelper<Tool>()
+onMounted(async () => {
+  const tools = await toolData.getInstalledTools()
+  allTools.value = tools
+})
+
+const columnHelper = createColumnHelper<InstalledTool>()
 
 const columns = [
-  columnHelper.display({
-    id: 'select',
-    header: ({ table }) =>
-      h(Checkbox, {
-        modelValue:
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate'),
-        'onUpdate:modelValue': (value: boolean) => table.toggleAllPageRowsSelected(!!value),
-        ariaLabel: 'Select all',
-      }),
-    cell: ({ row }) => {
-      return h(Checkbox, {
-        modelValue: row.getIsSelected(),
-        'onUpdate:modelValue': (value: boolean) => row.toggleSelected(!!value),
-        ariaLabel: 'Select row',
-        class: ' text-left',
-      })
-    },
-    enableSorting: false,
-    enableHiding: false,
-  }),
   columnHelper.accessor('name', {
     header: ({ column }) => {
       return h(
         Button,
         {
           variant: 'ghost',
-          class: 'w-full hover:bg-transparent text-base font-boldhover:text-gray-500',
+          class: 'w-full hover:bg-transparent text-base font-bold hover:text-gray-500',
           onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
         },
         () => ['اسم العنصر', h(ArrowsUpDownIcon, { class: 'ml-2 h-4 w-4' })],
@@ -154,33 +68,59 @@ const columns = [
     },
     cell: ({ row }) => h('div', { class: 'lowercase text-center' }, row.getValue('name')),
   }),
-  columnHelper.accessor('type', {
+  columnHelper.accessor((row) => row.tool.type, {
+    id: 'tool_type',
     enablePinning: true,
     header: () => h('div', { class: 'text-center' }, 'نوع العنصر '),
-    cell: ({ row }) => h('div', { class: 'capitalize w-full text-center' }, row.getValue('type')),
+    cell: ({ row }) =>
+      h('div', { class: 'capitalize w-full text-center' }, row.getValue('tool_type')),
   }),
 
-  columnHelper.accessor('startingDate', {
+  columnHelper.accessor('created_at', {
     header: () => h('div', { class: 'text-right' }, 'تاريخ البداية'),
     cell: ({ row }) => {
-      return h('div', { class: 'text-right font-medium' }, row.getValue('startingDate'))
+      const fullDate: string = row.getValue('created_at')
+      // نأخذ فقط الجزء الأول قبل حرف T
+      const dateOnly = fullDate?.split('T')[0] || '-'
+      return h('div', { class: 'text-center' }, dateOnly)
     },
   }),
-  columnHelper.accessor('status', {
-    header: () => h('div', { class: 'text-right' }, 'حالة النشر '),
+  columnHelper.accessor((row) => row.active, {
+    id: 'active',
+    header: () => h('div', { class: 'text-right' }, 'حالة النشر'),
     cell: ({ row }) => {
-      return h('div', { class: 'text-right font-medium' }, row.getValue('status'))
+      const currentStatus = row.original.active === 1
+
+      const handleToggle = async (checked: boolean) => {
+        const previousStatus = row.original.active
+        const newStatus = checked ? 1 : 0
+
+        row.original.active = newStatus
+
+        allTools.value = [...allTools.value]
+
+        try {
+          await toolData.toggleToolStatus(row?.original?.id)
+        } catch (error) {
+          row.original.active = previousStatus
+          allTools.value = [...allTools.value]
+        }
+      }
+
+      return h('div', { class: '' }, [
+        h(Switch, {
+          modelValue: currentStatus,
+          'onUpdate:modelValue': handleToggle,
+        }),
+      ])
     },
   }),
-  // --- New Actions Column ---
   columnHelper.display({
     id: 'actions',
     header: () => h('div', { class: 'text-center' }, 'الإجراءات'),
     cell: ({ row }) => {
-      // You can add logic here to handle the button clicks (e.g., open a modal, navigate)
       const handleAction = (action: string) => {
         console.log(`${action} action triggered for row ID: ${row.original.id}`)
-        // Implement your actual logic for edit, delete, copy, statistics
       }
 
       return h('div', { class: 'flex justify-center space-x-2 space-x-reverse' }, [
@@ -251,7 +191,7 @@ const statusOptions = ['الكل', 'نشط', 'غير نشط']
 const currentPageSize = ref(10) // Default page size
 
 const table = useVueTable({
-  data,
+  data: allTools,
   columns,
   getCoreRowModel: getCoreRowModel(),
   getPaginationRowModel: getPaginationRowModel(),
@@ -443,12 +383,14 @@ const handleStatusChange = (status: string) => {
           v-for="page in table.getPageCount()"
           :key="page"
           @click="table.setPageIndex(page - 1)"
-          :class="[
-            'mx-1 px-3 py-1 rounded-md text-center shadow-none border-none ',
-            table.getState().pagination.pageIndex === page - 1
-              ? 'bg-primary text-white'
-              : 'bg-transparent text-[#846D76] hover:bg-primaryhover:text-white',
-          ]"
+          :class="
+            [
+              'mx-1 px-3 py-1 rounded-md text-center shadow-none border-none',
+              table.getState().pagination.pageIndex === page - 1
+                ? 'bg-primary text-white'
+                : 'bg-transparent text-[#846D76] hover:bg-primary hover:text-white',
+            ].join(' ')
+          "
         >
           {{ page }}
         </Button>

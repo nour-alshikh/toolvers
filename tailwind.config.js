@@ -2,7 +2,7 @@
 export default {
   // important: true,
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}', './formkit.theme.ts'],
-  darkMode: ['class', 'class'],
+  darkMode: ['class'],
   theme: {
   	extend: {
   		borderRadius: {

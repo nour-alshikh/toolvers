@@ -183,3 +183,16 @@ export interface User {
         rendered_html: string;
       
     }
+    export interface InstalledTool {
+  id: number
+  name: string
+  type: string
+  created_at: string
+  status: string
+  tool_id: number
+  active: number
+  tool: {
+    identifier: string
+    type: string
+  }
+}

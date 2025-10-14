@@ -31,11 +31,11 @@ axiosInstance.interceptors.response.use((response) => {
             $toast.error("Unauthorized");
             router.push('/login');
             break
-        case 404:
-            $toast.error('Page not found');
+        // case 404:
+        //     $toast.error('Page not found');
 
-            router.push('/not-found');
-            break
+        //     router.push('/not-found');
+        //     break
         case 500:
             $toast.error('Internal Server Error');
             router.push('/internal-error');
