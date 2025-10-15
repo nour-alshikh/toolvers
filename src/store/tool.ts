@@ -24,6 +24,8 @@ export const useToolsStore = defineStore(
 
     const toolDetails = ref<any>({})
 
+    const toolValues = ref<any>({})
+
     const getTools = async (): Promise<Tool[]> => {
       const authStore = useAuthStore()
       const token = authStore.token
@@ -82,17 +84,12 @@ export const useToolsStore = defineStore(
     }
 
     const toggleToolStatus = async (userToolId: number) => {
-      // NOTE: Renamed argument for clarity: `userTool` -> `userToolId`
       const authStore = useAuthStore()
       const token = authStore.token
 
       const $toast = useToast()
-
       try {
-        isLoading.value = true
-
         const response = await axiosInstance.patch(
-          // Use the passed ID in the endpoint
           `/api/clients/user-tools/${userToolId}/toggle-active`,
           {},
           {
@@ -110,10 +107,7 @@ export const useToolsStore = defineStore(
         const err = error as AxiosError<{ errors?: Record<string, string[]> }>
         errors.value = err.response?.data?.errors ?? null
 
-        // CRITICAL: Ensure the error is thrown so `handleToggle` can catch it
         throw error
-      } finally {
-        isLoading.value = false
       }
     }
 
@@ -132,8 +126,6 @@ export const useToolsStore = defineStore(
 
         if (response.status === 200) {
           toolDetails.value = response.data.data
-
-          return toolDetails.value
         }
 
         return []
@@ -188,23 +180,19 @@ export const useToolsStore = defineStore(
       try {
         isLoading.value = true
 
-        const response = await axiosInstance.post(
-          `/api/clients/tools/upload`,
-          formData,
-          {
-            headers: {
-              authorization: `Bearer ${token}`,
-            
-              Accept: 'application/json',
-            },
+        const response = await axiosInstance.post(`/api/clients/tools/upload`, formData, {
+          headers: {
+            authorization: `Bearer ${token}`,
+
+            Accept: 'application/json',
           },
-        )
+        })
 
         if (response.status === 200) {
           return response.data.path
         }
 
-        return;
+        return
       } catch (error) {
         const err = error as AxiosError<{ errors?: Record<string, string[]> }>
         errors.value = err.response?.data?.errors ?? null
@@ -213,9 +201,117 @@ export const useToolsStore = defineStore(
         isLoading.value = false
       }
     }
+
+    const getToolDetailsAndValues = async (toolId: number, userToolId: number) => {
+      const authStore = useAuthStore()
+      const token = authStore.token
+
+      try {
+        isLoading.value = true
+
+        const response = await axiosInstance.get(
+          `/api/clients/tools/${toolId}/user-tools/${userToolId}`,
+          {
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          },
+        )
+
+        if (response.status === 200) {
+          toolDetails.value = response.data.data
+          toolValues.value = response.data.data.user_tool.values
+        }
+
+        return []
+      } catch (error) {
+        const err = error as AxiosError<{ errors?: Record<string, string[]> }>
+        errors.value = err.response?.data?.errors ?? null
+        return []
+      } finally {
+        isLoading.value = false
+      }
+    }
+
+    const updateToolValues = async (toolId: number, userToolId: number, formData: FormData) => {
+      const authStore = useAuthStore()
+      const token = authStore.token
+
+      try {
+        isLoading.value = true
+
+        await axiosInstance.put(`/api/clients/tools/${toolId}/user-tools/${userToolId}`, formData, {
+          headers: {
+            authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+        })
+
+        return []
+      } catch (error) {
+        const err = error as AxiosError<{ errors?: Record<string, string[]> }>
+        errors.value = err.response?.data?.errors ?? null
+        return []
+      } finally {
+        isLoading.value = false
+      }
+    }
+
+    const deleteTool = async (userToolId: number) => {
+      const authStore = useAuthStore()
+      const token = authStore.token
+
+      try {
+        isLoading.value = true
+
+        await axiosInstance.delete(`/api/clients/user-tools/${userToolId}`, {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        })
+
+        return []
+      } catch (error) {
+        const err = error as AxiosError<{ errors?: Record<string, string[]> }>
+        errors.value = err.response?.data?.errors ?? null
+        return []
+      } finally {
+        isLoading.value = false
+      }
+    }
+
+    const duplicateTool = async (userToolId: number) => {
+      const authStore = useAuthStore()
+      const token = authStore.token
+
+      try {
+        isLoading.value = true
+
+        await axiosInstance.post(
+          `/api/clients/user-tools/${userToolId}/duplicate`,
+          {},
+          {
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          },
+        )
+
+        return []
+      } catch (error) {
+        const err = error as AxiosError<{ errors?: Record<string, string[]> }>
+        errors.value = err.response?.data?.errors ?? null
+        return []
+      } finally {
+        isLoading.value = false
+      }
+    }
+
     return {
       tools,
       toolDetails,
+      toolValues,
       toolsTypes,
       isLoading,
       errors,
@@ -224,7 +320,11 @@ export const useToolsStore = defineStore(
       installTool,
       getInstalledTools,
       toggleToolStatus,
-      uploadImage
+      uploadImage,
+      getToolDetailsAndValues,
+      updateToolValues,
+      deleteTool,
+      duplicateTool,
     }
   },
   {

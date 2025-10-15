@@ -15,8 +15,19 @@ import {
   getSortedRowModel,
   useVueTable,
 } from '@tanstack/vue-table'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { ArrowsUpDownIcon } from '@heroicons/vue/24/outline' // Import new icons
-import { h, onMounted, ref } from 'vue'
+import { h, onMounted, ref, resolveComponent } from 'vue'
 import { cn, valueUpdater } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
@@ -37,16 +48,21 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import LoadingSm from '@/views/components/LoadingSm.vue'
+import Loading from '@/views/components/Loading.vue'
 import { icons } from '@/icons'
 import { useToolsStore } from '@/store/tool'
 import type { InstalledTool } from '@/types'
+import { useRouter } from 'vue-router'
+import { useToast } from 'vue-toast-notification'
 const { editIcon, statisticsIcon, deleteIcon, copyIcon } = icons
 
 const toolData = useToolsStore()
 
-const isLoading = ref<boolean>(false)
+const loadingRows = ref(new Set<number>())
 
 const allTools = ref<InstalledTool[]>([])
+
+const router = useRouter()
 
 onMounted(async () => {
   const tools = await toolData.getInstalledTools()
@@ -82,7 +98,6 @@ const columns = [
     header: () => h('div', { class: 'text-right' }, 'تاريخ البداية'),
     cell: ({ row }) => {
       const fullDate: string = row.getValue('created_at')
-      // نأخذ فقط الجزء الأول قبل حرف T
       const dateOnly = fullDate?.split('T')[0] || '-'
       return h('div', { class: 'text-center' }, dateOnly)
     },
@@ -91,38 +106,40 @@ const columns = [
     id: 'active',
     header: () => h('div', { class: 'text-right' }, 'حالة النشر'),
     cell: ({ row }) => {
+      const id = row.original.id
       const currentStatus = row.original.active === 1
 
       const handleToggle = async (checked: boolean) => {
         const previousStatus = row.original.active
         const newStatus = checked ? 1 : 0
 
-        row.original.active = newStatus
+        // mark this row as loading
+        loadingRows.value.add(id)
 
+        row.original.active = newStatus
         allTools.value = [...allTools.value]
 
         try {
-          isLoading.value = true
-          await toolData.toggleToolStatus(row?.original?.id)
+          await toolData.toggleToolStatus(id)
         } catch (error) {
           row.original.active = previousStatus
           allTools.value = [...allTools.value]
         } finally {
-          isLoading.value = false
+          loadingRows.value.delete(id)
         }
       }
-      
-      // if (isLoading.value) {
-      //   return h('div', { class: 'flex justify-center items-center' }, [
-      //     h(LoadingSm, { class: 'w-4 h-4 text-primary' }),
-      //   ])
-      // }
-      return h('div', { class: '' }, [
-        h(Switch, {
-          modelValue: currentStatus,
-          'onUpdate:modelValue': handleToggle,
-        }),
-      ])
+
+      // check if this row is loading
+      if (loadingRows.value.has(id)) {
+        return h('div', { class: 'flex justify-center items-center' }, [
+          h(LoadingSm, { class: 'w-2 h-2 text-primary' }),
+        ])
+      }
+
+      return h(Switch, {
+        modelValue: currentStatus,
+        'onUpdate:modelValue': handleToggle,
+      })
     },
   }),
   columnHelper.display({
@@ -130,7 +147,49 @@ const columns = [
     header: () => h('div', { class: 'text-center' }, 'الإجراءات'),
     cell: ({ row }) => {
       const handleAction = (action: string) => {
-        console.log(`${action} action triggered for row ID: ${row.original.id}`)
+        if (action === 'Edit') {
+          router.push(`/update-configure/${row.original.tool_id}/${row.original.id}`)
+        }
+
+        if (action === 'Delete') {
+          toolData.isLoading = true
+          toolData
+            .deleteTool(row.original.id)
+            .then(() => {
+              router.push('/dashboard')
+              const $toast = useToast()
+              $toast.success('تم حذف العنصر بنجاح')
+              allTools.value = allTools.value.filter((tool) => tool.id !== row.original.id)
+            })
+            .catch((error) => {
+              console.log(error)
+              const $toast = useToast()
+              $toast.error('حدث خطأ أثناء حذف العنصر')
+              toolData.isLoading = false
+              allTools.value = [...allTools.value]
+            })
+        }
+
+        if (action === 'Copy') {
+          toolData.isLoading = true
+          toolData
+            .duplicateTool(row.original.id)
+            .then(async () => {
+              const $toast = useToast()
+              $toast.success('تم نسخ العنصر بنجاح')
+
+              const tools = await toolData.getInstalledTools()
+              allTools.value = tools
+            })
+            .catch((error) => {
+              console.log(error)
+              const $toast = useToast()
+              $toast.error('حدث خطأ أثناء نسخ العنصر')
+            })
+            .finally(() => {
+              toolData.isLoading = false
+            })
+        }
       }
 
       return h('div', { class: 'flex justify-center space-x-2 space-x-reverse' }, [
@@ -173,17 +232,77 @@ const columns = [
           () => h('img', { src: statisticsIcon, alt: 'Statistics', class: 'h-4 w-4' }),
         ),
         // Delete Button
-        h(
-          Button,
-          {
-            variant: 'outline',
-            size: 'icon',
-            class: 'p-1 h-8 w-8 bg-red-500/20 hover:bg-red-500/30 border-none ',
-            title: 'حذف',
-            onClick: () => handleAction('Delete'),
-          },
-          () => h('img', { src: deleteIcon, alt: 'Delete', class: 'h-4 w-4' }),
-        ),
+        // Delete Confirmation Dialog
+
+        // وداخل تعريف الأعمدة — استبدل زر الحذف بهذا:
+        h('div', { class: 'inline-block' }, [
+          h(
+            AlertDialog,
+            {},
+            {
+              default: () => [
+                // Trigger (زر الحذف)
+                h(AlertDialogTrigger, { asChild: true }, () =>
+                  h(
+                    Button,
+                    {
+                      variant: 'outline',
+                      size: 'icon',
+                      class: 'p-1 h-8 w-8 bg-red-500/20 hover:bg-red-500/30 border-none',
+                      title: 'حذف',
+                    },
+                    () => h('img', { src: deleteIcon, alt: 'Delete', class: 'h-4 w-4' }),
+                  ),
+                ),
+
+                // المحتوى (الدايلوج)
+                h(
+                  AlertDialogContent,
+                  {},
+                  {
+                    default: () => [
+                      h(
+                        AlertDialogHeader,
+                        {},
+                        {
+                          default: () => [
+                            h(AlertDialogTitle, {}, 'هل أنت متأكد من الحذف؟'),
+                            h(
+                              AlertDialogDescription,
+                              {},
+                              'سيتم حذف هذا العنصر نهائيًا ولا يمكن التراجع عن ذلك.',
+                            ),
+                          ],
+                        },
+                      ),
+                      h(
+                        AlertDialogFooter,
+                        {},
+                        {
+                          default: () => [
+                            h(
+                              AlertDialogCancel,
+                              { class: 'bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded' },
+                              'إلغاء',
+                            ),
+                            h(
+                              AlertDialogAction,
+                              {
+                                class: 'bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded',
+                                onClick: () => handleAction('Delete'),
+                              },
+                              'تأكيد الحذف',
+                            ),
+                          ],
+                        },
+                      ),
+                    ],
+                  },
+                ),
+              ],
+            },
+          ),
+        ]),
       ])
     },
   }),
@@ -254,6 +373,7 @@ const handleStatusChange = (status: string) => {
 </script>
 
 <template>
+  <Loading v-if="toolData.isLoading" />
   <div class="w-full">
     <div class="grid grid-cols-2 gap-2 items-center justify-between w-full py-4">
       <div class="col-span-2 lg:col-span-1 flex items-center gap-2 flex-1">

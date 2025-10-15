@@ -10,10 +10,11 @@ import WidgetComponent from './configureTabs/WidgetComponent.vue'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { icons } from '@/icons'
 import { useToolsStore } from '@/store/tool'
-import type { ToolDetails } from '@/types'
+import type { ToolDetails, ToolInputField, ToolInputGroup } from '@/types'
 import Button from '@/components/ui/button/Button.vue'
 import { useToast } from 'vue-toast-notification'
 import Loading from '@/views/components/Loading.vue'
+import { storeToRefs } from 'pinia'
 
 const { primary, black, edit, showSettings, backArrow, eye } = icons
 
@@ -22,11 +23,25 @@ const router = useRouter()
 const screen = ref('desktop')
 const tab = ref('edit')
 
-const toolDetails = ref<ToolDetails | null>()
+const toolsStore = useToolsStore()
+const { toolDetails, toolValues } = storeToRefs(toolsStore)
 
+const toolId = router.currentRoute.value.params.id
+const userToolId = router.currentRoute.value.params.userId
 onMounted(async () => {
-  const toolId = router.currentRoute.value.params.id
-  toolDetails.value = await useToolsStore().getToolDetails(Number(toolId))
+
+  if (toolId && userToolId) {
+    await toolsStore.getToolDetailsAndValues(Number(toolId), Number(userToolId))
+
+    const toolInputs = toolDetails.value?.tool?.inputs
+    toolInputs?.forEach((input: ToolInputGroup) => {
+      input.inputs.forEach((inputItem: ToolInputField) => {
+        inputItem.default_value = toolValues.value[inputItem.name]
+      })
+    })
+  } else if (toolId && !userToolId) {
+    await toolsStore.getToolDetails(Number(toolId))
+  }
 })
 
 const toggleScreen = () => {
@@ -43,33 +58,33 @@ const saveTool = async () => {
   const mobileInputs = toolDetails.value?.tool?.mobile_inputs
   const mainInputs = toolDetails.value?.tool?.main_inputs
 
-  toolInputs?.forEach((input) => {
-    input.inputs.forEach((inputItem) => {
+  toolInputs?.forEach((input: ToolInputGroup) => {
+    input.inputs.forEach((inputItem: ToolInputField) => {
       form.append(inputItem.name, String(inputItem.default_value))
     })
   })
 
-  desktopInputs?.forEach((input) => {
-    input.inputs.forEach((inputItem) => {
+  desktopInputs?.forEach((input: ToolInputGroup) => {
+    input.inputs.forEach((inputItem: ToolInputField) => {
       form.append(inputItem.name, String(inputItem.default_value))
     })
   })
 
-  mobileInputs?.forEach((input) => {
-    input.inputs.forEach((inputItem) => {
+  mobileInputs?.forEach((input: ToolInputGroup) => {
+    input.inputs.forEach((inputItem: ToolInputField) => {
       form.append(inputItem.name, String(inputItem.default_value))
     })
   })
 
-  mainInputs?.forEach((input) => {
-    input.inputs.forEach((inputItem) => {
+  mainInputs?.forEach((input: ToolInputGroup) => {
+    input.inputs.forEach((inputItem: ToolInputField) => {
       form.append(inputItem.name, String(inputItem.default_value))
     })
   })
 
-  if (toolDetails.value?.tool?.id) {
-    await useToolsStore()
-      .installTool(toolDetails.value?.tool?.id, form)
+  if (toolDetails.value?.tool?.id && toolId && !userToolId) {
+    await toolsStore
+      .installTool(Number(toolId), form)
       .then(() => {
         router.push('/dashboard')
       })
@@ -80,14 +95,26 @@ const saveTool = async () => {
       .catch((error) => {
         console.log(error)
       })
-  }
+  } else if(toolId && userToolId){
+    await toolsStore
+      .updateToolValues(Number(toolId), Number(userToolId), form)
+      .then(() => {
+        router.push('/dashboard')
+      })
+      .then(() => {
+        const $toast = useToast()
+        $toast.success('تم تعديل الاشعار بنجاح')
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+}
 }
 </script>
 
 <template>
   <DefaultLayout>
-    <Loading v-if="useToolsStore().isLoading" />
-
+    <Loading v-if="toolsStore.isLoading" />
     <div class="py-3">
       <div class="flex flex-col lg:flex-row gap-3 relative">
         <div class="w-[470px]">
@@ -136,7 +163,7 @@ const saveTool = async () => {
             </div>
 
             <TabsContent value="edit">
-              <InputCollapsible :inputs="toolDetails?.tool.inputs ?? []" />
+              <InputCollapsible :inputs="toolDetails?.tool?.inputs ?? []" />
             </TabsContent>
             <TabsContent value="display">
               <DesktopInputs
@@ -144,7 +171,11 @@ const saveTool = async () => {
                 :inputs="toolDetails?.tool.desktop_inputs ?? []"
                 :main-inputs="toolDetails?.tool.main_inputs ?? []"
               />
-              <MobileInputs v-else :inputs="toolDetails?.tool.mobile_inputs ?? []" :main-inputs="toolDetails?.tool.main_inputs ?? []" />
+              <MobileInputs
+                v-else
+                :inputs="toolDetails?.tool.mobile_inputs ?? []"
+                :main-inputs="toolDetails?.tool.main_inputs ?? []"
+              />
             </TabsContent>
           </Tabs>
         </div>
@@ -168,6 +199,7 @@ const saveTool = async () => {
               </Button>
             </div>
           </div>
+
           <div
             class="flex-1 mt-[67px] rounded-lg border border-dashed border-[#E4D0D8] h-[calc(100vh-140px)] overflow-y-hidden transition-all duration-300 ease-in-out"
             :class="

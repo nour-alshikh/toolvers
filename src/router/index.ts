@@ -75,6 +75,12 @@ const router = createRouter({
       component: () => import('@/views/pages/Configure.vue'),
       meta: { requiresAuth: true }
     },
+    {
+      path: '/update-configure/:id/:userId',
+      name: 'update-configure',
+      component: () => import('@/views/pages/Configure.vue'),
+      meta: { requiresAuth: true }
+    },
 
     {
       path: '/contact',

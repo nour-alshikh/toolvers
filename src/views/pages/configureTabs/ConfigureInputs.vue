@@ -9,21 +9,38 @@ import IconTab from './imageTabs/IconTab.vue'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Slider } from '@/components/ui/slider'
 
-import type { ToolInputGroup } from '@/types'
+import type { ToolInputGroup, ToolInputField } from '@/types'
 
 import { useTextInputHandler } from '@/composables/useTextInputHandler'
 import { useColorHandler } from '@/composables/useColorInputHandler'
 import { useRangeNumberInputHandler } from '@/composables/useRangeNumberInputHandler'
+import { watch } from 'vue'
 
-const { handleTextInputChange } = useTextInputHandler()
+const { handleTextInputChange , updateElement } = useTextInputHandler()
 const { handleColorChange } = useColorHandler()
 const { handleRangeNumberInput } = useRangeNumberInputHandler()
 
 const props = defineProps<{
   inputs: ToolInputGroup[]
- 
 }>()
 
+
+props.inputs.forEach(group => {
+  group.inputs.forEach((inputItem: ToolInputField) => {
+    watch(
+      () => inputItem.default_value,
+      (newVal) => {
+        if (newVal === undefined || newVal === null) return
+        
+        if (inputItem.type === 'text') {
+          
+          updateElement(String(inputItem.id), String(inputItem.property), String(newVal))
+        }
+      },
+      { immediate: true } 
+    )
+  })
+})
 
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-screen w-screen flex justify-center items-center bg-primary/5 backdrop-blur-[2px] absolute top-0 left-0 z-50"
+    class="fixed h-screen w-screen flex justify-center items-center bg-[#000000]/5 backdrop-blur-[2px] top-0 left-0 z-50"
   >
     <div class="sk-chase">
       <div class="sk-chase-dot"></div>
@@ -35,7 +35,7 @@
   display: block;
   width: 25%;
   height: 25%;
-  background-color: #fff;
+  background-color: #bf185d;
   border-radius: 100%;
   animation: sk-chase-dot-before 2s infinite ease-in-out both;
 }
