@@ -14,16 +14,19 @@ import type { ToolInputGroup } from '@/types'
 import { useTextInputHandler } from '@/composables/useTextInputHandler'
 import { useColorHandler } from '@/composables/useColorInputHandler'
 import { useRangeNumberInputHandler } from '@/composables/useRangeNumberInputHandler'
-import { useImageHandler } from '@/composables/useImageHandler'
+import { useSwitchInputHandler } from '@/composables/useSwitchInputHandler'
 import Switch from '@/components/ui/switch/Switch.vue'
 
 const { handleTextInputChange } = useTextInputHandler()
 const { handleColorChange } = useColorHandler()
 const { handleRangeNumberInput } = useRangeNumberInputHandler()
+const { handleSwitchChange } = useSwitchInputHandler()
 
 const props = defineProps<{
   inputs: ToolInputGroup[]
 }>()
+
+
 </script>
 
 <template>
@@ -170,15 +173,20 @@ const props = defineProps<{
             </Tabs>
           </div>
 
-          <!--  -->
-          <div v-if="inputItem.type === 'switch'" class="relative flex justify-center items-center gap-3">
-            <Label
-             
-              :for="inputItem.id"
-            >
+          <!-- Switch input -->
+          <div
+            v-if="inputItem.type === 'switch'"
+            class="relative flex justify-center items-center gap-3"
+          >
+            <Label :for="inputItem.id">
               {{ inputItem.label }}
             </Label>
-            <Switch :id="inputItem.id" ThumbClass="data-[state=checked]:translate-x-4" :model-value="inputItem.default_value === 'on'" @update:model-value="inputItem.default_value = $event ? 'on' : 'off'" />
+            <Switch
+              :id="inputItem.id"
+              ThumbClass="data-[state=checked]:translate-x-4"
+              :model-value="inputItem.default_value === 'on'"
+              @update:model-value="(newState) => handleSwitchChange(inputItem, newState)"
+            />
           </div>
           <div v-if="inputItem.type === 'display-pages'">
             <Tabs default-value="all" class="flex flex-col items-end justify-center">
