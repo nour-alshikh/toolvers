@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
-import { onMounted, provide, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, provide, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import InputCollapsible from './configureTabs/InputCollapsible.vue'
@@ -16,6 +16,11 @@ import { useToast } from 'vue-toast-notification'
 import Loading from '@/views/components/Loading.vue'
 import { storeToRefs } from 'pinia'
 
+import { useTextInputHandler } from '@/composables/useTextInputHandler'
+import { useColorHandler } from '@/composables/useColorInputHandler'
+import { useRangeNumberInputHandler } from '@/composables/useRangeNumberInputHandler'
+import { useImageHandler } from '@/composables/useImageHandler'
+
 const { primary, black, edit, showSettings, backArrow, eye } = icons
 
 const router = useRouter()
@@ -29,12 +34,33 @@ const { toolDetails, toolValues } = storeToRefs(toolsStore)
 const toolId = router.currentRoute.value.params.id
 const userToolId = router.currentRoute.value.params.userId
 onMounted(async () => {
-
   if (toolId && userToolId) {
     await toolsStore.getToolDetailsAndValues(Number(toolId), Number(userToolId))
 
     const toolInputs = toolDetails.value?.tool?.inputs
+    const desktopInputs = toolDetails.value?.tool?.desktop_inputs
+    const mobileInputs = toolDetails.value?.tool?.mobile_inputs
+    const mainInputs = toolDetails.value?.tool?.main_inputs
+
     toolInputs?.forEach((input: ToolInputGroup) => {
+      input.inputs.forEach((inputItem: ToolInputField) => {
+        inputItem.default_value = toolValues.value[inputItem.name]
+      })
+    })
+
+    desktopInputs?.forEach((input: ToolInputGroup) => {
+      input.inputs.forEach((inputItem: ToolInputField) => {
+        inputItem.default_value = toolValues.value[inputItem.name]
+      })
+    })
+
+    mobileInputs?.forEach((input: ToolInputGroup) => {
+      input.inputs.forEach((inputItem: ToolInputField) => {
+        inputItem.default_value = toolValues.value[inputItem.name]
+      })
+    })
+
+    mainInputs?.forEach((input: ToolInputGroup) => {
       input.inputs.forEach((inputItem: ToolInputField) => {
         inputItem.default_value = toolValues.value[inputItem.name]
       })
@@ -92,10 +118,11 @@ const saveTool = async () => {
         const $toast = useToast()
         $toast.success('تم اضافة الاشعار بنجاح')
       })
+
       .catch((error) => {
         console.log(error)
       })
-  } else if(toolId && userToolId){
+  } else if (toolId && userToolId) {
     await toolsStore
       .updateToolValues(Number(toolId), Number(userToolId), form)
       .then(() => {
@@ -105,11 +132,61 @@ const saveTool = async () => {
         const $toast = useToast()
         $toast.success('تم تعديل الاشعار بنجاح')
       })
+
       .catch((error) => {
         console.log(error)
       })
+  }
 }
-}
+
+// Get the update functions
+const { updateTextElement } = useTextInputHandler()
+const { updateColorChange } = useColorHandler()
+const { updateRangeNumberChange } = useRangeNumberInputHandler()
+const { updateImageChange } = useImageHandler()
+
+const allInputs = computed(() => {
+  const inputs: any[] = []
+  toolDetails.value?.tool?.inputs?.forEach((group: any) => inputs.push(...group.inputs))
+  toolDetails.value?.tool?.desktop_inputs?.forEach((group: any) => inputs.push(...group.inputs))
+  toolDetails.value?.tool?.mobile_inputs?.forEach((group: any) => inputs.push(...group.inputs))
+  toolDetails.value?.tool?.main_inputs?.forEach((group: any) => inputs.push(...group.inputs))
+  return inputs
+})
+
+watch(
+  allInputs,
+  (inputs) => {
+    inputs.forEach((inputItem: ToolInputField) => {
+      watch(
+        () => inputItem.default_value,
+        (newVal) => {
+          if (newVal === undefined || newVal === null) return
+
+          if (inputItem.type === 'text') {
+            updateTextElement(String(inputItem.id), String(inputItem.property), String(newVal))
+          }
+          if (inputItem.type === 'color') {
+            updateColorChange(inputItem.id, String(inputItem.property), String(newVal))
+          }
+          if (inputItem.type === 'range') {
+            updateRangeNumberChange(inputItem.id, String(inputItem.property), String(newVal))
+          }
+           if (inputItem.type === 'image') {
+            updateImageChange(inputItem.id, String(inputItem.property), String(newVal))
+          }
+
+        },
+        { immediate: true },
+      )
+    })
+  },
+
+  { immediate: true, deep: true },
+)
+onUnmounted(() => {
+  toolsStore.clearStore()
+})
 </script>
 
 <template>
@@ -194,7 +271,7 @@ const saveTool = async () => {
               >
                 حفظ</Button
               >
-              <Button class="bg-transparent border-none w-fit p-0">
+              <Button class="bg-transparent border-none w-fit p-0" @click="router.back()">
                 <img :src="backArrow" alt="" />
               </Button>
             </div>

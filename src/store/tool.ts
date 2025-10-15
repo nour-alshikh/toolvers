@@ -308,6 +308,11 @@ export const useToolsStore = defineStore(
       }
     }
 
+    const clearStore = () => {
+      toolValues.value = {}
+      toolDetails.value = {}
+    }
+
     return {
       tools,
       toolDetails,
@@ -325,6 +330,7 @@ export const useToolsStore = defineStore(
       updateToolValues,
       deleteTool,
       duplicateTool,
+      clearStore,
     }
   },
   {

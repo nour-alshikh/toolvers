@@ -9,39 +9,21 @@ import IconTab from './imageTabs/IconTab.vue'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Slider } from '@/components/ui/slider'
 
-import type { ToolInputGroup, ToolInputField } from '@/types'
+import type { ToolInputGroup } from '@/types'
 
 import { useTextInputHandler } from '@/composables/useTextInputHandler'
 import { useColorHandler } from '@/composables/useColorInputHandler'
 import { useRangeNumberInputHandler } from '@/composables/useRangeNumberInputHandler'
-import { watch } from 'vue'
+import { useImageHandler } from '@/composables/useImageHandler'
+import Switch from '@/components/ui/switch/Switch.vue'
 
-const { handleTextInputChange , updateElement } = useTextInputHandler()
+const { handleTextInputChange } = useTextInputHandler()
 const { handleColorChange } = useColorHandler()
 const { handleRangeNumberInput } = useRangeNumberInputHandler()
 
 const props = defineProps<{
   inputs: ToolInputGroup[]
 }>()
-
-
-props.inputs.forEach(group => {
-  group.inputs.forEach((inputItem: ToolInputField) => {
-    watch(
-      () => inputItem.default_value,
-      (newVal) => {
-        if (newVal === undefined || newVal === null) return
-        
-        if (inputItem.type === 'text') {
-          
-          updateElement(String(inputItem.id), String(inputItem.property), String(newVal))
-        }
-      },
-      { immediate: true } 
-    )
-  })
-})
-
 </script>
 
 <template>
@@ -122,7 +104,7 @@ props.inputs.forEach(group => {
               :data-id="inputItem.id"
               :property="inputItem.property"
             />
-            <div class="relative ">
+            <div class="relative">
               <Label
                 class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
                 for="color-input"
@@ -176,10 +158,11 @@ props.inputs.forEach(group => {
               </TabsList>
 
               <TabsContent value="image">
-                <ImageTab   
-                v-model="inputItem.default_value"
-                :data-id="inputItem.id"
-                :data-property="inputItem.property" />
+                <ImageTab
+                  v-model="inputItem.default_value"
+                  :data-id="inputItem.id"
+                  :data-property="inputItem.property"
+                />
               </TabsContent>
               <TabsContent value="icon">
                 <IconTab />
@@ -187,6 +170,16 @@ props.inputs.forEach(group => {
             </Tabs>
           </div>
 
+          <!--  -->
+          <div v-if="inputItem.type === 'switch'" class="relative flex justify-center items-center gap-3">
+            <Label
+             
+              :for="inputItem.id"
+            >
+              {{ inputItem.label }}
+            </Label>
+            <Switch :id="inputItem.id" ThumbClass="data-[state=checked]:translate-x-4" :model-value="inputItem.default_value === 'on'" @update:model-value="inputItem.default_value = $event ? 'on' : 'off'" />
+          </div>
           <div v-if="inputItem.type === 'display-pages'">
             <Tabs default-value="all" class="flex flex-col items-end justify-center">
               <TabsList

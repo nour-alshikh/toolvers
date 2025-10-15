@@ -9,8 +9,15 @@ const handleRangeNumberInput = (inputItem: any)=>{
     if(el instanceof HTMLElement && property){
         el.style[property as any] = default_value + 'px'
     }
-
-    
 }
-    return { handleRangeNumberInput }
+
+const updateRangeNumberChange = (id: string | string[], property: string, value: string) => {
+    const toolversTool = document.querySelector('.toolvers-tool')
+    const el = toolversTool?.querySelector(`[data-id="${id}"]`)
+
+    if(el instanceof HTMLElement && property){
+        el.style[property as any] = value + 'px'
+    }
+}
+    return { handleRangeNumberInput , updateRangeNumberChange }
   }

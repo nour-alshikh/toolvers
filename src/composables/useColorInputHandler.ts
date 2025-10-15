@@ -38,5 +38,33 @@ export function useColorHandler() {
     }
   }
 
-  return { handleColorChange }
+  const updateColorChange = (id: string | string[], property: string, color: string) => {
+   
+    const toolversTool = document.querySelector('.toolvers-tool');
+
+    if (!color || !id || !property || !toolversTool) return;
+
+    const updateStyle = (el: Element | null, value: string, prop: string) => {
+        if (!el) return;
+        if (el instanceof SVGElement) {
+            (el as SVGElement).style.fill = value;
+        } else if (el instanceof HTMLElement) {
+            (el.style as any)[prop] = value;
+        }
+    };
+
+    if (Array.isArray(id)) {
+        id.forEach((i: string) => {
+            const el = toolversTool.querySelector(`[data-id="${i}"]`);
+            updateStyle(el, color, property);
+        });
+    } else {
+
+        const el = toolversTool.querySelector(`[data-id="${id}"]`);
+        updateStyle(el, color, property);
+    }
+}
+
+
+  return { handleColorChange, updateColorChange }
 }

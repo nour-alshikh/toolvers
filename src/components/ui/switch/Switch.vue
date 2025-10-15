@@ -10,7 +10,7 @@ import {
 } from "reka-ui"
 import { cn } from "@/lib/utils"
 
-const props = defineProps<SwitchRootProps & { class?: HTMLAttributes["class"] }>()
+const props = defineProps<SwitchRootProps & { class?: HTMLAttributes["class"] } & { ThumbClass?: HTMLAttributes["class"] }>()
 
 const emits = defineEmits<SwitchRootEmits>()
 
@@ -28,7 +28,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
     )"
   >
     <SwitchThumb
-      :class="cn('pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:-translate-x-4 data-[state=unchecked]:translate-x-0')"
+      :class="cn('pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:-translate-x-4 data-[state=unchecked]:translate-x-0', props.ThumbClass)"
     >
       <slot name="thumb" />
     </SwitchThumb>

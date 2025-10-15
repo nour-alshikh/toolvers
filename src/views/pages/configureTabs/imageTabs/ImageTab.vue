@@ -3,7 +3,7 @@ import { icons } from '@/icons'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useToolsStore } from '@/store/tool'
-import { onMounted, ref } from 'vue'
+import { onMounted, onUpdated, ref } from 'vue'
 import Loading from '@/views/components/Loading.vue'
 
 const emit = defineEmits<{
@@ -20,6 +20,10 @@ const props = defineProps<{
 const ImagePath = ref<string>('')
 
 onMounted(() => {
+  ImagePath.value = String(modelValue.value ?? '')
+})
+
+onUpdated(() => {
   ImagePath.value = String(modelValue.value ?? '')
 })
 const handleFileSelect = async (e: any) => {
@@ -75,7 +79,7 @@ const handleFileSelect = async (e: any) => {
       accept="image/*"
       class="opacity-0 absolute inset-0 cursor-pointer w-full h-full z-50"
     />
+    <img :src="ImagePath" alt="" />
   </div>
 
-  <img :src="ImagePath" alt="" />
 </template>
