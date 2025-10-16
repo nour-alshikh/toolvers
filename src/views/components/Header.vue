@@ -2,8 +2,9 @@
 import Navbar from './Navbar.vue'
 import { Button } from '@/components/ui/button'
 import ProfileMenu from './ProfileMenu.vue'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { icons } from '@/icons'
+import { useRouter } from 'vue-router'
 
 const isDark = ref(false)
 
@@ -21,10 +22,28 @@ const toggleTheme = () => {
     document.documentElement.classList.remove('dark')
   }
 }
+
+const router = useRouter()
+
+const isHidden = ref(false)
+
+const handleScroll = () => {
+  if (router.currentRoute.value.path.includes('/configure')) {
+    isHidden.value = window.scrollY > 65
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <template>
-  <header class="bg-secondaryBackground py-4 px-2 lg:px-8 sticky top-0 z-40">
+  <header class="bg-secondaryBackground py-4 px-2 lg:px-8 sticky top-0 z-40"  :class="{ 'opacity-0 pointer-events-none -translate-y-full': isHidden }">
     <div class="rounded-lg border py-3 px-2 lg:px-10 flex justify-between items-center">
       <div>
         <img :src="isDark ? icons.darkLogo : icons.logo" alt="Logo" class="w-24" />

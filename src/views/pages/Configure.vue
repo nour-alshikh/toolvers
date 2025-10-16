@@ -10,7 +10,7 @@ import WidgetComponent from './configureTabs/WidgetComponent.vue'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { icons } from '@/icons'
 import { useToolsStore } from '@/store/tool'
-import type {    ToolInputField, ToolInputGroup } from '@/types'
+import type { ToolInputField, ToolInputGroup } from '@/types'
 import Button from '@/components/ui/button/Button.vue'
 import { useToast } from 'vue-toast-notification'
 import Loading from '@/views/components/Loading.vue'
@@ -35,15 +35,15 @@ const { toolDetails, toolValues } = storeToRefs(toolsStore)
 const toolId = router.currentRoute.value.params.id
 const userToolId = router.currentRoute.value.params.userId
 
-onMounted(() => {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-  document.body.style.overflow = 'hidden'
-})
+// onMounted(() => {
+//   window.scrollTo({ top: 0, behavior: 'smooth' })
+//   document.body.style.overflow = 'hidden'
+// })
 
-onUnmounted(() => {
+// onUnmounted(() => {
 
-  document.body.style.overflow = ''
-})
+//   document.body.style.overflow = ''
+// })
 
 onMounted(async () => {
   if (toolId && userToolId) {
@@ -185,13 +185,12 @@ watch(
           if (inputItem.type === 'range') {
             updateRangeNumberChange(inputItem.id, String(inputItem.property), String(newVal))
           }
-           if (inputItem.type === 'image') {
+          if (inputItem.type === 'image') {
             updateImageChange(inputItem.id, String(inputItem.property), String(newVal))
           }
           if (inputItem.type === 'switch') {
             updateSwitchElement(inputItem.id, String(inputItem.property), String(newVal))
           }
-
         },
         { immediate: true },
       )
@@ -208,14 +207,14 @@ onUnmounted(() => {
 <template>
   <DefaultLayout>
     <Loading v-if="toolsStore.isLoading" />
-    <div class="col-span-3">
-      
-    </div>
+    <div class="col-span-3"></div>
     <div class="py-3">
       <div class="flex flex-col lg:flex-row gap-3 relative">
         <div class="w-[470px]">
           <Tabs v-model="tab">
-            <TabsList class="grid w-full grid-cols-2 bg-secondaryBackground px-8 py-3">
+            <TabsList
+              class="grid w-full grid-cols-2 bg-secondaryBackground px-8 py-3 sticky top-0 z-40"
+            >
               <TabsTrigger
                 class="px-4 py-2 text-[15px] flex items-center justify-between gap-2 font-bold leading-[175%] tracking-[0.15px]"
                 value="display"
@@ -258,7 +257,7 @@ onUnmounted(() => {
               </div>
             </div>
 
-            <TabsContent value="edit" class="overflow-y-scroll h-[calc(100vh-280px)]">
+            <TabsContent value="edit">
               <InputCollapsible :inputs="toolDetails?.tool?.inputs ?? []" />
             </TabsContent>
             <TabsContent value="display">
@@ -276,7 +275,9 @@ onUnmounted(() => {
           </Tabs>
         </div>
         <div class="relative flex-1">
-          <div class="rounded-lg bg-secondaryBackground flex justify-between py-3 px-8">
+          <div
+            class="rounded-lg h-[67px] bg-secondaryBackground flex justify-between py-3 px-8 sticky top-0 z-40"
+          >
             <div
               class="text-[#8F707D] font-[Almarai] text-[13px] font-normal leading-[20px] hover:underline decoration-solid decoration-auto underline-offset-auto flex gap-2 items-center cursor-pointer"
             >
@@ -296,24 +297,17 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <div
-            class="flex-1 mt-[67px] rounded-lg border border-dashed border-[#E4D0D8] h-[calc(100vh-140px)] overflow-y-hidden transition-all duration-300 ease-in-out"
-            :class="
-              screen === 'desktop'
-                ? 'w-[calc(100vw-550px)] fixed top-[130px] left-3 '
-                : 'w-[390px] sticky top-[130px] mx-auto'
-            "
-          >
-            <div class="w-full h-full absolute opacity-40">
+          <div class="h-[800px] mt-4 sticky top-[75px]">
+            <div class="w-full h-full absolute opacity-40 bg-red-400">
               <iframe
-                src="http://localhost:3000/dashboard"
+
                 width="100%"
                 height="100%"
                 frameborder="0"
               >
               </iframe>
             </div>
-            <WidgetComponent :widget="toolDetails?.rendered_html ?? ''" :screen="screen" />
+            <WidgetComponent :widget="toolDetails?.rendered_html ?? ''" />
           </div>
         </div>
       </div>
@@ -326,7 +320,7 @@ button[data-state='active'] {
   background-color: #f0dae3;
   color: #be185d;
 }
-body{
+body {
   overflow: hidden !important;
 }
 </style>

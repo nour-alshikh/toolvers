@@ -4,10 +4,6 @@ defineProps({
     type: String,
     required: false,
   },
-  screen: {
-    type: String,
-    required: true,
-  },
 })
 
 </script>
