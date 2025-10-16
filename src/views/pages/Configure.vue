@@ -20,6 +20,7 @@ import { useTextInputHandler } from '@/composables/useTextInputHandler'
 import { useColorHandler } from '@/composables/useColorInputHandler'
 import { useRangeNumberInputHandler } from '@/composables/useRangeNumberInputHandler'
 import { useImageHandler } from '@/composables/useImageHandler'
+import { useSwitchInputHandler } from '@/composables/useSwitchInputHandler'
 
 const { primary, black, edit, showSettings, backArrow, eye } = icons
 
@@ -33,6 +34,17 @@ const { toolDetails, toolValues } = storeToRefs(toolsStore)
 
 const toolId = router.currentRoute.value.params.id
 const userToolId = router.currentRoute.value.params.userId
+
+onMounted(() => {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+  document.body.style.overflow = 'hidden'
+})
+
+onUnmounted(() => {
+
+  document.body.style.overflow = ''
+})
+
 onMounted(async () => {
   if (toolId && userToolId) {
     await toolsStore.getToolDetailsAndValues(Number(toolId), Number(userToolId))
@@ -144,6 +156,7 @@ const { updateTextElement } = useTextInputHandler()
 const { updateColorChange } = useColorHandler()
 const { updateRangeNumberChange } = useRangeNumberInputHandler()
 const { updateImageChange } = useImageHandler()
+const { updateSwitchElement } = useSwitchInputHandler()
 
 const allInputs = computed(() => {
   const inputs: any[] = []
@@ -175,6 +188,9 @@ watch(
            if (inputItem.type === 'image') {
             updateImageChange(inputItem.id, String(inputItem.property), String(newVal))
           }
+          if (inputItem.type === 'switch') {
+            updateSwitchElement(inputItem.id, String(inputItem.property), String(newVal))
+          }
 
         },
         { immediate: true },
@@ -192,6 +208,9 @@ onUnmounted(() => {
 <template>
   <DefaultLayout>
     <Loading v-if="toolsStore.isLoading" />
+    <div class="col-span-3">
+      
+    </div>
     <div class="py-3">
       <div class="flex flex-col lg:flex-row gap-3 relative">
         <div class="w-[470px]">
@@ -239,7 +258,7 @@ onUnmounted(() => {
               </div>
             </div>
 
-            <TabsContent value="edit">
+            <TabsContent value="edit" class="overflow-y-scroll h-[calc(100vh-280px)]">
               <InputCollapsible :inputs="toolDetails?.tool?.inputs ?? []" />
             </TabsContent>
             <TabsContent value="display">
@@ -306,5 +325,8 @@ onUnmounted(() => {
 button[data-state='active'] {
   background-color: #f0dae3;
   color: #be185d;
+}
+body{
+  overflow: hidden !important;
 }
 </style>

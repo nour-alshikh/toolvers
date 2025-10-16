@@ -67,7 +67,7 @@ const removeSelectedInput = (index: number) => {
           </Label>
 
           <Input
-            class="p-4 h-12 text-right"
+            class="p-4 h-auto text-right"
             type="text"
             placeholder=""
             v-model="allExceptInputs[index]"
@@ -108,7 +108,7 @@ const removeSelectedInput = (index: number) => {
           </Label>
 
           <Input
-            class="p-4 h-12 text-right"
+            class="p-4 h-auto text-right"
             type="text"
             placeholder=""
             v-model="selectedInputs[index]"

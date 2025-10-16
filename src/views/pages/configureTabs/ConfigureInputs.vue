@@ -64,7 +64,7 @@ const props = defineProps<{
           :class="inputItem.class"
         >
           <!-- Text input -->
-          <div v-if="inputItem.type === 'text'">
+          <div v-if="inputItem.type === 'text'" >
             <Label
               class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
               for="color-input "
@@ -83,7 +83,7 @@ const props = defineProps<{
           </div>
 
           <!-- Color input -->
-          <div v-if="inputItem.type === 'color'" class="mt-5 relative">
+          <div v-if="inputItem.type === 'color'" >
             <ColorInput
               @updateColor="(newColor) => handleColorChange(newColor, inputItem)"
               :label="inputItem.label"
@@ -92,7 +92,7 @@ const props = defineProps<{
           </div>
 
           <!-- Range input -->
-          <div v-if="inputItem.type === 'range'" class="mt-5 relative flex gap-3 flex-1">
+          <div v-if="inputItem.type === 'range'" class=" relative flex gap-3 flex-1">
             <Slider
               :model-value="[Number(inputItem.default_value) || 0]"
               @update:model-value="
@@ -116,7 +116,7 @@ const props = defineProps<{
               </Label>
 
               <Input
-                class="p-4 h-12 text-right"
+                class="p-4 h-auto text-right"
                 type="number"
                 placeholder=""
                 :min="Number(inputItem.min) || 12"
@@ -131,7 +131,7 @@ const props = defineProps<{
           </div>
 
           <!-- Number input -->
-          <div v-if="inputItem.type === 'number'" class="mt-5 relative flex gap-3 flex-1">
+          <div v-if="inputItem.type === 'number'" class="relative flex gap-3 flex-1">
             <div class="relative">
               <Label
                 class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
@@ -141,7 +141,7 @@ const props = defineProps<{
               </Label>
 
               <Input
-                class="p-4 h-12 text-right"
+                class="p-4 h-auto text-right"
                 type="number"
                 placeholder=""
                 v-model="inputItem.default_value"
