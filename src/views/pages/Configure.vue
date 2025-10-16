@@ -26,8 +26,8 @@ const { primary, black, edit, showSettings, backArrow, eye } = icons
 
 const router = useRouter()
 
-const screen = ref('desktop')
-const tab = ref('edit')
+const screen = ref<'desktop' | 'mobile'>('desktop')
+const tab = ref<'edit' | 'preview'>('edit')
 
 const toolsStore = useToolsStore()
 const { toolDetails, toolValues } = storeToRefs(toolsStore)
@@ -35,15 +35,7 @@ const { toolDetails, toolValues } = storeToRefs(toolsStore)
 const toolId = router.currentRoute.value.params.id
 const userToolId = router.currentRoute.value.params.userId
 
-// onMounted(() => {
-//   window.scrollTo({ top: 0, behavior: 'smooth' })
-//   document.body.style.overflow = 'hidden'
-// })
 
-// onUnmounted(() => {
-
-//   document.body.style.overflow = ''
-// })
 
 onMounted(async () => {
   if (toolId && userToolId) {
@@ -297,10 +289,9 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <div class="h-[800px] mt-4 sticky top-[75px]">
-            <div class="w-full h-full absolute opacity-40 bg-red-400">
+          <div class="h-[750px] mt-4 sticky top-[100px]">
+            <div class="w-full h-full absolute opacity-40 border border-red-400">
               <iframe
-
                 width="100%"
                 height="100%"
                 frameborder="0"
