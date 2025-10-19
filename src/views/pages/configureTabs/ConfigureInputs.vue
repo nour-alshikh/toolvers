@@ -20,7 +20,7 @@ import AllTab from './displayPagesTabs/AllTab.vue'
 import SelectedTab from './displayPagesTabs/SelectedTab.vue'
 import { useToolsStore } from '@/store/tool'
 import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
+import { icons } from '@/icons'
 
 const { handleTextInputChange } = useTextInputHandler()
 const { handleColorChange } = useColorHandler()
@@ -194,6 +194,7 @@ const props = defineProps<{
               @update:model-value="(newState) => handleSwitchChange(inputItem, newState)"
             />
           </div>
+
           <div v-if="inputItem.type === 'display-pages'">
             <div class="flex flex-col items-end justify-center">
               <div
@@ -224,6 +225,54 @@ const props = defineProps<{
               <div class="mt-4">
                 <AllTab v-if="displayPages.all_pages === 'true'" />
                 <SelectedTab v-else />
+              </div>
+            </div>
+          </div>
+
+          <div v-if="inputItem.type === 'position'" class="relative w-1/2 m-auto">
+            <div class="grid grid-cols-3 grid-rows-3 gap-2">
+              <div
+                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+                :class="inputItem.default_value === 'top-left' ? 'bg-primary/10' : ''"
+              ></div>
+              <div
+                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+                :class="inputItem.default_value === 'top' ? 'bg-primary/10' : ''"
+              ></div>
+              <div
+                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+                :class="inputItem.default_value === 'top-right' ? 'bg-primary/10' : ''"
+              ></div>
+
+              <div
+                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+                :class="inputItem.default_value === 'center-left' ? 'bg-primary/10' : ''"
+              ></div>
+              <div></div>
+              <div
+                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+                :class="inputItem.default_value === 'center-right' ? 'bg-primary/10' : ''"
+              ></div>
+              <div
+                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+                :class="inputItem.default_value === 'bottom-left' ? 'bg-primary/10' : ''"
+              ></div>
+              <div
+                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+                :class="inputItem.default_value === 'bottom' ? 'bg-primary/10' : ''"
+              ></div>
+              <div
+                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
+                :class="inputItem.default_value === 'bottom-right' ? 'bg-primary/10' : ''"
+              ></div>
+
+              <div class="col-span-3 row-span-3">
+                <Button
+                  class="border border-primary rounded-lg flex items-center gap-2 bg-transparent text-primary mt-2 hover:bg-primary hover:text-white transition-all duration-200 ease-in-out"
+                >
+                  التحكم الحر في مكان الاشعار
+                  <img :src="icons.freeMove" alt="" />
+                </Button>
               </div>
             </div>
           </div>

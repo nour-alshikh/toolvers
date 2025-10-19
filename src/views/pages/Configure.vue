@@ -51,13 +51,13 @@ onMounted(async () => {
 
     desktopInputs?.forEach((input: ToolInputGroup) => {
       input.inputs.forEach((inputItem: ToolInputField) => {
-        inputItem.default_value = toolValues.value[inputItem.name]
+        inputItem.default_value = displayPages.value[inputItem.name]
       })
     })
 
     mobileInputs?.forEach((input: ToolInputGroup) => {
       input.inputs.forEach((inputItem: ToolInputField) => {
-        inputItem.default_value = toolValues.value[inputItem.name]
+        inputItem.default_value = displayPages.value[inputItem.name]
       })
     })
 
@@ -94,13 +94,13 @@ const saveTool = async () => {
 
   desktopInputs?.forEach((input: ToolInputGroup) => {
     input.inputs.forEach((inputItem: ToolInputField) => {
-      form.append(inputItem.name, String(inputItem.default_value))
+      form.append(`view[${inputItem.name}]`, String(inputItem.default_value))
     })
   })
 
   mobileInputs?.forEach((input: ToolInputGroup) => {
     input.inputs.forEach((inputItem: ToolInputField) => {
-      form.append(inputItem.name, String(inputItem.default_value))
+      form.append(`view[${inputItem.name}]`, String(inputItem.default_value))
     })
   })
 
@@ -117,9 +117,6 @@ const saveTool = async () => {
     form.append(`view[urls][${index}][operator]`, url.operator)
   })
 
-  for (const [key, value] of form.entries()) {
-    console.log(`${key}:`, value)
-  }
   if (toolDetails.value?.tool?.id && toolId && !userToolId) {
     await toolsStore
       .installTool(Number(toolId), form)
