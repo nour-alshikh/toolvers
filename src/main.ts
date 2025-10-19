@@ -1,5 +1,5 @@
 import './assets/main.css'
-// import 'vue-select/dist/vue-select.css';
+import 'vue-select/dist/vue-select.css';
 
 // Import Swiper styles
 import 'swiper/css'

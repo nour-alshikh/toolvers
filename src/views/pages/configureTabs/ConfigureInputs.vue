@@ -16,17 +16,23 @@ import { useColorHandler } from '@/composables/useColorInputHandler'
 import { useRangeNumberInputHandler } from '@/composables/useRangeNumberInputHandler'
 import { useSwitchInputHandler } from '@/composables/useSwitchInputHandler'
 import Switch from '@/components/ui/switch/Switch.vue'
+import AllTab from './displayPagesTabs/AllTab.vue'
+import SelectedTab from './displayPagesTabs/SelectedTab.vue'
+import { useToolsStore } from '@/store/tool'
+import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
 
 const { handleTextInputChange } = useTextInputHandler()
 const { handleColorChange } = useColorHandler()
 const { handleRangeNumberInput } = useRangeNumberInputHandler()
 const { handleSwitchChange } = useSwitchInputHandler()
 
+const toolsStore = useToolsStore()
+const { displayPages } = storeToRefs(toolsStore)
+
 const props = defineProps<{
   inputs: ToolInputGroup[]
 }>()
-
-
 </script>
 
 <template>
@@ -64,7 +70,7 @@ const props = defineProps<{
           :class="inputItem.class"
         >
           <!-- Text input -->
-          <div v-if="inputItem.type === 'text'" >
+          <div v-if="inputItem.type === 'text'">
             <Label
               class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
               for="color-input "
@@ -83,7 +89,7 @@ const props = defineProps<{
           </div>
 
           <!-- Color input -->
-          <div v-if="inputItem.type === 'color'" >
+          <div v-if="inputItem.type === 'color'">
             <ColorInput
               @updateColor="(newColor) => handleColorChange(newColor, inputItem)"
               :label="inputItem.label"
@@ -92,7 +98,7 @@ const props = defineProps<{
           </div>
 
           <!-- Range input -->
-          <div v-if="inputItem.type === 'range'" class=" relative flex gap-3 flex-1">
+          <div v-if="inputItem.type === 'range'" class="relative flex gap-3 flex-1">
             <Slider
               :model-value="[Number(inputItem.default_value) || 0]"
               @update:model-value="
@@ -189,35 +195,36 @@ const props = defineProps<{
             />
           </div>
           <div v-if="inputItem.type === 'display-pages'">
-            <Tabs default-value="all" class="flex flex-col items-end justify-center">
-              <TabsList
+            <div class="flex flex-col items-end justify-center">
+              <div
                 class="flex w-fit m-auto justify-center items-center bg-[#FDF5F8] rounded-lg border border-[#F0F0F0] lg:py-[10px] py-1 px-1"
               >
-                <TabsTrigger value="selected" class="border-none"> تخصيص </TabsTrigger>
-                <TabsTrigger value="all" class="border-none"> صفحات المتجر </TabsTrigger>
-              </TabsList>
-              <TabsContent value="all">
-                <AllTab />
-              </TabsContent>
+                <button
+                  @click="displayPages.all_pages = 'except'"
+                  :class="[
+                    'px-4 py-2 rounded-md transition-colors',
+                    displayPages.all_pages === 'except' || displayPages.all_pages === 'false'
+                      ? 'bg-white shadow-sm'
+                      : 'bg-transparent',
+                  ]"
+                >
+                  تخصيص
+                </button>
+                <button
+                  @click="displayPages.all_pages = 'true'"
+                  :class="[
+                    'px-4 py-2 rounded-md transition-colors',
+                    displayPages.all_pages === 'true' ? 'bg-white shadow-sm' : 'bg-transparent',
+                  ]"
+                >
+                  صفحات المتجر
+                </button>
+              </div>
 
-              <TabsContent value="selected">
-                <SelectedTab />
-              </TabsContent>
-            </Tabs>
-          </div>
-
-          <div v-if="inputItem.type === 'display-settings'" class="relative flex gap-2 w-full">
-            <div
-              class="flex items-center justify-between space-x-2 border rounded-lg py-3 px-3 flex-1"
-            >
-              <Label for="display-mobile" class="text-primary"> عرض على الجوال</Label>
-              <Switch id="display-mobile" />
-            </div>
-            <div
-              class="flex items-center justify-between space-x-2 border rounded-lg py-3 px-3 flex-1"
-            >
-              <Label for="display-desktop" class="text-primary"> عرض على سطح المكتب</Label>
-              <Switch id="display-desktop" />
+              <div class="mt-4">
+                <AllTab v-if="displayPages.all_pages === 'true'" />
+                <SelectedTab v-else />
+              </div>
             </div>
           </div>
         </div>

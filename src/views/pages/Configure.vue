@@ -27,20 +27,17 @@ const { primary, black, edit, showSettings, backArrow, eye } = icons
 const router = useRouter()
 
 const screen = ref<'desktop' | 'mobile'>('desktop')
-const tab = ref<'edit' | 'preview'>('edit')
+const tab = ref<'edit' | 'preview' | 'display'>('edit')
 
 const toolsStore = useToolsStore()
-const { toolDetails, toolValues } = storeToRefs(toolsStore)
+const { toolDetails, toolValues, displayPages } = storeToRefs(toolsStore)
 
 const toolId = router.currentRoute.value.params.id
 const userToolId = router.currentRoute.value.params.userId
 
-
-
 onMounted(async () => {
   if (toolId && userToolId) {
     await toolsStore.getToolDetailsAndValues(Number(toolId), Number(userToolId))
-
     const toolInputs = toolDetails.value?.tool?.inputs
     const desktopInputs = toolDetails.value?.tool?.desktop_inputs
     const mobileInputs = toolDetails.value?.tool?.mobile_inputs
@@ -66,7 +63,7 @@ onMounted(async () => {
 
     mainInputs?.forEach((input: ToolInputGroup) => {
       input.inputs.forEach((inputItem: ToolInputField) => {
-        inputItem.default_value = toolValues.value[inputItem.name]
+        inputItem.default_value = displayPages.value[inputItem.name]
       })
     })
   } else if (toolId && !userToolId) {
@@ -87,6 +84,7 @@ const saveTool = async () => {
   const desktopInputs = toolDetails.value?.tool?.desktop_inputs
   const mobileInputs = toolDetails.value?.tool?.mobile_inputs
   const mainInputs = toolDetails.value?.tool?.main_inputs
+  const displayPages = toolsStore.displayPages
 
   toolInputs?.forEach((input: ToolInputGroup) => {
     input.inputs.forEach((inputItem: ToolInputField) => {
@@ -108,10 +106,20 @@ const saveTool = async () => {
 
   mainInputs?.forEach((input: ToolInputGroup) => {
     input.inputs.forEach((inputItem: ToolInputField) => {
-      form.append(inputItem.name, String(inputItem.default_value))
+      form.append(`view[${inputItem.name}]`, String(inputItem.default_value))
     })
   })
 
+  form.append('view[all_pages]', displayPages?.all_pages)
+
+  displayPages?.urls?.forEach((url, index) => {
+    form.append(`view[urls][${index}][value]`, url.value)
+    form.append(`view[urls][${index}][operator]`, url.operator)
+  })
+
+  for (const [key, value] of form.entries()) {
+    console.log(`${key}:`, value)
+  }
   if (toolDetails.value?.tool?.id && toolId && !userToolId) {
     await toolsStore
       .installTool(Number(toolId), form)
@@ -153,9 +161,16 @@ const { updateSwitchElement } = useSwitchInputHandler()
 const allInputs = computed(() => {
   const inputs: any[] = []
   toolDetails.value?.tool?.inputs?.forEach((group: any) => inputs.push(...group.inputs))
-  toolDetails.value?.tool?.desktop_inputs?.forEach((group: any) => inputs.push(...group.inputs))
-  toolDetails.value?.tool?.mobile_inputs?.forEach((group: any) => inputs.push(...group.inputs))
-  toolDetails.value?.tool?.main_inputs?.forEach((group: any) => inputs.push(...group.inputs))
+
+  toolDetails.value?.tool?.desktop_inputs?.inputs?.forEach((group: any) =>
+    inputs.push(...group.inputs),
+  )
+  toolDetails.value?.tool?.mobile_inputs?.inputs?.forEach((group: any) =>
+    inputs.push(...group.inputs),
+  )
+  toolDetails.value?.tool?.main_inputs?.inputs?.forEach((group: any) =>
+    inputs.push(...group.inputs),
+  )
   return inputs
 })
 
@@ -291,12 +306,7 @@ onUnmounted(() => {
 
           <div class="h-[750px] mt-4 sticky top-[100px]">
             <div class="w-full h-full absolute opacity-40 border border-red-400">
-              <iframe
-                width="100%"
-                height="100%"
-                frameborder="0"
-              >
-              </iframe>
+              <iframe width="100%" height="100%" frameborder="0"> </iframe>
             </div>
             <WidgetComponent :widget="toolDetails?.rendered_html ?? ''" />
           </div>

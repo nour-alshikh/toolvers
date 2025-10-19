@@ -26,6 +26,15 @@ export const useToolsStore = defineStore(
 
     const toolValues = ref<any>({})
 
+    const displayPages = ref<{
+      all_pages: 'true' | 'false' | 'except'
+      urls: { value: string; operator: 'contains' | 'equals' }[]
+     
+    }>({
+      all_pages: 'true',
+      urls: [],
+   
+    })
     const getTools = async (): Promise<Tool[]> => {
       const authStore = useAuthStore()
       const token = authStore.token
@@ -159,7 +168,6 @@ export const useToolsStore = defineStore(
 
         if (response.status === 200) {
           toolDetails.value = response.data.data
-
           return toolDetails.value
         }
 
@@ -221,6 +229,7 @@ export const useToolsStore = defineStore(
         if (response.status === 200) {
           toolDetails.value = response.data.data
           toolValues.value = response.data.data.user_tool.values
+          displayPages.value = response.data.data.user_tool.view_settings
         }
 
         return []
@@ -311,6 +320,10 @@ export const useToolsStore = defineStore(
     const clearStore = () => {
       toolValues.value = {}
       toolDetails.value = {}
+      displayPages.value = {
+        all_pages: 'true',
+        urls: [],
+      }
     }
 
     return {
@@ -318,6 +331,7 @@ export const useToolsStore = defineStore(
       toolDetails,
       toolValues,
       toolsTypes,
+      displayPages,
       isLoading,
       errors,
       getTools,
