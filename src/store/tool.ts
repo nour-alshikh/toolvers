@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { computed, ref, watch, watchEffect } from 'vue'
+import { computed, reactive, ref, watch, watchEffect } from 'vue'
 
 import axiosInstance from '@/lib/axios'
 import type { AxiosError } from 'axios'
@@ -14,6 +14,106 @@ export const useToolsStore = defineStore(
     const isLoading = ref<boolean>(false)
     const errors = ref<Record<string, string[]> | null>(null)
 
+    const initialDisplayInputs = [
+      {
+        title: 'اسم الاداة',
+        isOpen: true,
+        class: 'grid grid-cols-1 gap-4',
+        inputs: [
+          {
+            label: 'اسم الاداة',
+            default_value: '',
+            id: 'name',
+            class: 'my-1 col-span-1',
+            type: 'text',
+            property: 'name',
+            name: 'name',
+          },
+        ],
+      },
+      {
+        title: 'مدة العرض',
+        isOpen: true,
+        class: 'grid grid-cols-3 gap-4',
+        inputs: [
+          {
+            label: 'مدة العرض',
+            default_value: '0',
+            id: 'show_delay',
+            class: 'my-1 col-span-1',
+            type: 'number',
+            property: 'show_delay',
+            name: 'show_delay',
+          },
+          {
+            label: 'مدة التأخير',
+            default_value: '0',
+            id: 'hide_after',
+            class: 'my-1 col-span-1',
+            type: 'number',
+            property: 'hide_after',
+            name: 'hide_after',
+          },
+          {
+            label: 'عدد مرات الظهور',
+            default_value: '0',
+            id: 'appearance_count',
+            class: 'my-1 col-span-1',
+            type: 'number',
+            property: 'appearance_count',
+            name: 'appearance_count',
+          },
+        ],
+      },
+      {
+        title: 'صفحات العرض',
+        isOpen: true,
+        class: 'grid grid-cols-1 gap-4',
+        inputs: [
+          {
+            label: 'صفحات العرض',
+            id: 'display-pages',
+            class: 'my-1 col-span-1',
+            type: 'display-pages',
+            property: 'display-pages',
+            name: 'all_pages',
+            default_value: 'true',
+            urls: [],
+            pages: [],
+          },
+        ],
+      },
+      {
+        title: 'اعدادت العرض',
+        isOpen: true,
+        class: 'grid grid-cols-2 gap-4',
+        inputs: [
+          {
+            label: 'عرض على الجوال',
+            name: 'show_on_mobile',
+            default_value: 'on',
+            id: 'show_on_mobile',
+            type: 'switch',
+            class: 'my-1 col-span-1 flex justify-center items-center',
+            property: 'toggleVisible',
+          },
+          {
+            label: 'عرض على سطح المكتب',
+            name: 'show_on_desktop',
+            default_value: 'on',
+            id: 'show_on_desktop',
+            type: 'switch',
+            class: 'my-1 col-span-1 flex justify-center items-center',
+            property: 'toggleVisible',
+          },
+        ],
+      },
+    ]
+
+    const displayInputs = reactive(JSON.parse(JSON.stringify(initialDisplayInputs)))
+
+    const displayInputsValues = ref<any>({})
+
     const toolsTypes = computed<string[]>(() => {
       const types = new Set<string>()
       tools.value.forEach((tool) => {
@@ -26,15 +126,6 @@ export const useToolsStore = defineStore(
 
     const toolValues = ref<any>({})
 
-    const displayPages = ref<{
-      all_pages: 'true' | 'false' | 'except'
-      urls: { value: string; operator: 'contains' | 'equals' }[]
-     
-    }>({
-      all_pages: 'true',
-      urls: [],
-   
-    })
     const getTools = async (): Promise<Tool[]> => {
       const authStore = useAuthStore()
       const token = authStore.token
@@ -229,7 +320,29 @@ export const useToolsStore = defineStore(
         if (response.status === 200) {
           toolDetails.value = response.data.data
           toolValues.value = response.data.data.user_tool.values
-          displayPages.value = response.data.data.user_tool.view_settings
+          const settings = response.data.data.user_tool.view_settings
+
+          // Save the raw response if you need it
+          displayInputsValues.value = settings
+
+          
+          // Loop through displayInputs and assign values dynamically
+          displayInputs.forEach((group: any) => {
+            group.inputs?.forEach((input: any) => {
+              // Try to match API key by 'property' or 'name'
+              const key = input.name
+              if (key && settings[key] !== undefined) {
+                // Assign the new value from API
+
+                if (key === 'all_pages') {
+                  input.default_value = settings[key]
+                  input.urls = [...JSON.parse(settings['urls'])]
+                }
+                input.default_value = settings[key]
+              }
+            })
+          })
+
         }
 
         return []
@@ -320,18 +433,18 @@ export const useToolsStore = defineStore(
     const clearStore = () => {
       toolValues.value = {}
       toolDetails.value = {}
-      displayPages.value = {
-        all_pages: 'true',
-        urls: [],
-      }
+      displayInputsValues.value = {}
+      const reset = JSON.parse(JSON.stringify(initialDisplayInputs))
+      displayInputs.splice(0, displayInputs.length, ...reset)
     }
 
     return {
       tools,
       toolDetails,
       toolValues,
+      displayInputs,
+      displayInputsValues,
       toolsTypes,
-      displayPages,
       isLoading,
       errors,
       getTools,

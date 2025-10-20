@@ -4,13 +4,12 @@ import ConfigureInputs from './ConfigureInputs.vue';
 
 
 const props = defineProps<{
-  inputs: ToolInputGroup[]
+
   mainInputs: ToolInputGroup[]
 }>()
 </script>
 
 <template>
- <ConfigureInputs :inputs="inputs"  />
  <ConfigureInputs :inputs="mainInputs"  />
 </template>
 

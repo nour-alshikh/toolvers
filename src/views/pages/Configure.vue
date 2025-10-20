@@ -21,6 +21,7 @@ import { useColorHandler } from '@/composables/useColorInputHandler'
 import { useRangeNumberInputHandler } from '@/composables/useRangeNumberInputHandler'
 import { useImageHandler } from '@/composables/useImageHandler'
 import { useSwitchInputHandler } from '@/composables/useSwitchInputHandler'
+import DisplayInputs from './configureTabs/DisplayInputs.vue'
 
 const { primary, black, edit, showSettings, backArrow, eye } = icons
 
@@ -30,7 +31,7 @@ const screen = ref<'desktop' | 'mobile'>('desktop')
 const tab = ref<'edit' | 'preview' | 'display'>('edit')
 
 const toolsStore = useToolsStore()
-const { toolDetails, toolValues, displayPages } = storeToRefs(toolsStore)
+const { toolDetails, toolValues } = storeToRefs(toolsStore)
 
 const toolId = router.currentRoute.value.params.id
 const userToolId = router.currentRoute.value.params.userId
@@ -39,8 +40,7 @@ onMounted(async () => {
   if (toolId && userToolId) {
     await toolsStore.getToolDetailsAndValues(Number(toolId), Number(userToolId))
     const toolInputs = toolDetails.value?.tool?.inputs
-    const desktopInputs = toolDetails.value?.tool?.desktop_inputs
-    const mobileInputs = toolDetails.value?.tool?.mobile_inputs
+
     const mainInputs = toolDetails.value?.tool?.main_inputs
 
     toolInputs?.forEach((input: ToolInputGroup) => {
@@ -49,21 +49,9 @@ onMounted(async () => {
       })
     })
 
-    desktopInputs?.forEach((input: ToolInputGroup) => {
-      input.inputs.forEach((inputItem: ToolInputField) => {
-        inputItem.default_value = displayPages.value[inputItem.name]
-      })
-    })
-
-    mobileInputs?.forEach((input: ToolInputGroup) => {
-      input.inputs.forEach((inputItem: ToolInputField) => {
-        inputItem.default_value = displayPages.value[inputItem.name]
-      })
-    })
-
     mainInputs?.forEach((input: ToolInputGroup) => {
       input.inputs.forEach((inputItem: ToolInputField) => {
-        inputItem.default_value = displayPages.value[inputItem.name]
+        inputItem.default_value = toolValues.value[inputItem.name]
       })
     })
   } else if (toolId && !userToolId) {
@@ -81,10 +69,7 @@ const saveTool = async () => {
   form.append('name', toolDetails.value?.tool?.name ?? '')
 
   const toolInputs = toolDetails.value?.tool?.inputs
-  const desktopInputs = toolDetails.value?.tool?.desktop_inputs
-  const mobileInputs = toolDetails.value?.tool?.mobile_inputs
   const mainInputs = toolDetails.value?.tool?.main_inputs
-  const displayPages = toolsStore.displayPages
 
   toolInputs?.forEach((input: ToolInputGroup) => {
     input.inputs.forEach((inputItem: ToolInputField) => {
@@ -92,29 +77,28 @@ const saveTool = async () => {
     })
   })
 
-  desktopInputs?.forEach((input: ToolInputGroup) => {
-    input.inputs.forEach((inputItem: ToolInputField) => {
-      form.append(`view[${inputItem.name}]`, String(inputItem.default_value))
-    })
-  })
-
-  mobileInputs?.forEach((input: ToolInputGroup) => {
-    input.inputs.forEach((inputItem: ToolInputField) => {
-      form.append(`view[${inputItem.name}]`, String(inputItem.default_value))
-    })
-  })
-
   mainInputs?.forEach((input: ToolInputGroup) => {
     input.inputs.forEach((inputItem: ToolInputField) => {
-      form.append(`view[${inputItem.name}]`, String(inputItem.default_value))
+      form.append(inputItem.name, String(inputItem.default_value))
     })
   })
 
-  form.append('view[all_pages]', displayPages?.all_pages)
+  toolsStore.displayInputs.forEach((input: any) => {
+    
+    input.inputs.forEach((inputItem: any) => {
+      if (inputItem.type === 'display-pages') {
+        console.log(inputItem.name)
+        console.log(inputItem.urls)
+        console.log(inputItem.default_value)
+        console.log(inputItem.pages)
+          form.append(`view[${inputItem.name}]`, String(inputItem.default_value))
+          form.append(`view[urls]`, JSON.stringify(inputItem.urls))
+          form.append(`view[pages]`, JSON.stringify(inputItem.pages))
 
-  displayPages?.urls?.forEach((url, index) => {
-    form.append(`view[urls][${index}][value]`, url.value)
-    form.append(`view[urls][${index}][operator]`, url.operator)
+        } else {
+        form.append(`view[${inputItem.name}]`, String(inputItem.default_value))
+      }
+    })
   })
 
   if (toolDetails.value?.tool?.id && toolId && !userToolId) {
@@ -158,16 +142,8 @@ const { updateSwitchElement } = useSwitchInputHandler()
 const allInputs = computed(() => {
   const inputs: any[] = []
   toolDetails.value?.tool?.inputs?.forEach((group: any) => inputs.push(...group.inputs))
+  toolDetails.value?.tool?.main_inputs?.forEach((group: any) => inputs.push(...group.inputs))
 
-  toolDetails.value?.tool?.desktop_inputs?.inputs?.forEach((group: any) =>
-    inputs.push(...group.inputs),
-  )
-  toolDetails.value?.tool?.mobile_inputs?.inputs?.forEach((group: any) =>
-    inputs.push(...group.inputs),
-  )
-  toolDetails.value?.tool?.main_inputs?.inputs?.forEach((group: any) =>
-    inputs.push(...group.inputs),
-  )
   return inputs
 })
 
@@ -267,14 +243,11 @@ onUnmounted(() => {
             <TabsContent value="display">
               <DesktopInputs
                 v-if="screen === 'desktop'"
-                :inputs="toolDetails?.tool.desktop_inputs ?? []"
                 :main-inputs="toolDetails?.tool.main_inputs ?? []"
               />
-              <MobileInputs
-                v-else
-                :inputs="toolDetails?.tool.mobile_inputs ?? []"
-                :main-inputs="toolDetails?.tool.main_inputs ?? []"
-              />
+              <MobileInputs v-else :main-inputs="toolDetails?.tool.main_inputs ?? []" />
+
+              <DisplayInputs />
             </TabsContent>
           </Tabs>
         </div>

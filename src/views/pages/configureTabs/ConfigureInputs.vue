@@ -16,10 +16,8 @@ import { useColorHandler } from '@/composables/useColorInputHandler'
 import { useRangeNumberInputHandler } from '@/composables/useRangeNumberInputHandler'
 import { useSwitchInputHandler } from '@/composables/useSwitchInputHandler'
 import Switch from '@/components/ui/switch/Switch.vue'
-import AllTab from './displayPagesTabs/AllTab.vue'
-import SelectedTab from './displayPagesTabs/SelectedTab.vue'
+
 import { useToolsStore } from '@/store/tool'
-import { storeToRefs } from 'pinia'
 import { icons } from '@/icons'
 
 const { handleTextInputChange } = useTextInputHandler()
@@ -28,7 +26,6 @@ const { handleRangeNumberInput } = useRangeNumberInputHandler()
 const { handleSwitchChange } = useSwitchInputHandler()
 
 const toolsStore = useToolsStore()
-const { displayPages } = storeToRefs(toolsStore)
 
 const props = defineProps<{
   inputs: ToolInputGroup[]
@@ -194,41 +191,6 @@ const props = defineProps<{
               @update:model-value="(newState) => handleSwitchChange(inputItem, newState)"
             />
           </div>
-
-          <div v-if="inputItem.type === 'display-pages'">
-            <div class="flex flex-col items-end justify-center">
-              <div
-                class="flex w-fit m-auto justify-center items-center bg-[#FDF5F8] rounded-lg border border-[#F0F0F0] lg:py-[10px] py-1 px-1"
-              >
-                <button
-                  @click="displayPages.all_pages = 'except'"
-                  :class="[
-                    'px-4 py-2 rounded-md transition-colors',
-                    displayPages.all_pages === 'except' || displayPages.all_pages === 'false'
-                      ? 'bg-white shadow-sm'
-                      : 'bg-transparent',
-                  ]"
-                >
-                  تخصيص
-                </button>
-                <button
-                  @click="displayPages.all_pages = 'true'"
-                  :class="[
-                    'px-4 py-2 rounded-md transition-colors',
-                    displayPages.all_pages === 'true' ? 'bg-white shadow-sm' : 'bg-transparent',
-                  ]"
-                >
-                  صفحات المتجر
-                </button>
-              </div>
-
-              <div class="mt-4">
-                <AllTab v-if="displayPages.all_pages === 'true'" />
-                <SelectedTab v-else />
-              </div>
-            </div>
-          </div>
-
           <div v-if="inputItem.type === 'position'" class="relative w-1/2 m-auto">
             <div class="grid grid-cols-3 grid-rows-3 gap-2">
               <div

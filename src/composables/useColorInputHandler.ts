@@ -39,7 +39,7 @@ export function useColorHandler() {
   }
 
   const updateColorChange = (id: string | string[], property: string, color: string) => {
-   
+    
     const toolversTool = document.querySelector('.toolvers-tool');
 
     if (!color || !id || !property || !toolversTool) return;
@@ -55,11 +55,10 @@ export function useColorHandler() {
 
     if (Array.isArray(id)) {
         id.forEach((i: string) => {
-            const el = toolversTool.querySelector(`[data-id="${i}"]`);
+          const el = toolversTool.querySelector(`[data-id="${i}"]`);
             updateStyle(el, color, property);
         });
     } else {
-
         const el = toolversTool.querySelector(`[data-id="${id}"]`);
         updateStyle(el, color, property);
     }

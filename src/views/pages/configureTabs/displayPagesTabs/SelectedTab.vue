@@ -13,54 +13,72 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { storeToRefs } from 'pinia'
-import { useToolsStore } from '@/store/tool'
+import { ref, watch } from 'vue'
 
-const store = useToolsStore()
-const { displayPages } = storeToRefs(store)
+const props = defineProps({
+  urls: {
+    type: Array,
+    required: true,
+  },
+  default_value: {
+    type: String,
+    required: true,
+  },
+})
+const emit = defineEmits(['update:default_value'])
+
+const urls = ref(props.urls)
+
+const default_value = ref(props.default_value)
+
+watch(default_value, (val) => {
+    console.log(val)
+    console.log(default_value.value)
+  emit('update:default_value', val)
+})
 
 // Add a new row
 const addUrl = () => {
-  if (!displayPages.value) return
+  if (!urls.value) return
 
-  if (!Array.isArray(displayPages.value.urls)) {
-    displayPages.value.urls = []
+  if (!Array.isArray(urls.value)) {
+    urls.value = []
   }
 
-  displayPages.value.urls.push({ value: '', operator: 'contains' })
+  urls.value.push({ value: '', operator: 'contains' })
 }
 
 // Remove a row
 const removeUrl = (index: number) => {
-  displayPages.value?.urls?.splice(index, 1)
+  urls.value?.splice(index, 1)
 }
 </script>
 
 <template>
-  <RadioGroup v-model="displayPages.all_pages" class="flex gap-2">
-    <div class="flex items-center gap-2 border rounded-lg p-4">
+  <RadioGroup v-model="default_value" class="flex gap-2">
+    <div @click="default_value = 'except'" class="flex items-center gap-2 border rounded-lg p-4">
       <RadioGroupItem id="except" value="except" />
       <Label for="except">كل الصفحات ما عدا</Label>
     </div>
 
-    <div class="flex items-center gap-2 border rounded-lg p-4">
+    <div @click="default_value = 'false'" class="flex items-center gap-2 border rounded-lg p-4">
       <RadioGroupItem id="false" value="false" />
       <Label for="false">الظهور في صفحات محددة</Label>
     </div>
   </RadioGroup>
 
   <div class="mt-4">
-    <div v-if="displayPages.all_pages !== 'true'" class="space-y-2">
+    <div v-if="default_value !== 'true'" class="space-y-2">
       <div
-        v-for="(url, index) in displayPages.urls"
+        v-for="(url, index) in urls"
         :key="index"
-        class="flex gap-2 my-5 items-center"
+        class="flex gap-2 my-5 items-center"  
       >
         <Button
           variant="destructive"
           size="sm"
           @click="removeUrl(index)"
-          v-if="displayPages.urls.length > 1"
+          v-if="urls.length > 1"
         >
           <TrashIcon />
         </Button>
