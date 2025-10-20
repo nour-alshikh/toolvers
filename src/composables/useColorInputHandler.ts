@@ -14,14 +14,21 @@ export function useColorHandler() {
 
     // If multiple ids (array of targets)
     if (Array.isArray(id)) {
-      id.forEach((i: string) => {
+      id.forEach((i: string , index) => {
         const el = toolversTool?.querySelector(`[data-id="${i}"]`)
-        if (el && property) {
+        if (el && property && typeof(property) === 'string') {
           if (el instanceof HTMLElement) {
             el.style[property as any] = newColor.hex
           } else if (el instanceof SVGElement) {
             (el as SVGElement).style.fill = newColor.hex
           }
+        } else if (el && property && typeof(property) === 'object') {
+          if (el instanceof HTMLElement) {
+            el.style[property[index] as any] = newColor.hex
+          } else if (el instanceof SVGElement) {
+            (el as SVGElement).style.fill = newColor.hex
+          }
+          
         }
       })
     } else {

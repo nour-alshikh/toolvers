@@ -149,8 +149,6 @@ const inputs = toolsStore.displayInputs
                 <AllTab  v-model:pages="inputItem.pages" v-if="inputItem.default_value === 'true'" />
                 <SelectedTab :urls="inputItem.urls" :default_value="inputItem.default_value" @update:default_value="inputItem.default_value = $event" v-else />
               </div>
-              {{ inputItem.pages }}
-        
           </div>
         </div>
       </CollapsibleContent>
