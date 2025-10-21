@@ -119,7 +119,7 @@ const props = defineProps<{
               </Label>
 
               <Input
-                class="p-4 h-auto text-right"
+                class="py-4 px-2 min-w-[85px] h-auto text-right"
                 type="number"
                 placeholder=""
                 :min="Number(inputItem.min) || 12"
@@ -179,7 +179,7 @@ const props = defineProps<{
           <!-- Switch input -->
           <div
             v-if="inputItem.type === 'switch'"
-            class="relative flex justify-center items-center gap-3"
+            class="relative flex justify-center items-center gap-3 w-full h-full"
           >
             <Label :for="inputItem.id">
               {{ inputItem.label }}

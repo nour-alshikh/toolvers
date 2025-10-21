@@ -266,10 +266,14 @@ const columns = [
                         {},
                         {
                           default: () => [
-                            h(AlertDialogTitle, {}, 'هل أنت متأكد من الحذف؟'),
+                            h(AlertDialogTitle, {
+                              class: 'text-right'
+                            }, 'هل أنت متأكد من الحذف؟'),
                             h(
                               AlertDialogDescription,
-                              {},
+                              {
+                                class: 'text-right'
+                              },
                               'سيتم حذف هذا العنصر نهائيًا ولا يمكن التراجع عن ذلك.',
                             ),
                           ],

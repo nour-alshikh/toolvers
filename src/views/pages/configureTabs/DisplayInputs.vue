@@ -101,7 +101,7 @@ const inputs = toolsStore.displayInputs
 
           <div
             v-else-if="inputItem.type === 'switch'"
-            class="relative flex justify-center items-center gap-3"
+            class="relative flex justify-center items-center gap-3 w-full h-full"
           >
             <Label :for="inputItem.id">
               {{ inputItem.label }}

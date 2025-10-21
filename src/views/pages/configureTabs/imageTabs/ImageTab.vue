@@ -79,7 +79,7 @@ const handleFileSelect = async (e: any) => {
       accept="image/*"
       class="opacity-0 absolute inset-0 cursor-pointer w-full h-full z-50"
     />
-    <img :src="ImagePath" alt="" />
+    <img :src="ImagePath" class="w-[150px] mt-3" />
   </div>
 
 </template>
