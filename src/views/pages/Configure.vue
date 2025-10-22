@@ -23,6 +23,41 @@ import { useImageHandler } from '@/composables/useImageHandler'
 import { useSwitchInputHandler } from '@/composables/useSwitchInputHandler'
 import DisplayInputs from './configureTabs/DisplayInputs.vue'
 import { usePositionInputHandler } from '@/composables/usePositionInputHandler'
+import { useToolPositionStore } from '@/store/toolPosition'
+
+// دالة لحساب px من النسبة
+const toPx = (valPercent: number, parentSize: number) => (valPercent / 100) * parentSize
+
+const toolPositionStore = useToolPositionStore()
+
+const widthPercentage = toolPositionStore.toolWidth.value
+const heightPercentage = toolPositionStore.toolHeight.value
+
+
+const desktopRef = ref()
+const mobileRef = ref()
+// نخزن النسب المئوية
+const desktopState = ref({ x: 0, y: 0, w: widthPercentage, h: heightPercentage }) // نسب مئوية
+const mobileState = ref({ x: 0, y: 0, w: 40, h: 25 })
+
+// دالة ترجع أبعاد البارنت الحالي
+const getParentBox = (screen: 'desktop' | 'mobile') => {
+  const parent = screen === 'desktop' ? desktopRef.value : mobileRef.value
+  return parent.getBoundingClientRect()
+}
+// حفظ مكان العنصر
+const handleDragging = (screen: 'desktop' | 'mobile', { x, y }: { x: number; y: number }) => {
+  const parentBox = getParentBox(screen)
+  const xPercent = (x / parentBox.width) * 100
+  const yPercent = (y / parentBox.height) * 100
+  if (screen === 'desktop') {
+    desktopState.value.x = xPercent
+    desktopState.value.y = yPercent
+  } else {
+    mobileState.value.x = xPercent
+    mobileState.value.y = yPercent
+  }
+}
 
 const { primary, black, edit, showSettings, backArrow, eye } = icons
 
@@ -79,7 +114,6 @@ const saveTool = async () => {
   const mainInputs = toolDetails.value?.tool?.main_inputs
   const desktopInputs = toolDetails.value?.tool?.desktop_inputs
 
-
   toolInputs?.forEach((input: ToolInputGroup) => {
     input.inputs.forEach((inputItem: ToolInputField) => {
       form.append(inputItem.name, String(inputItem.default_value))
@@ -101,11 +135,10 @@ const saveTool = async () => {
   toolsStore.displayInputs.forEach((input: any) => {
     input.inputs.forEach((inputItem: any) => {
       if (inputItem.type === 'display-pages') {
-          form.append(`view[${inputItem.name}]`, String(inputItem.default_value))
-          form.append(`view[urls]`, JSON.stringify(inputItem.urls))
-          form.append(`view[pages]`, JSON.stringify(inputItem.pages))
-
-        } else {
+        form.append(`view[${inputItem.name}]`, String(inputItem.default_value))
+        form.append(`view[urls]`, JSON.stringify(inputItem.urls))
+        form.append(`view[pages]`, JSON.stringify(inputItem.pages))
+      } else {
         form.append(`view[${inputItem.name}]`, String(inputItem.default_value))
       }
     })
@@ -176,7 +209,7 @@ watch(
           if (inputItem.type === 'color') {
             updateColorChange(inputItem.id, String(inputItem.property), String(newVal))
           }
-          if (inputItem.type === 'range') {       
+          if (inputItem.type === 'range') {
             updateRangeNumberChange(inputItem.id, String(inputItem.property), String(newVal))
           }
           if (inputItem.type === 'image') {
@@ -186,7 +219,7 @@ watch(
             updateSwitchElement(inputItem.id, String(inputItem.property), String(newVal))
           }
           if (inputItem.type === 'position') {
-            updatePositionElement(String(inputItem.default_value)) 
+            updatePositionElement(String(inputItem.default_value))
           }
         },
         { immediate: true },
@@ -292,15 +325,35 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <div class="h-[700px] mt-4 sticky top-[100px]">
+          <div
+            class="mt-4 sticky top-[100px]"
+            style="height: 700px; width: 1370px"
+            ref="desktopRef"
+          >
             <div class="w-full h-full absolute opacity-40 border border-red-400">
               <iframe width="100%" height="100%" frameborder="0"> </iframe>
             </div>
-            <WidgetComponent :widget="toolDetails?.rendered_html ?? ''" />
+            <vue3-draggable-resizable
+              :draggable="true"
+              :class-name-dragging="'my-dragging-class'"
+              :x="toPx(desktopState.x, 1370)"
+              :y="toPx(desktopState.y, 700)"
+              :w="toPx(desktopState.w, 1370)"
+              :h="toPx(desktopState.h, 700)"
+              :lock-aspect-ratio="true"
+              :parent="true"
+              @dragging="(pos) => handleDragging('desktop', pos)"
+              :resizable="false"
+            >
+              <div>
+                <WidgetComponent :widget="toolDetails?.rendered_html ?? ''" />
+              </div>
+            </vue3-draggable-resizable>
           </div>
         </div>
       </div>
     </div>
+    
   </DefaultLayout>
 </template>
 

@@ -103,6 +103,20 @@ const handleResizing = (screen: 'desktop' | 'mobile', { w, h }: { w: number; h: 
       </div>
     </transition>
 
+    <!-- عرض القيم بالنسبة المئوية -->
+    <div class="p-4">
+      <strong>Desktop</strong> =>  
+      X: {{ desktopState.x.toFixed(1) }}%,  
+      Y: {{ desktopState.y.toFixed(1) }}%,  
+      W: {{ desktopState.w.toFixed(1) }}%,  
+      H: {{ desktopState.h.toFixed(1) }}%
+      <br>
+      <strong>Mobile</strong> =>  
+      X: {{ mobileState.x.toFixed(1) }}%,  
+      Y: {{ mobileState.y.toFixed(1) }}%,  
+      W: {{ mobileState.w.toFixed(1) }}%,  
+      H: {{ mobileState.h.toFixed(1) }}%
+    </div>
   </DefaultLayout>
 </template>
 
