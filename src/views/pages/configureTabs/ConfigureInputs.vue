@@ -15,6 +15,7 @@ import { useTextInputHandler } from '@/composables/useTextInputHandler'
 import { useColorHandler } from '@/composables/useColorInputHandler'
 import { useRangeNumberInputHandler } from '@/composables/useRangeNumberInputHandler'
 import { useSwitchInputHandler } from '@/composables/useSwitchInputHandler'
+import { usePositionInputHandler } from '@/composables/usePositionInputHandler'
 import Switch from '@/components/ui/switch/Switch.vue'
 
 import { useToolsStore } from '@/store/tool'
@@ -24,6 +25,7 @@ const { handleTextInputChange } = useTextInputHandler()
 const { handleColorChange } = useColorHandler()
 const { handleRangeNumberInput } = useRangeNumberInputHandler()
 const { handleSwitchChange } = useSwitchInputHandler()
+const { handlePositionChange } = usePositionInputHandler()
 
 const toolsStore = useToolsStore()
 
@@ -191,39 +193,49 @@ const props = defineProps<{
               @update:model-value="(newState) => handleSwitchChange(inputItem, newState)"
             />
           </div>
+
+          <!-- Position input -->
           <div v-if="inputItem.type === 'position'" class="relative w-1/2 m-auto">
             <div class="grid grid-cols-3 grid-rows-3 gap-2">
               <div
+                @click="handlePositionChange(inputItem, 'top-left')"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-                :class="inputItem.default_value === 'top-left' ? 'bg-primary/10' : ''"
+                :class="inputItem.default_value === 'top-left' ? 'bg-primary/10 ' : ''"
               ></div>
               <div
+                @click="handlePositionChange(inputItem, 'top')"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.default_value === 'top' ? 'bg-primary/10' : ''"
               ></div>
               <div
+                @click="handlePositionChange(inputItem, 'top-right')"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.default_value === 'top-right' ? 'bg-primary/10' : ''"
               ></div>
 
               <div
+                @click="handlePositionChange(inputItem, 'center-left')"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.default_value === 'center-left' ? 'bg-primary/10' : ''"
               ></div>
               <div></div>
               <div
+                @click="handlePositionChange(inputItem, 'center-right')"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.default_value === 'center-right' ? 'bg-primary/10' : ''"
               ></div>
               <div
+                @click="handlePositionChange(inputItem, 'bottom-left')"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.default_value === 'bottom-left' ? 'bg-primary/10' : ''"
               ></div>
               <div
+                @click="handlePositionChange(inputItem, 'bottom')"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.default_value === 'bottom' ? 'bg-primary/10' : ''"
               ></div>
               <div
+                @click="handlePositionChange(inputItem, 'bottom-right')"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
                 :class="inputItem.default_value === 'bottom-right' ? 'bg-primary/10' : ''"
               ></div>
@@ -244,9 +256,64 @@ const props = defineProps<{
   </Collapsible>
 </template>
 
-<style scoped>
+<style>
 button[data-state='active'] {
   background-color: #f0dae3;
   color: #be185d;
+}
+
+.top {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  position: absolute;
+}
+
+.top-left {
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+
+.top-right {
+  top: 0;
+  left: 100%;
+  transform: translateX(-100%);
+  position: absolute;
+}
+.bottom {
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  position: absolute;
+}
+
+.bottom-left {
+  top: 100%;
+  left: 0;
+  transform: translateY(-100%);
+  position: absolute;
+}
+
+.bottom-right {
+  top: 100%;
+  left: 100%;
+  transform: translate(-100%, -100%);
+  position: absolute;
+}
+
+
+.center-left{
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  position: absolute;
+}
+
+.center-right{
+  top: 50%;
+  left: 100%;
+  transform: translate(-100%, -50%);
+  position: absolute;
 }
 </style>

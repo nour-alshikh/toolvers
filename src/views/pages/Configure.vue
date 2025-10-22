@@ -22,6 +22,7 @@ import { useRangeNumberInputHandler } from '@/composables/useRangeNumberInputHan
 import { useImageHandler } from '@/composables/useImageHandler'
 import { useSwitchInputHandler } from '@/composables/useSwitchInputHandler'
 import DisplayInputs from './configureTabs/DisplayInputs.vue'
+import { usePositionInputHandler } from '@/composables/usePositionInputHandler'
 
 const { primary, black, edit, showSettings, backArrow, eye } = icons
 
@@ -40,8 +41,8 @@ onMounted(async () => {
   if (toolId && userToolId) {
     await toolsStore.getToolDetailsAndValues(Number(toolId), Number(userToolId))
     const toolInputs = toolDetails.value?.tool?.inputs
-
     const mainInputs = toolDetails.value?.tool?.main_inputs
+    const desktopInputs = toolDetails.value?.tool?.desktop_inputs
 
     toolInputs?.forEach((input: ToolInputGroup) => {
       input.inputs.forEach((inputItem: ToolInputField) => {
@@ -50,6 +51,12 @@ onMounted(async () => {
     })
 
     mainInputs?.forEach((input: ToolInputGroup) => {
+      input.inputs.forEach((inputItem: ToolInputField) => {
+        inputItem.default_value = toolValues.value[inputItem.name]
+      })
+    })
+
+    desktopInputs?.forEach((input: ToolInputGroup) => {
       input.inputs.forEach((inputItem: ToolInputField) => {
         inputItem.default_value = toolValues.value[inputItem.name]
       })
@@ -70,6 +77,8 @@ const saveTool = async () => {
 
   const toolInputs = toolDetails.value?.tool?.inputs
   const mainInputs = toolDetails.value?.tool?.main_inputs
+  const desktopInputs = toolDetails.value?.tool?.desktop_inputs
+
 
   toolInputs?.forEach((input: ToolInputGroup) => {
     input.inputs.forEach((inputItem: ToolInputField) => {
@@ -83,14 +92,15 @@ const saveTool = async () => {
     })
   })
 
+  desktopInputs?.forEach((input: ToolInputGroup) => {
+    input.inputs.forEach((inputItem: ToolInputField) => {
+      form.append(inputItem.name, String(inputItem.default_value))
+    })
+  })
+
   toolsStore.displayInputs.forEach((input: any) => {
-    
     input.inputs.forEach((inputItem: any) => {
       if (inputItem.type === 'display-pages') {
-        console.log(inputItem.name)
-        console.log(inputItem.urls)
-        console.log(inputItem.default_value)
-        console.log(inputItem.pages)
           form.append(`view[${inputItem.name}]`, String(inputItem.default_value))
           form.append(`view[urls]`, JSON.stringify(inputItem.urls))
           form.append(`view[pages]`, JSON.stringify(inputItem.pages))
@@ -101,6 +111,9 @@ const saveTool = async () => {
     })
   })
 
+  // for (const [key, value] of form.entries()) {
+  //   console.log(key, value)
+  // }
   if (toolDetails.value?.tool?.id && toolId && !userToolId) {
     await toolsStore
       .installTool(Number(toolId), form)
@@ -138,12 +151,13 @@ const { updateColorChange } = useColorHandler()
 const { updateRangeNumberChange } = useRangeNumberInputHandler()
 const { updateImageChange } = useImageHandler()
 const { updateSwitchElement } = useSwitchInputHandler()
+const { updatePositionElement } = usePositionInputHandler()
 
 const allInputs = computed(() => {
   const inputs: any[] = []
   toolDetails.value?.tool?.inputs?.forEach((group: any) => inputs.push(...group.inputs))
   toolDetails.value?.tool?.main_inputs?.forEach((group: any) => inputs.push(...group.inputs))
-
+  toolDetails.value?.tool?.desktop_inputs?.forEach((group: any) => inputs.push(...group.inputs))
   return inputs
 })
 
@@ -162,7 +176,7 @@ watch(
           if (inputItem.type === 'color') {
             updateColorChange(inputItem.id, String(inputItem.property), String(newVal))
           }
-          if (inputItem.type === 'range') {
+          if (inputItem.type === 'range') {       
             updateRangeNumberChange(inputItem.id, String(inputItem.property), String(newVal))
           }
           if (inputItem.type === 'image') {
@@ -170,6 +184,9 @@ watch(
           }
           if (inputItem.type === 'switch') {
             updateSwitchElement(inputItem.id, String(inputItem.property), String(newVal))
+          }
+          if (inputItem.type === 'position') {
+            updatePositionElement(String(inputItem.default_value)) 
           }
         },
         { immediate: true },
@@ -244,6 +261,7 @@ onUnmounted(() => {
               <DesktopInputs
                 v-if="screen === 'desktop'"
                 :main-inputs="toolDetails?.tool.main_inputs ?? []"
+                :desktop-inputs="toolDetails?.tool.desktop_inputs ?? []"
               />
               <MobileInputs v-else :main-inputs="toolDetails?.tool.main_inputs ?? []" />
 
@@ -274,7 +292,7 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <div class="h-[750px] mt-4 sticky top-[100px]">
+          <div class="h-[700px] mt-4 sticky top-[100px]">
             <div class="w-full h-full absolute opacity-40 border border-red-400">
               <iframe width="100%" height="100%" frameborder="0"> </iframe>
             </div>

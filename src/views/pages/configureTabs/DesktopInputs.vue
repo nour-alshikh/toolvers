@@ -5,12 +5,14 @@ import ConfigureInputs from './ConfigureInputs.vue';
 
 const props = defineProps<{
   mainInputs: ToolInputGroup[]
+  desktopInputs: ToolInputGroup[]
 }>()
 </script>
 
 <template>
 
- <ConfigureInputs :inputs="mainInputs"  />
+ <ConfigureInputs :inputs="mainInputs"   />
+ <ConfigureInputs :inputs="desktopInputs"   />
 </template>
 
 <style scoped>
