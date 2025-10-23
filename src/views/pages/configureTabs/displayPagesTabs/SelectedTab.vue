@@ -20,21 +20,19 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-  default_value: {
+  default: {
     type: String,
     required: true,
   },
 })
-const emit = defineEmits(['update:default_value'])
+const emit = defineEmits(['update:default'])
 
 const urls = ref(props.urls)
 
-const default_value = ref(props.default_value)
+const defaultVal = ref(props.default)
 
-watch(default_value, (val) => {
-    console.log(val)
-    console.log(default_value.value)
-  emit('update:default_value', val)
+watch(defaultVal, (val) => {
+  emit('update:default', val)
 })
 
 // Add a new row
@@ -55,20 +53,20 @@ const removeUrl = (index: number) => {
 </script>
 
 <template>
-  <RadioGroup v-model="default_value" class="flex gap-2">
-    <div @click="default_value = 'except'" class="flex items-center gap-2 border rounded-lg p-4">
+  <RadioGroup v-model="defaultVal" class="flex gap-2">
+    <div @click="defaultVal = 'except'" class="flex items-center gap-2 border rounded-lg p-4">
       <RadioGroupItem id="except" value="except" />
       <Label for="except">كل الصفحات ما عدا</Label>
     </div>
 
-    <div @click="default_value = 'false'" class="flex items-center gap-2 border rounded-lg p-4">
+    <div @click="defaultVal = 'false'" class="flex items-center gap-2 border rounded-lg p-4">
       <RadioGroupItem id="false" value="false" />
       <Label for="false">الظهور في صفحات محددة</Label>
     </div>
   </RadioGroup>
 
   <div class="mt-4">
-    <div v-if="default_value !== 'true'" class="space-y-2">
+    <div v-if="defaultVal !== 'true'" class="space-y-2">
       <div
         v-for="(url, index) in urls"
         :key="index"

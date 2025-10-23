@@ -148,7 +148,7 @@ export interface ToolInputField {
   name: string
   label: string
   type: string
-  default_value: string | number
+  default: string | number
   min?: number
   max?: number
   step?: number

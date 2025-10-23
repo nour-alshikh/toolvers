@@ -6,8 +6,8 @@ export function useColorHandler() {
    * @param inputItem - The input item containing id and property info
    */
   const handleColorChange = (newColor: any, inputItem: any) => {
-    // Update the local input item default_value (not value)
-    inputItem.default_value = newColor.hex
+    // Update the local input item default (not value)
+    inputItem.default = newColor.hex
 
     const { id, property } = inputItem
     const toolversTool = document.querySelector('.toolvers-tool')

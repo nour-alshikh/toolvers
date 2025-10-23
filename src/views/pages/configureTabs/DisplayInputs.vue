@@ -69,7 +69,7 @@ const inputs = toolsStore.displayInputs
             <Input
               class="flex-1 p-4 h-auto text-right"
               placeholder=""
-              v-model="inputItem.default_value"
+              v-model="inputItem.default"
               @input="handleTextInputChange"
               :data-id="inputItem.id"
               :data-property="inputItem.property"
@@ -91,7 +91,7 @@ const inputs = toolsStore.displayInputs
                 class="p-4 h-auto text-right"
                 type="number"
                 placeholder=""
-                v-model="inputItem.default_value"
+                v-model="inputItem.default"
                 :data-id="inputItem.id"
               />
             </div>
@@ -109,7 +109,7 @@ const inputs = toolsStore.displayInputs
             <Switch
               :id="inputItem.id"
               ThumbClass="data-[state=checked]:translate-x-4"
-              :model-value="inputItem.default_value === 'on'"
+              :model-value="inputItem.default === 'on'"
               @update:model-value="(newState) => handleSwitchChange(inputItem, newState)"
             />
           </div>
@@ -122,10 +122,10 @@ const inputs = toolsStore.displayInputs
                 class="flex w-fit m-auto justify-center items-center bg-[#FDF5F8] rounded-lg border border-[#F0F0F0] lg:py-[10px] py-1 px-1"
               >
                 <button
-                  @click="inputItem.default_value = 'except';"
+                  @click="inputItem.default = 'except';"
                   :class="[
                     'px-4 py-2 rounded-md transition-colors',
-                    inputItem.default_value === 'except' || inputItem.default_value === 'false'
+                    inputItem.default === 'except' || inputItem.default === 'false'
                       ? 'bg-[#F0DAE3] text-[#BE185D] shadow-sm'
                       : 'bg-transparent',
                   ]"
@@ -133,10 +133,10 @@ const inputs = toolsStore.displayInputs
                   تخصيص
                 </button>
                 <button
-                  @click="inputItem.default_value = 'true';"
+                  @click="inputItem.default = 'true';"
                   :class="[
                     'px-4 py-2 rounded-md transition-colors',
-                    inputItem.default_value === 'true' ? 'bg-[#F0DAE3] text-[#BE185D] shadow-sm' : 'bg-transparent',
+                    inputItem.default === 'true' ? 'bg-[#F0DAE3] text-[#BE185D] shadow-sm' : 'bg-transparent',
                   ]"
                 >
                   صفحات المتجر
@@ -146,8 +146,8 @@ const inputs = toolsStore.displayInputs
             </div>
             
               <div class="mt-4">
-                <AllTab  v-model:pages="inputItem.pages" v-if="inputItem.default_value === 'true'" />
-                <SelectedTab :urls="inputItem.urls" :default_value="inputItem.default_value" @update:default_value="inputItem.default_value = $event" v-else />
+                <AllTab  v-model:pages="inputItem.pages" v-if="inputItem.default === 'true'" />
+                <SelectedTab :urls="inputItem.urls" :default="inputItem.default" @update:default="inputItem.default = $event" v-else />
               </div>
           </div>
         </div>

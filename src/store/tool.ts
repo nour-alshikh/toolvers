@@ -22,7 +22,7 @@ export const useToolsStore = defineStore(
         inputs: [
           {
             label: 'اسم الاداة',
-            default_value: '',
+            default: '',
             id: 'name',
             class: 'my-1 col-span-1',
             type: 'text',
@@ -38,7 +38,7 @@ export const useToolsStore = defineStore(
         inputs: [
           {
             label: 'مدة العرض',
-            default_value: '0',
+            default: '0',
             id: 'show_delay',
             class: 'my-1 col-span-1',
             type: 'number',
@@ -47,7 +47,7 @@ export const useToolsStore = defineStore(
           },
           {
             label: 'مدة التأخير',
-            default_value: '0',
+            default: '0',
             id: 'hide_after',
             class: 'my-1 col-span-1',
             type: 'number',
@@ -56,7 +56,7 @@ export const useToolsStore = defineStore(
           },
           {
             label: 'عدد مرات الظهور',
-            default_value: '0',
+            default: '0',
             id: 'appearance_count',
             class: 'my-1 col-span-1',
             type: 'number',
@@ -77,7 +77,7 @@ export const useToolsStore = defineStore(
             type: 'display-pages',
             property: 'display-pages',
             name: 'all_pages',
-            default_value: 'true',
+            default: 'true',
             urls: [],
             pages: [],
           },
@@ -91,7 +91,7 @@ export const useToolsStore = defineStore(
           {
             label: 'عرض على الجوال',
             name: 'show_on_mobile',
-            default_value: 'on',
+            default: 'on',
             id: 'show_on_mobile',
             type: 'switch',
             class: 'my-1 col-span-1 flex justify-center items-center',
@@ -100,7 +100,7 @@ export const useToolsStore = defineStore(
           {
             label: 'عرض على سطح المكتب',
             name: 'show_on_desktop',
-            default_value: 'on',
+            default: 'on',
             id: 'show_on_desktop',
             type: 'switch',
             class: 'my-1 col-span-1 flex justify-center items-center',
@@ -122,7 +122,10 @@ export const useToolsStore = defineStore(
       return Array.from(types)
     })
 
-    const toolDetails = ref<any>({})
+    const toolDetails = ref<any>([])
+    const desktopInputs = ref<any>([])
+    const mainInputs = ref<any>([])
+    const tool = ref<string>('')
 
     const toolValues = ref<any>({})
 
@@ -225,7 +228,49 @@ export const useToolsStore = defineStore(
         })
 
         if (response.status === 200) {
-          toolDetails.value = response.data.data
+          // Step 1: group by "group"
+          const grouped = response.data.data.tool.inputs.reduce((acc, item) => {
+            if (!acc[item.group]) acc[item.group] = []
+            acc[item.group].push(item)
+            return acc
+          }, {})
+
+          // Step 2: build the "main" group array if it exists
+          const mainGroups = grouped.main
+            ? [
+                {
+                  title: 'الاعدادات الرئيسية',
+                  isOpen: true,
+                  class: 'grid grid-cols-1 gap-4',
+                  inputs: grouped.main,
+                },
+              ]
+            : []
+          const desktopGroups = grouped.desktop
+            ? [
+                {
+                  title: 'الاعدادات الرئيسية',
+                  isOpen: true,
+                  class: 'grid grid-cols-1 gap-4',
+                  inputs: grouped.desktop,
+                },
+              ]
+            : []
+
+          // Step 3: build the rest of the groups (excluding "main")
+          const formatted = Object.entries(grouped)
+            .filter(([group]) => group !== 'main')
+            .map(([group, inputs]) => ({
+              title: group,
+              isOpen: true,
+              class: 'grid grid-cols-1 gap-4',
+              inputs,
+            }))
+
+          toolDetails.value = formatted
+          mainInputs.value = mainGroups 
+          desktopInputs.value = desktopGroups
+          tool.value = response.data.data.rendered_html
         }
 
         return []
@@ -318,14 +363,59 @@ export const useToolsStore = defineStore(
         )
 
         if (response.status === 200) {
-          toolDetails.value = response.data.data
+      
+
+             // Step 1: group by "group"
+          const grouped = response.data.data.tool.inputs.reduce((acc, item) => {
+            if (!acc[item.group]) acc[item.group] = []
+            acc[item.group].push(item)
+            return acc
+          }, {})
+
+          // Step 2: build the "main" group array if it exists
+          const mainGroups = grouped.main
+            ? [
+                {
+                  title: 'الاعدادات الرئيسية',
+                  isOpen: true,
+                  class: 'grid grid-cols-1 gap-4',
+                  inputs: grouped.main,
+                },
+              ]
+            : []
+          const desktopGroups = grouped.desktop
+            ? [
+                {
+                  title: 'الاعدادات الرئيسية',
+                  isOpen: true,
+                  class: 'grid grid-cols-1 gap-4',
+                  inputs: grouped.desktop,
+                },
+              ]
+            : []
+
+          // Step 3: build the rest of the groups (excluding "main")
+          const formatted = Object.entries(grouped)
+            .filter(([group]) => group !== 'main')
+            .map(([group, inputs]) => ({
+              title: group,
+              isOpen: true,
+              class: 'grid grid-cols-1 gap-4',
+              inputs,
+            }))
+
+          toolDetails.value = formatted
+          mainInputs.value = mainGroups 
+          desktopInputs.value = desktopGroups
           toolValues.value = response.data.data.user_tool.values
+          tool.value = response.data.data.rendered_html
+
+          
           const settings = response.data.data.user_tool.view_settings
 
           // Save the raw response if you need it
           displayInputsValues.value = settings
 
-          
           // Loop through displayInputs and assign values dynamically
           displayInputs.forEach((group: any) => {
             group.inputs?.forEach((input: any) => {
@@ -335,14 +425,13 @@ export const useToolsStore = defineStore(
                 // Assign the new value from API
 
                 if (key === 'all_pages') {
-                  input.default_value = settings[key]
+                  input.default = settings[key]
                   input.urls = [...JSON.parse(settings['urls'])]
                 }
-                input.default_value = settings[key]
+                input.default = settings[key]
               }
             })
           })
-
         }
 
         return []
@@ -441,7 +530,10 @@ export const useToolsStore = defineStore(
     return {
       tools,
       toolDetails,
+      tool,
       toolValues,
+      mainInputs,
+      desktopInputs,
       displayInputs,
       displayInputsValues,
       toolsTypes,

@@ -15,9 +15,9 @@ export function useSwitchInputHandler() {
   }
 
   const handleSwitchChange = (inputItem: ToolInputField, newState: boolean) => {
-    inputItem.default_value = newState ? 'on' : 'off'
+    inputItem.default = newState ? 'on' : 'off'
     if (inputItem.property) {
-      updateSwitchElement(inputItem.id, inputItem.property, inputItem.default_value)
+      updateSwitchElement(inputItem.id, inputItem.property, inputItem.default)
     }
   }
 

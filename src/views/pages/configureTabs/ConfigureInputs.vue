@@ -20,7 +20,7 @@ import Switch from '@/components/ui/switch/Switch.vue'
 
 import { useToolsStore } from '@/store/tool'
 import { icons } from '@/icons'
-
+import ar from '@/locales/ar.ts'
 const { handleTextInputChange } = useTextInputHandler()
 const { handleColorChange } = useColorHandler()
 const { handleRangeNumberInput } = useRangeNumberInputHandler()
@@ -74,13 +74,13 @@ const props = defineProps<{
               class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
               for="color-input "
             >
-              {{ inputItem.label }}
+              {{ ar[inputItem.name] }}
             </Label>
 
             <Input
               class="flex-1 p-4 h-auto text-right"
               placeholder=""
-              v-model="inputItem.default_value"
+              v-model="inputItem.default"
               @input="handleTextInputChange"
               :data-id="inputItem.id"
               :data-property="inputItem.property"
@@ -91,18 +91,18 @@ const props = defineProps<{
           <div v-if="inputItem.type === 'color'">
             <ColorInput
               @updateColor="(newColor) => handleColorChange(newColor, inputItem)"
-              :label="inputItem.label"
-              :color="{ hex: String(inputItem.default_value) }"
+              :label="inputItem.name"
+              :color="{ hex: String(inputItem.default) }"
             />
           </div>
 
           <!-- Range input -->
           <div v-if="inputItem.type === 'range'" class="relative flex gap-3 flex-1">
             <Slider
-              :model-value="[Number(inputItem.default_value) || 0]"
+              :model-value="[Number(inputItem.default) || 0]"
               @update:model-value="
                 (val) => {
-                  inputItem.default_value = Number(val[0])
+                  inputItem.default = Number(val[0])
                   handleRangeNumberInput(inputItem)
                 }
               "
@@ -117,7 +117,7 @@ const props = defineProps<{
                 class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
                 for="color-input"
               >
-                {{ inputItem.label }}
+                {{ ar[inputItem.name] }}
               </Label>
 
               <Input
@@ -127,7 +127,7 @@ const props = defineProps<{
                 :min="Number(inputItem.min) || 12"
                 :max="Number(inputItem.max) || 24"
                 :step="Number(inputItem.step) || 1"
-                v-model="inputItem.default_value"
+                v-model="inputItem.default"
                 :data-id="inputItem.id"
                 @input="handleRangeNumberInput(inputItem)"
                 @change="handleRangeNumberInput(inputItem)"
@@ -142,14 +142,14 @@ const props = defineProps<{
                 class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
                 for="color-input"
               >
-                {{ inputItem.label }}
+                {{ ar[inputItem.name] }}
               </Label>
 
               <Input
                 class="p-4 h-auto text-right"
                 type="number"
                 placeholder=""
-                v-model="inputItem.default_value"
+                v-model="inputItem.default"
                 :data-id="inputItem.id"
               />
             </div>
@@ -167,7 +167,7 @@ const props = defineProps<{
 
               <TabsContent value="image">
                 <ImageTab
-                  v-model="inputItem.default_value"
+                  v-model="inputItem.default"
                   :data-id="inputItem.id"
                   :data-property="inputItem.property"
                 />
@@ -184,12 +184,12 @@ const props = defineProps<{
             class="relative flex justify-center items-center gap-3 w-full h-full"
           >
             <Label :for="inputItem.id">
-              {{ inputItem.label }}
+              {{ ar[inputItem.name] }}
             </Label>
             <Switch
               :id="inputItem.id"
               ThumbClass="data-[state=checked]:translate-x-4"
-              :model-value="inputItem.default_value === 'on'"
+              :model-value="inputItem.default === 'on'"
               @update:model-value="(newState) => handleSwitchChange(inputItem, newState)"
             />
           </div>
@@ -200,44 +200,44 @@ const props = defineProps<{
               <div
                 @click="handlePositionChange(inputItem, 'top-left')"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-                :class="inputItem.default_value === 'top-left' ? 'bg-primary/10 ' : ''"
+                :class="inputItem.default === 'top-left' ? 'bg-primary/10 ' : ''"
               ></div>
               <div
                 @click="handlePositionChange(inputItem, 'top')"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-                :class="inputItem.default_value === 'top' ? 'bg-primary/10' : ''"
+                :class="inputItem.default === 'top' ? 'bg-primary/10' : ''"
               ></div>
               <div
                 @click="handlePositionChange(inputItem, 'top-right')"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-                :class="inputItem.default_value === 'top-right' ? 'bg-primary/10' : ''"
+                :class="inputItem.default === 'top-right' ? 'bg-primary/10' : ''"
               ></div>
 
               <div
                 @click="handlePositionChange(inputItem, 'center-left')"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-                :class="inputItem.default_value === 'center-left' ? 'bg-primary/10' : ''"
+                :class="inputItem.default === 'center-left' ? 'bg-primary/10' : ''"
               ></div>
               <div></div>
               <div
                 @click="handlePositionChange(inputItem, 'center-right')"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-                :class="inputItem.default_value === 'center-right' ? 'bg-primary/10' : ''"
+                :class="inputItem.default === 'center-right' ? 'bg-primary/10' : ''"
               ></div>
               <div
                 @click="handlePositionChange(inputItem, 'bottom-left')"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-                :class="inputItem.default_value === 'bottom-left' ? 'bg-primary/10' : ''"
+                :class="inputItem.default === 'bottom-left' ? 'bg-primary/10' : ''"
               ></div>
               <div
                 @click="handlePositionChange(inputItem, 'bottom')"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-                :class="inputItem.default_value === 'bottom' ? 'bg-primary/10' : ''"
+                :class="inputItem.default === 'bottom' ? 'bg-primary/10' : ''"
               ></div>
               <div
                 @click="handlePositionChange(inputItem, 'bottom-right')"
                 class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-                :class="inputItem.default_value === 'bottom-right' ? 'bg-primary/10' : ''"
+                :class="inputItem.default === 'bottom-right' ? 'bg-primary/10' : ''"
               ></div>
 
               <div class="col-span-3 row-span-3">

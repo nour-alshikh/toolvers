@@ -25,39 +25,39 @@ import DisplayInputs from './configureTabs/DisplayInputs.vue'
 import { usePositionInputHandler } from '@/composables/usePositionInputHandler'
 import { useToolPositionStore } from '@/store/toolPosition'
 
-// دالة لحساب px من النسبة
-const toPx = (valPercent: number, parentSize: number) => (valPercent / 100) * parentSize
+// // دالة لحساب px من النسبة
+// const toPx = (valPercent: number, parentSize: number) => (valPercent / 100) * parentSize
 
-const toolPositionStore = useToolPositionStore()
+// const toolPositionStore = useToolPositionStore()
 
-const widthPercentage = toolPositionStore.toolWidth.value
-const heightPercentage = toolPositionStore.toolHeight.value
+// const widthPercentage = toolPositionStore.toolWidth.value
+// const heightPercentage = toolPositionStore.toolHeight.value
 
 
-const desktopRef = ref()
-const mobileRef = ref()
-// نخزن النسب المئوية
-const desktopState = ref({ x: 0, y: 0, w: widthPercentage, h: heightPercentage }) // نسب مئوية
-const mobileState = ref({ x: 0, y: 0, w: 40, h: 25 })
+// const desktopRef = ref()
+// const mobileRef = ref()
+// // نخزن النسب المئوية
+// const desktopState = ref({ x: 0, y: 0, w: widthPercentage, h: heightPercentage }) // نسب مئوية
+// const mobileState = ref({ x: 0, y: 0, w: 40, h: 25 })
 
-// دالة ترجع أبعاد البارنت الحالي
-const getParentBox = (screen: 'desktop' | 'mobile') => {
-  const parent = screen === 'desktop' ? desktopRef.value : mobileRef.value
-  return parent.getBoundingClientRect()
-}
-// حفظ مكان العنصر
-const handleDragging = (screen: 'desktop' | 'mobile', { x, y }: { x: number; y: number }) => {
-  const parentBox = getParentBox(screen)
-  const xPercent = (x / parentBox.width) * 100
-  const yPercent = (y / parentBox.height) * 100
-  if (screen === 'desktop') {
-    desktopState.value.x = xPercent
-    desktopState.value.y = yPercent
-  } else {
-    mobileState.value.x = xPercent
-    mobileState.value.y = yPercent
-  }
-}
+// // دالة ترجع أبعاد البارنت الحالي
+// const getParentBox = (screen: 'desktop' | 'mobile') => {
+//   const parent = screen === 'desktop' ? desktopRef.value : mobileRef.value
+//   return parent.getBoundingClientRect()
+// }
+// // حفظ مكان العنصر
+// const handleDragging = (screen: 'desktop' | 'mobile', { x, y }: { x: number; y: number }) => {
+//   const parentBox = getParentBox(screen)
+//   const xPercent = (x / parentBox.width) * 100
+//   const yPercent = (y / parentBox.height) * 100
+//   if (screen === 'desktop') {
+//     desktopState.value.x = xPercent
+//     desktopState.value.y = yPercent
+//   } else {
+//     mobileState.value.x = xPercent
+//     mobileState.value.y = yPercent
+//   }
+// }
 
 const { primary, black, edit, showSettings, backArrow, eye } = icons
 
@@ -67,7 +67,7 @@ const screen = ref<'desktop' | 'mobile'>('desktop')
 const tab = ref<'edit' | 'preview' | 'display'>('edit')
 
 const toolsStore = useToolsStore()
-const { toolDetails, toolValues } = storeToRefs(toolsStore)
+const { toolDetails, toolValues , tool , mainInputs , desktopInputs} = storeToRefs(toolsStore)
 
 const toolId = router.currentRoute.value.params.id
 const userToolId = router.currentRoute.value.params.userId
@@ -75,25 +75,27 @@ const userToolId = router.currentRoute.value.params.userId
 onMounted(async () => {
   if (toolId && userToolId) {
     await toolsStore.getToolDetailsAndValues(Number(toolId), Number(userToolId))
-    const toolInputs = toolDetails.value?.tool?.inputs
-    const mainInputs = toolDetails.value?.tool?.main_inputs
-    const desktopInputs = toolDetails.value?.tool?.desktop_inputs
 
+    const toolInputs = toolDetails.value
+    const main = mainInputs.value
+    const desktop = desktopInputs.value
+
+  
     toolInputs?.forEach((input: ToolInputGroup) => {
       input.inputs.forEach((inputItem: ToolInputField) => {
-        inputItem.default_value = toolValues.value[inputItem.name]
+        inputItem.default = toolValues.value[inputItem.name]
       })
     })
 
-    mainInputs?.forEach((input: ToolInputGroup) => {
+    main?.forEach((input: ToolInputGroup) => {
       input.inputs.forEach((inputItem: ToolInputField) => {
-        inputItem.default_value = toolValues.value[inputItem.name]
+        inputItem.default = toolValues.value[inputItem.name]
       })
     })
 
-    desktopInputs?.forEach((input: ToolInputGroup) => {
+    desktop?.forEach((input: ToolInputGroup) => {
       input.inputs.forEach((inputItem: ToolInputField) => {
-        inputItem.default_value = toolValues.value[inputItem.name]
+        inputItem.default = toolValues.value[inputItem.name]
       })
     })
   } else if (toolId && !userToolId) {
@@ -108,46 +110,51 @@ const toggleScreen = () => {
 const saveTool = async () => {
   const form = new FormData()
 
-  form.append('name', toolDetails.value?.tool?.name ?? '')
 
-  const toolInputs = toolDetails.value?.tool?.inputs
-  const mainInputs = toolDetails.value?.tool?.main_inputs
-  const desktopInputs = toolDetails.value?.tool?.desktop_inputs
+  form.append('name', 'whatsapp')
+
+  const toolInputs = toolDetails.value
+  const main = mainInputs.value
+  const desktop = desktopInputs.value
 
   toolInputs?.forEach((input: ToolInputGroup) => {
     input.inputs.forEach((inputItem: ToolInputField) => {
-      form.append(inputItem.name, String(inputItem.default_value))
+      form.append(inputItem.name, String(inputItem.default))
     })
   })
 
-  mainInputs?.forEach((input: ToolInputGroup) => {
+  main?.forEach((input: ToolInputGroup) => {
     input.inputs.forEach((inputItem: ToolInputField) => {
-      form.append(inputItem.name, String(inputItem.default_value))
+      form.append(inputItem.name, String(inputItem.default))
     })
   })
 
-  desktopInputs?.forEach((input: ToolInputGroup) => {
+  desktop?.forEach((input: ToolInputGroup) => {
     input.inputs.forEach((inputItem: ToolInputField) => {
-      form.append(inputItem.name, String(inputItem.default_value))
+      console.log( String(inputItem.default));
+      console.log(inputItem.name);
+      
+      form.append(inputItem.name, String(inputItem.default))
     })
   })
 
   toolsStore.displayInputs.forEach((input: any) => {
     input.inputs.forEach((inputItem: any) => {
       if (inputItem.type === 'display-pages') {
-        form.append(`view[${inputItem.name}]`, String(inputItem.default_value))
+        form.append(`view[${inputItem.name}]`, String(inputItem.default))
         form.append(`view[urls]`, JSON.stringify(inputItem.urls))
         form.append(`view[pages]`, JSON.stringify(inputItem.pages))
       } else {
-        form.append(`view[${inputItem.name}]`, String(inputItem.default_value))
+        form.append(`view[${inputItem.name}]`, String(inputItem.default))
       }
     })
   })
 
-  // for (const [key, value] of form.entries()) {
-  //   console.log(key, value)
-  // }
-  if (toolDetails.value?.tool?.id && toolId && !userToolId) {
+  for (const [key, value] of form.entries()) {
+    console.log(key, value)
+  }
+  if (toolDetails && toolId && !userToolId) {
+  
     await toolsStore
       .installTool(Number(toolId), form)
       .then(() => {
@@ -188,9 +195,9 @@ const { updatePositionElement } = usePositionInputHandler()
 
 const allInputs = computed(() => {
   const inputs: any[] = []
-  toolDetails.value?.tool?.inputs?.forEach((group: any) => inputs.push(...group.inputs))
-  toolDetails.value?.tool?.main_inputs?.forEach((group: any) => inputs.push(...group.inputs))
-  toolDetails.value?.tool?.desktop_inputs?.forEach((group: any) => inputs.push(...group.inputs))
+  toolDetails.value?.forEach((group: any) => inputs.push(...group.inputs))
+  mainInputs.value?.forEach((group: any) => inputs.push(...group.inputs))
+  desktopInputs.value?.forEach((group: any) => inputs.push(...group.inputs))
   return inputs
 })
 
@@ -199,7 +206,7 @@ watch(
   (inputs) => {
     inputs.forEach((inputItem: ToolInputField) => {
       watch(
-        () => inputItem.default_value,
+        () => inputItem.default,
         (newVal) => {
           if (newVal === undefined || newVal === null) return
 
@@ -219,7 +226,7 @@ watch(
             updateSwitchElement(inputItem.id, String(inputItem.property), String(newVal))
           }
           if (inputItem.type === 'position') {
-            updatePositionElement(String(inputItem.default_value))
+            updatePositionElement(String(inputItem.default))
           }
         },
         { immediate: true },
@@ -288,15 +295,15 @@ onUnmounted(() => {
             </div>
 
             <TabsContent value="edit">
-              <InputCollapsible :inputs="toolDetails?.tool?.inputs ?? []" />
+              <InputCollapsible :inputs="toolDetails ?? []" />
             </TabsContent>
             <TabsContent value="display">
               <DesktopInputs
                 v-if="screen === 'desktop'"
-                :main-inputs="toolDetails?.tool.main_inputs ?? []"
-                :desktop-inputs="toolDetails?.tool.desktop_inputs ?? []"
+                :main-inputs="mainInputs ?? []"
+                :desktop-inputs="desktopInputs ?? []"
               />
-              <MobileInputs v-else :main-inputs="toolDetails?.tool.main_inputs ?? []" />
+              <MobileInputs v-else :main-inputs="mainInputs ?? []" />
 
               <DisplayInputs />
             </TabsContent>
@@ -333,7 +340,8 @@ onUnmounted(() => {
             <div class="w-full h-full absolute opacity-40 border border-red-400">
               <iframe width="100%" height="100%" frameborder="0"> </iframe>
             </div>
-            <vue3-draggable-resizable
+            <!--
+              <vue3-draggable-resizable
               :draggable="true"
               :class-name-dragging="'my-dragging-class'"
               :x="toPx(desktopState.x, 1370)"
@@ -349,6 +357,8 @@ onUnmounted(() => {
                 <WidgetComponent :widget="toolDetails?.rendered_html ?? ''" />
               </div>
             </vue3-draggable-resizable>
+          -->
+          <WidgetComponent :widget="tool ?? ''" />
           </div>
         </div>
       </div>

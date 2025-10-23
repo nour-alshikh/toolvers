@@ -1,6 +1,6 @@
 export function usePositionInputHandler() {
   const handlePositionChange = (inputItem: any, position: string) => {
-    inputItem.default_value = position
+    inputItem.default = position
     const toolversTool = document.querySelector('.toolvers-tool')
     const toolversWidget = document.querySelector('.toolvers-widget')
     toolversTool?.classList.remove(
