@@ -62,6 +62,6 @@ onUpdated(async () => {
 
 <template>
   <div class="toolvers-tool">
-    <div class="relative" v-html="widget ?? ''" ref="wrapperRef"></div>
+    <div class="relative " v-html="widget ?? ''" ref="wrapperRef"></div>
   </div>
 </template>

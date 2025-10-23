@@ -25,39 +25,38 @@ import DisplayInputs from './configureTabs/DisplayInputs.vue'
 import { usePositionInputHandler } from '@/composables/usePositionInputHandler'
 import { useToolPositionStore } from '@/store/toolPosition'
 
-// // دالة لحساب px من النسبة
-// const toPx = (valPercent: number, parentSize: number) => (valPercent / 100) * parentSize
+// دالة لحساب px من النسبة
+const toPx = (valPercent: number, parentSize: number) => (valPercent / 100) * parentSize
 
-// const toolPositionStore = useToolPositionStore()
+const toolPositionStore = useToolPositionStore()
 
-// const widthPercentage = toolPositionStore.toolWidth.value
-// const heightPercentage = toolPositionStore.toolHeight.value
+const widthPercentage = toolPositionStore.toolWidth.value
+const heightPercentage = toolPositionStore.toolHeight.value
 
+const desktopRef = ref()
+const mobileRef = ref()
+// نخزن النسب المئوية
+const desktopState = ref({ x: 0, y: 0, w: widthPercentage, h: heightPercentage }) // نسب مئوية
+const mobileState = ref({ x: 0, y: 0, w: 40, h: 25 })
 
-// const desktopRef = ref()
-// const mobileRef = ref()
-// // نخزن النسب المئوية
-// const desktopState = ref({ x: 0, y: 0, w: widthPercentage, h: heightPercentage }) // نسب مئوية
-// const mobileState = ref({ x: 0, y: 0, w: 40, h: 25 })
-
-// // دالة ترجع أبعاد البارنت الحالي
-// const getParentBox = (screen: 'desktop' | 'mobile') => {
-//   const parent = screen === 'desktop' ? desktopRef.value : mobileRef.value
-//   return parent.getBoundingClientRect()
-// }
-// // حفظ مكان العنصر
-// const handleDragging = (screen: 'desktop' | 'mobile', { x, y }: { x: number; y: number }) => {
-//   const parentBox = getParentBox(screen)
-//   const xPercent = (x / parentBox.width) * 100
-//   const yPercent = (y / parentBox.height) * 100
-//   if (screen === 'desktop') {
-//     desktopState.value.x = xPercent
-//     desktopState.value.y = yPercent
-//   } else {
-//     mobileState.value.x = xPercent
-//     mobileState.value.y = yPercent
-//   }
-// }
+// دالة ترجع أبعاد البارنت الحالي
+const getParentBox = (screen: 'desktop' | 'mobile') => {
+  const parent = screen === 'desktop' ? desktopRef.value : mobileRef.value
+  return parent.getBoundingClientRect()
+}
+// حفظ مكان العنصر
+const handleDragging = (screen: 'desktop' | 'mobile', { x, y }: { x: number; y: number }) => {
+  const parentBox = getParentBox(screen)
+  const xPercent = (x / parentBox.width) * 100
+  const yPercent = (y / parentBox.height) * 100
+  if (screen === 'desktop') {
+    desktopState.value.x = xPercent
+    desktopState.value.y = yPercent
+  } else {
+    mobileState.value.x = xPercent
+    mobileState.value.y = yPercent
+  }
+}
 
 const { primary, black, edit, showSettings, backArrow, eye } = icons
 
@@ -67,7 +66,7 @@ const screen = ref<'desktop' | 'mobile'>('desktop')
 const tab = ref<'edit' | 'preview' | 'display'>('edit')
 
 const toolsStore = useToolsStore()
-const { toolDetails, toolValues , tool , mainInputs , desktopInputs} = storeToRefs(toolsStore)
+const { toolDetails, toolValues, tool, mainInputs, desktopInputs } = storeToRefs(toolsStore)
 
 const toolId = router.currentRoute.value.params.id
 const userToolId = router.currentRoute.value.params.userId
@@ -80,7 +79,6 @@ onMounted(async () => {
     const main = mainInputs.value
     const desktop = desktopInputs.value
 
-  
     toolInputs?.forEach((input: ToolInputGroup) => {
       input.inputs.forEach((inputItem: ToolInputField) => {
         inputItem.default = toolValues.value[inputItem.name]
@@ -110,7 +108,6 @@ const toggleScreen = () => {
 const saveTool = async () => {
   const form = new FormData()
 
-
   form.append('name', 'whatsapp')
 
   const toolInputs = toolDetails.value
@@ -131,9 +128,9 @@ const saveTool = async () => {
 
   desktop?.forEach((input: ToolInputGroup) => {
     input.inputs.forEach((inputItem: ToolInputField) => {
-      console.log( String(inputItem.default));
-      console.log(inputItem.name);
-      
+      console.log(String(inputItem.default))
+      console.log(inputItem.name)
+
       form.append(inputItem.name, String(inputItem.default))
     })
   })
@@ -154,7 +151,6 @@ const saveTool = async () => {
     console.log(key, value)
   }
   if (toolDetails && toolId && !userToolId) {
-  
     await toolsStore
       .installTool(Number(toolId), form)
       .then(() => {
@@ -340,7 +336,7 @@ onUnmounted(() => {
             <div class="w-full h-full absolute opacity-40 border border-red-400">
               <iframe width="100%" height="100%" frameborder="0"> </iframe>
             </div>
-            <!--
+            <!-- Desktop 
               <vue3-draggable-resizable
               :draggable="true"
               :class-name-dragging="'my-dragging-class'"
@@ -354,16 +350,15 @@ onUnmounted(() => {
               :resizable="false"
             >
               <div>
-                <WidgetComponent :widget="toolDetails?.rendered_html ?? ''" />
+                <WidgetComponent :widget="tool ?? ''" />
               </div>
             </vue3-draggable-resizable>
           -->
-          <WidgetComponent :widget="tool ?? ''" />
+            <WidgetComponent :widget="tool ?? ''" />
           </div>
         </div>
       </div>
     </div>
-    
   </DefaultLayout>
 </template>
 

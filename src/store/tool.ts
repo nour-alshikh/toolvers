@@ -259,7 +259,7 @@ export const useToolsStore = defineStore(
 
           // Step 3: build the rest of the groups (excluding "main")
           const formatted = Object.entries(grouped)
-            .filter(([group]) => group !== 'main')
+            .filter(([group]) => group !== 'main' && group !== 'desktop')
             .map(([group, inputs]) => ({
               title: group,
               isOpen: true,
