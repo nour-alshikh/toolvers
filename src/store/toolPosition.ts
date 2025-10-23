@@ -5,22 +5,22 @@ export const useToolPositionStore = defineStore(
   'toolPosition',
   () => {
 
-    const toolPosition = ref<any>({})
+    const screen = ref<'desktop' | 'mobile'>('desktop')
 
-    const toolWidth = ref<any>({})
+    const desktopPosition = ref({ x: 0, y: 0 })
 
-    const toolHeight = ref<any>({})
+    const mobilePosition = ref({ x: 0, y: 0 })
 
-    const toolX = ref<any>({})
+    const freeDesktopPosition = ref(false)
+    const freeMobilePosition = ref(false)
 
-    const toolY = ref<any>({})
 
     return {
-      toolPosition,
-      toolWidth,
-      toolHeight,
-      toolX,
-      toolY,
+      screen,
+      desktopPosition,
+      mobilePosition,
+      freeDesktopPosition,
+      freeMobilePosition
     }
   },
   {

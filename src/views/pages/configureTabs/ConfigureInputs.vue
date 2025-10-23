@@ -18,16 +18,17 @@ import { useSwitchInputHandler } from '@/composables/useSwitchInputHandler'
 import { usePositionInputHandler } from '@/composables/usePositionInputHandler'
 import Switch from '@/components/ui/switch/Switch.vue'
 
-import { useToolsStore } from '@/store/tool'
 import { icons } from '@/icons'
 import ar from '@/locales/ar.ts'
+import { useToolPositionStore } from '@/store/toolPosition'
+import { storeToRefs } from 'pinia'
 const { handleTextInputChange } = useTextInputHandler()
 const { handleColorChange } = useColorHandler()
 const { handleRangeNumberInput } = useRangeNumberInputHandler()
 const { handleSwitchChange } = useSwitchInputHandler()
 const { handlePositionChange } = usePositionInputHandler()
 
-const toolsStore = useToolsStore()
+const toolPositionStore = useToolPositionStore()
 
 const props = defineProps<{
   inputs: ToolInputGroup[]
@@ -242,6 +243,8 @@ const props = defineProps<{
 
               <div class="col-span-3 row-span-3">
                 <Button
+                  @click="toolPositionStore.freeDesktopPosition = !toolPositionStore.freeDesktopPosition"  
+
                   class="border border-primary rounded-lg flex items-center gap-2 bg-transparent text-primary mt-2 hover:bg-primary hover:text-white transition-all duration-200 ease-in-out"
                 >
                   التحكم الحر في مكان الاشعار

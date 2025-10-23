@@ -22,6 +22,8 @@ import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
 
 import vSelect from 'vue-select'
 
+import VueDragResize from 'vue-drag-resize'
+
 
 document.documentElement.setAttribute("dir", "rtl")
 
@@ -36,5 +38,6 @@ app.use(pinia)
 app.use(plugin, defaultConfig(config))
 app.component('v-select', vSelect)
 
+app.component('vue-drag-resize', VueDragResize)
 app.component('vue3-draggable-resizable', Vue3DraggableResizable)
 app.mount('#app')

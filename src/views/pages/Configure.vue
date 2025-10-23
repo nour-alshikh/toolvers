@@ -25,38 +25,8 @@ import DisplayInputs from './configureTabs/DisplayInputs.vue'
 import { usePositionInputHandler } from '@/composables/usePositionInputHandler'
 import { useToolPositionStore } from '@/store/toolPosition'
 
-// دالة لحساب px من النسبة
-const toPx = (valPercent: number, parentSize: number) => (valPercent / 100) * parentSize
 
 const toolPositionStore = useToolPositionStore()
-
-const widthPercentage = toolPositionStore.toolWidth.value
-const heightPercentage = toolPositionStore.toolHeight.value
-
-const desktopRef = ref()
-const mobileRef = ref()
-// نخزن النسب المئوية
-const desktopState = ref({ x: 0, y: 0, w: widthPercentage, h: heightPercentage }) // نسب مئوية
-const mobileState = ref({ x: 0, y: 0, w: 40, h: 25 })
-
-// دالة ترجع أبعاد البارنت الحالي
-const getParentBox = (screen: 'desktop' | 'mobile') => {
-  const parent = screen === 'desktop' ? desktopRef.value : mobileRef.value
-  return parent.getBoundingClientRect()
-}
-// حفظ مكان العنصر
-const handleDragging = (screen: 'desktop' | 'mobile', { x, y }: { x: number; y: number }) => {
-  const parentBox = getParentBox(screen)
-  const xPercent = (x / parentBox.width) * 100
-  const yPercent = (y / parentBox.height) * 100
-  if (screen === 'desktop') {
-    desktopState.value.x = xPercent
-    desktopState.value.y = yPercent
-  } else {
-    mobileState.value.x = xPercent
-    mobileState.value.y = yPercent
-  }
-}
 
 const { primary, black, edit, showSettings, backArrow, eye } = icons
 
@@ -235,6 +205,21 @@ watch(
 onUnmounted(() => {
   toolsStore.clearStore()
 })
+
+const position = ref({ x: 0, y: 0 })
+
+// runs continuously while dragging
+const onDragging = ({ x, y }: { x: number; y: number }) => {
+  position.value = { x, y }
+  console.log('Dragging at:', x, y)
+  console.log('Dragging at:', (x* 100)/ 1370, (y* 100)/ 700  , "in percent")
+}
+
+// runs once after drag stops
+const onDragStop = ({ x, y }: { x: number; y: number }) => {
+  position.value = { x, y }
+  console.log('Drag ended at:', x, y)
+}
 </script>
 
 <template>
@@ -331,30 +316,23 @@ onUnmounted(() => {
           <div
             class="mt-4 sticky top-[100px]"
             style="height: 700px; width: 1370px"
-            ref="desktopRef"
           >
             <div class="w-full h-full absolute opacity-40 border border-red-400">
               <iframe width="100%" height="100%" frameborder="0"> </iframe>
             </div>
-            <!-- Desktop 
-              <vue3-draggable-resizable
-              :draggable="true"
+
+            <vue3-draggable-resizable
+              v-if="tool && toolPositionStore.freeDesktopPosition"
+              @dragging="onDragging"
+              @dragstop="onDragStop"
               :class-name-dragging="'my-dragging-class'"
-              :x="toPx(desktopState.x, 1370)"
-              :y="toPx(desktopState.y, 700)"
-              :w="toPx(desktopState.w, 1370)"
-              :h="toPx(desktopState.h, 700)"
-              :lock-aspect-ratio="true"
-              :parent="true"
-              @dragging="(pos) => handleDragging('desktop', pos)"
               :resizable="false"
+              :parent="true"
             >
-              <div>
-                <WidgetComponent :widget="tool ?? ''" />
-              </div>
+              <WidgetComponent :widget="tool ?? ''" />
             </vue3-draggable-resizable>
-          -->
-            <WidgetComponent :widget="tool ?? ''" />
+
+            <WidgetComponent v-else :widget="tool ?? ''" />
           </div>
         </div>
       </div>
