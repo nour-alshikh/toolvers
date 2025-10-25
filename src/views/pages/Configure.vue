@@ -25,14 +25,12 @@ import DisplayInputs from './configureTabs/DisplayInputs.vue'
 import { usePositionInputHandler } from '@/composables/usePositionInputHandler'
 import { useToolPositionStore } from '@/store/toolPosition'
 
-
 const toolPositionStore = useToolPositionStore()
 
 const { primary, black, edit, showSettings, backArrow, eye } = icons
 
 const router = useRouter()
 
-const screen = ref<'desktop' | 'mobile'>('desktop')
 const tab = ref<'edit' | 'preview' | 'display'>('edit')
 
 const toolsStore = useToolsStore()
@@ -72,7 +70,7 @@ onMounted(async () => {
 })
 
 const toggleScreen = () => {
-  screen.value = screen.value === 'desktop' ? 'mobile' : 'desktop'
+  toolPositionStore.screen = toolPositionStore.screen === 'desktop' ? 'mobile' : 'desktop'
 }
 
 const saveTool = async () => {
@@ -206,19 +204,31 @@ onUnmounted(() => {
   toolsStore.clearStore()
 })
 
-const position = ref({ x: 0, y: 0 })
-
 // runs continuously while dragging
 const onDragging = ({ x, y }: { x: number; y: number }) => {
-  position.value = { x, y }
-  console.log('Dragging at:', x, y)
-  console.log('Dragging at:', (x* 100)/ 1370, (y* 100)/ 700  , "in percent")
+  const positionInPercent = {
+    x,
+    y,
+  }
+
+  if (toolPositionStore.screen === 'desktop') {
+    toolPositionStore.desktopPosition = positionInPercent
+  } else {
+    toolPositionStore.mobilePosition = positionInPercent
+  }
 }
 
 // runs once after drag stops
 const onDragStop = ({ x, y }: { x: number; y: number }) => {
-  position.value = { x, y }
-  console.log('Drag ended at:', x, y)
+  const positionInPercent = {
+    x,
+    y,
+  }
+  if (toolPositionStore.screen === 'desktop') {
+    toolPositionStore.desktopPosition = positionInPercent
+  } else {
+    toolPositionStore.mobilePosition = positionInPercent
+  }
 }
 </script>
 
@@ -257,21 +267,31 @@ const onDragStop = ({ x, y }: { x: number; y: number }) => {
               <div
                 class="relative before:content-[''] before:absolute before:-bottom-3 before:left-1/2 before:w-0 before:h-0 before:-translate-x-1/2 before:border-l-[6px] before:border-r-[6px] before:border-b-[6px] before:border-l-transparent before:border-r-transparent before:border-b-primary cursor-pointer"
                 :class="
-                  screen === 'mobile' ? 'before:border-b-primary' : 'before:border-b-transparent'
+                  toolPositionStore.screen === 'mobile'
+                    ? 'before:border-b-primary'
+                    : 'before:border-b-transparent'
                 "
                 @click="toggleScreen"
               >
-                <img :src="screen === 'mobile' ? primary.mobile : black.mobile" alt="" />
+                <img
+                  :src="toolPositionStore.screen === 'mobile' ? primary.mobile : black.mobile"
+                  alt=""
+                />
               </div>
 
               <div
                 class="relative before:content-[''] before:absolute before:-bottom-3 before:left-1/2 before:w-0 before:h-0 before:-translate-x-1/2 before:border-l-[6px] before:border-r-[6px] before:border-b-[6px] before:border-l-transparent before:border-r-transparent before:border-b-primary cursor-pointer"
                 :class="
-                  screen === 'desktop' ? 'before:border-b-primary' : 'before:border-b-transparent'
+                  toolPositionStore.screen === 'desktop'
+                    ? 'before:border-b-primary'
+                    : 'before:border-b-transparent'
                 "
                 @click="toggleScreen"
               >
-                <img :src="screen === 'desktop' ? primary.desktop : black.desktop" alt="" />
+                <img
+                  :src="toolPositionStore.screen === 'desktop' ? primary.desktop : black.desktop"
+                  alt=""
+                />
               </div>
             </div>
 
@@ -280,7 +300,7 @@ const onDragStop = ({ x, y }: { x: number; y: number }) => {
             </TabsContent>
             <TabsContent value="display">
               <DesktopInputs
-                v-if="screen === 'desktop'"
+                v-if="toolPositionStore.screen === 'desktop'"
                 :main-inputs="mainInputs ?? []"
                 :desktop-inputs="desktopInputs ?? []"
               />
@@ -315,24 +335,39 @@ const onDragStop = ({ x, y }: { x: number; y: number }) => {
 
           <div
             class="mt-4 sticky top-[100px]"
-            style="height: 700px; width: 1370px"
+            :class="
+              toolPositionStore.screen === 'desktop'
+                ? 'w-[1370px] h-[700px]'
+                : 'w-[375px] h-[667px] m-auto'
+            "
           >
             <div class="w-full h-full absolute opacity-40 border border-red-400">
               <iframe width="100%" height="100%" frameborder="0"> </iframe>
             </div>
 
             <vue3-draggable-resizable
-              v-if="tool && toolPositionStore.freeDesktopPosition"
+              v-if="tool"
               @dragging="onDragging"
               @dragstop="onDragStop"
               :class-name-dragging="'my-dragging-class'"
               :resizable="false"
+              :draggable="
+                toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition
+              "
               :parent="true"
+              :x="
+                toolPositionStore.screen === 'desktop'
+                  ? toolPositionStore.desktopPosition.x
+                  : toolPositionStore.mobilePosition.x
+              "
+              :y="
+                toolPositionStore.screen === 'desktop'
+                  ? toolPositionStore.desktopPosition.y
+                  : toolPositionStore.mobilePosition.y
+              "
             >
               <WidgetComponent :widget="tool ?? ''" />
             </vue3-draggable-resizable>
-
-            <WidgetComponent v-else :widget="tool ?? ''" />
           </div>
         </div>
       </div>

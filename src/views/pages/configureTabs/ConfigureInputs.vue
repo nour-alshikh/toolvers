@@ -30,6 +30,36 @@ const { handlePositionChange } = usePositionInputHandler()
 
 const toolPositionStore = useToolPositionStore()
 
+const handleFreeMove = () => {
+  if (toolPositionStore.screen === 'desktop') {
+    toolPositionStore.freeDesktopPosition = !toolPositionStore.freeDesktopPosition
+  } else if (toolPositionStore.screen === 'mobile') {
+    toolPositionStore.freeMobilePosition = !toolPositionStore.freeMobilePosition
+  }
+
+  if (!toolPositionStore.freeDesktopPosition) {
+    const toolversTool = document.querySelectorAll('.toolvers-tool')
+    toolversTool.forEach((tool) => {
+      tool.classList.remove(
+        'top-left',
+        'top',
+        'top-right',
+        'center-left',
+        'center',
+        'center-right',
+        'bottom-left',
+        'bottom',
+        'bottom-right',
+      )
+      console.log(toolversTool)
+
+      toolversTool.forEach((tool) => {
+        tool.style.left = toolPositionStore.desktopPosition.x + 'px !important'
+        tool.style.top = toolPositionStore.desktopPosition.y + 'px !important'
+      })
+    })
+  }
+}
 const props = defineProps<{
   inputs: ToolInputGroup[]
 }>()
@@ -243,8 +273,7 @@ const props = defineProps<{
 
               <div class="col-span-3 row-span-3">
                 <Button
-                  @click="toolPositionStore.freeDesktopPosition = !toolPositionStore.freeDesktopPosition"  
-
+                  @click="handleFreeMove"
                   class="border border-primary rounded-lg flex items-center gap-2 bg-transparent text-primary mt-2 hover:bg-primary hover:text-white transition-all duration-200 ease-in-out"
                 >
                   التحكم الحر في مكان الاشعار
@@ -266,57 +295,56 @@ button[data-state='active'] {
 }
 
 .top {
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  position: absolute;
+  top: 0 !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  position: absolute !important;
 }
 
 .top-left {
-  top: 0;
-  left: 0;
-  position: absolute;
+  top: 0 !important;
+  left: 0 !important;
+  position: absolute !important;
 }
 
 .top-right {
-  top: 0;
-  left: 100%;
-  transform: translateX(-100%);
-  position: absolute;
+  top: 0 !important;
+  left: 100% !important;
+  transform: translateX(-100%) !important;
+  position: absolute !important;
 }
 .bottom {
-  top: 100%;
-  left: 50%;
-  transform: translate(-50%, -100%);
-  position: absolute;
+  top: 100% !important;
+  left: 50% !important;
+  transform: translate(-50%, -100%) !important;
+  position: absolute !important;
 }
 
 .bottom-left {
-  top: 100%;
-  left: 0;
-  transform: translateY(-100%);
-  position: absolute;
+  top: 100% !important;
+  left: 0 !important;
+  transform: translateY(-100%) !important;
+  position: absolute !important;
 }
 
 .bottom-right {
-  top: 100%;
-  left: 100%;
-  transform: translate(-100%, -100%);
-  position: absolute;
+  top: 100% !important;
+  left: 100% !important;
+  transform: translate(-100%, -100%) !important;
+  position: absolute !important;
 }
 
-
-.center-left{
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-  position: absolute;
+.center-left {
+  top: 50% !important;
+  left: 0 !important;
+  transform: translateY(-50%) !important;
+  position: absolute !important;
 }
 
-.center-right{
-  top: 50%;
-  left: 100%;
-  transform: translate(-100%, -50%);
-  position: absolute;
+.center-right {
+  top: 50% !important;
+  left: 100% !important;
+  transform: translate(-100%, -50%) !important;
+  position: absolute !important;
 }
 </style>
