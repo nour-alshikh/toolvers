@@ -34,7 +34,7 @@ const router = useRouter()
 const tab = ref<'edit' | 'preview' | 'display'>('edit')
 
 const toolsStore = useToolsStore()
-const { toolDetails, toolValues, tool, mainInputs, desktopInputs } = storeToRefs(toolsStore)
+const { toolDetails, toolValues, tool, mainInputs, desktopInputs, mobileInputs } = storeToRefs(toolsStore)
 
 const toolId = router.currentRoute.value.params.id
 const userToolId = router.currentRoute.value.params.userId
@@ -46,6 +46,7 @@ onMounted(async () => {
     const toolInputs = toolDetails.value
     const main = mainInputs.value
     const desktop = desktopInputs.value
+    const mobile = mobileInputs.value
 
     toolInputs?.forEach((input: ToolInputGroup) => {
       input.inputs.forEach((inputItem: ToolInputField) => {
@@ -64,6 +65,11 @@ onMounted(async () => {
         inputItem.default = toolValues.value[inputItem.name]
       })
     })
+    mobile?.forEach((input: ToolInputGroup) => {
+      input.inputs.forEach((inputItem: ToolInputField) => {
+        inputItem.default = toolValues.value[inputItem.name]
+      })
+    })
   } else if (toolId && !userToolId) {
     await toolsStore.getToolDetails(Number(toolId))
   }
@@ -71,6 +77,7 @@ onMounted(async () => {
 
 const toggleScreen = () => {
   toolPositionStore.screen = toolPositionStore.screen === 'desktop' ? 'mobile' : 'desktop'
+  handleParentResize()
 }
 
 const saveTool = async () => {
@@ -81,6 +88,7 @@ const saveTool = async () => {
   const toolInputs = toolDetails.value
   const main = mainInputs.value
   const desktop = desktopInputs.value
+  const mobile = mobileInputs.value
 
   toolInputs?.forEach((input: ToolInputGroup) => {
     input.inputs.forEach((inputItem: ToolInputField) => {
@@ -96,9 +104,12 @@ const saveTool = async () => {
 
   desktop?.forEach((input: ToolInputGroup) => {
     input.inputs.forEach((inputItem: ToolInputField) => {
-      console.log(String(inputItem.default))
-      console.log(inputItem.name)
+      form.append(inputItem.name, String(inputItem.default))
+    })
+  })
 
+  mobile?.forEach((input: ToolInputGroup) => {
+    input.inputs.forEach((inputItem: ToolInputField) => {
       form.append(inputItem.name, String(inputItem.default))
     })
   })
@@ -230,12 +241,19 @@ const onDragStop = ({ x, y }: { x: number; y: number }) => {
     toolPositionStore.mobilePosition = positionInPercent
   }
 }
+
+const resizeKey = ref(0);
+
+const handleParentResize = () => {
+  resizeKey.value += 1;
+};
 </script>
 
 <template>
   <DefaultLayout>
     <Loading v-if="toolsStore.isLoading" />
     <div class="col-span-3"></div>
+    
     <div class="py-3">
       <div class="flex flex-col lg:flex-row gap-3 relative">
         <div class="w-[470px]">
@@ -304,7 +322,7 @@ const onDragStop = ({ x, y }: { x: number; y: number }) => {
                 :main-inputs="mainInputs ?? []"
                 :desktop-inputs="desktopInputs ?? []"
               />
-              <MobileInputs v-else :main-inputs="mainInputs ?? []" />
+              <MobileInputs v-else :mobile-inputs="mobileInputs ?? []" :main-inputs="mainInputs ?? []" />
 
               <DisplayInputs />
             </TabsContent>
@@ -334,7 +352,8 @@ const onDragStop = ({ x, y }: { x: number; y: number }) => {
           </div>
 
           <div
-            class="mt-4 sticky top-[100px]"
+          ref="parentContainer"
+            class="mt-4 sticky top-[100px] transition-all duration-300"
             :class="
               toolPositionStore.screen === 'desktop'
                 ? 'w-[1370px] h-[700px]'
@@ -347,6 +366,7 @@ const onDragStop = ({ x, y }: { x: number; y: number }) => {
 
             <vue3-draggable-resizable
               v-if="tool"
+              :key="resizeKey"
               @dragging="onDragging"
               @dragstop="onDragStop"
               :class-name-dragging="'my-dragging-class'"

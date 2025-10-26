@@ -68,12 +68,12 @@ export const useToolsStore = defineStore(
       {
         title: 'صفحات العرض',
         isOpen: true,
-        class: 'grid grid-cols-1 gap-4',
+        class: 'grid grid-cols-6 gap-4',
         inputs: [
           {
             label: 'صفحات العرض',
             id: 'display-pages',
-            class: 'my-1 col-span-1',
+            class: 'my-1 col-span-6',
             type: 'display-pages',
             property: 'display-pages',
             name: 'all_pages',
@@ -124,6 +124,7 @@ export const useToolsStore = defineStore(
 
     const toolDetails = ref<any>([])
     const desktopInputs = ref<any>([])
+    const mobileInputs = ref<any>([])
     const mainInputs = ref<any>([])
     const tool = ref<string>('')
 
@@ -235,13 +236,14 @@ export const useToolsStore = defineStore(
             return acc
           }, {})
 
+       
           // Step 2: build the "main" group array if it exists
           const mainGroups = grouped.main
             ? [
                 {
                   title: 'الاعدادات الرئيسية',
                   isOpen: true,
-                  class: 'grid grid-cols-1 gap-4',
+                  class: 'grid grid-cols-6 gap-4',
                   inputs: grouped.main,
                 },
               ]
@@ -251,25 +253,41 @@ export const useToolsStore = defineStore(
                 {
                   title: 'الاعدادات الرئيسية',
                   isOpen: true,
-                  class: 'grid grid-cols-1 gap-4',
+                  class: 'grid grid-cols-6 gap-4',
                   inputs: grouped.desktop,
                 },
               ]
             : []
 
+          const mobileGroups = grouped.mobile
+            ? [
+                {
+                  title: 'الاعدادات الرئيسية',
+                  isOpen: true,
+                  class: 'grid grid-cols-6 gap-4',
+                  inputs: grouped.mobile,
+                },
+              ]
+            : []
+
+         
           // Step 3: build the rest of the groups (excluding "main")
           const formatted = Object.entries(grouped)
-            .filter(([group]) => group !== 'main' && group !== 'desktop')
-            .map(([group, inputs]) => ({
-              title: group,
-              isOpen: true,
-              class: 'grid grid-cols-1 gap-4',
-              inputs,
-            }))
+            .filter(([group]) => group !== 'main' && group !== 'desktop' && group !== 'mobile')
+            .map(([group, inputs]) => {
+              return {
+                title: group,
+                isOpen: true,
+                class: 'grid grid-cols-6 gap-4',
+                inputs,
+              }
+            })
 
+          
           toolDetails.value = formatted
           mainInputs.value = mainGroups 
           desktopInputs.value = desktopGroups
+          mobileInputs.value = mobileGroups
           tool.value = response.data.data.rendered_html
         }
 
@@ -378,7 +396,7 @@ export const useToolsStore = defineStore(
                 {
                   title: 'الاعدادات الرئيسية',
                   isOpen: true,
-                  class: 'grid grid-cols-1 gap-4',
+                  class: 'grid grid-cols-6 gap-4',
                   inputs: grouped.main,
                 },
               ]
@@ -388,25 +406,37 @@ export const useToolsStore = defineStore(
                 {
                   title: 'الاعدادات الرئيسية',
                   isOpen: true,
-                  class: 'grid grid-cols-1 gap-4',
+                  class: 'grid grid-cols-6 gap-4',
                   inputs: grouped.desktop,
+                },
+              ]
+            : []
+
+          const mobileGroups = grouped.mobile
+            ? [
+                {
+                  title: 'الاعدادات الرئيسية',
+                  isOpen: true,
+                  class: 'grid grid-cols-6 gap-4',
+                  inputs: grouped.mobile,
                 },
               ]
             : []
 
           // Step 3: build the rest of the groups (excluding "main")
           const formatted = Object.entries(grouped)
-            .filter(([group]) => group !== 'main')
+            .filter(([group]) => group !== 'main' && group !== 'desktop' && group !== 'mobile')
             .map(([group, inputs]) => ({
               title: group,
               isOpen: true,
-              class: 'grid grid-cols-1 gap-4',
+              class: 'grid grid-cols-6 gap-4',
               inputs,
             }))
 
           toolDetails.value = formatted
           mainInputs.value = mainGroups 
           desktopInputs.value = desktopGroups
+          mobileInputs.value = mobileGroups
           toolValues.value = response.data.data.user_tool.values
           tool.value = response.data.data.rendered_html
 
@@ -534,6 +564,7 @@ export const useToolsStore = defineStore(
       toolValues,
       mainInputs,
       desktopInputs,
+      mobileInputs,
       displayInputs,
       displayInputsValues,
       toolsTypes,
