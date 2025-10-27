@@ -254,8 +254,18 @@ const handleParentResize = () => {
 <template>
   <DefaultLayout>
     <Loading v-if="toolsStore.isLoading" />
-    <div class="col-span-3"></div>
-    
+
+    <div class="grid grid-cols-6">
+      <div class="col-span-6">
+        
+      </div>
+      <div class="col-span-4">
+        
+      </div>
+      <div class="col-span-2">
+        
+      </div>
+    </div>
     <div class="py-3">
       <div class="flex flex-col lg:flex-row gap-3 relative">
         <div class="w-[470px]">
