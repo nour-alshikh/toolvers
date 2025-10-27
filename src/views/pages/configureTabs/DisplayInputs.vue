@@ -60,7 +60,7 @@ const inputs = toolsStore.displayInputs
 
           <div v-if="inputItem.type === 'text'">
             <Label
-              class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
+              class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[11px] font-normal leading-[15px] tracking-[-0.16px]"
               for="color-input "
             >
               {{ inputItem.label }}
@@ -81,7 +81,7 @@ const inputs = toolsStore.displayInputs
           <div v-else-if="inputItem.type === 'number'" class="relative flex gap-3 flex-1">
             <div class="relative">
               <Label
-                class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
+                class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[11px] font-normal leading-[15px] tracking-[-0.16px]"
                 for="color-input"
               >
                 {{ inputItem.label }}

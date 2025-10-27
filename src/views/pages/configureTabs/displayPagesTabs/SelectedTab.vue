@@ -84,7 +84,7 @@ const removeUrl = (index: number) => {
         <div class="relative w-full flex gap-2 items-center">
           <div class="w-full relative">
             <Label
-              class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[13px] font-normal leading-[20px] tracking-[-0.16px]"
+              class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[11px] font-normal leading-[15px] tracking-[-0.16px]"
             >
               ادخل رابط الصفحة المراد العرض بها
             </Label>

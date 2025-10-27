@@ -33,7 +33,8 @@ export default {
     'the_winner_is' : 'الفائز هو: ',
     'image' : 'صورة',
     'times' : 'مرات',
-
+    'subtitle' : 'العنوان الفرعي',
+    'subtitle_background_color' : 'لون خلفية العنوان الفرعي',
 
     'dashboard_title' : 'لوحة التحكم',
     'welcome_greeting' : 'مرحباً بعودتك، :name!',
