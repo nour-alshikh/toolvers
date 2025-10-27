@@ -75,10 +75,12 @@ onMounted(async () => {
   }
 })
 
-const toggleScreen = () => {
-  toolPositionStore.screen = toolPositionStore.screen === 'desktop' ? 'mobile' : 'desktop'
-  handleParentResize()
-}
+const toggleScreen = async () => {
+  toolPositionStore.screen = toolPositionStore.screen === 'desktop' ? 'mobile' : 'desktop';
+setTimeout(() => {
+  handleParentResize();
+}, 350);
+};
 
 const saveTool = async () => {
   const form = new FormData()
@@ -352,7 +354,6 @@ const handleParentResize = () => {
           </div>
 
           <div
-          ref="parentContainer"
             class="mt-4 sticky top-[100px] transition-all duration-300"
             :class="
               toolPositionStore.screen === 'desktop'
