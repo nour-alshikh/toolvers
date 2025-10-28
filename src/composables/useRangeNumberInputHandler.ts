@@ -7,6 +7,10 @@ const handleRangeNumberInput = (inputItem: any)=>{
 
 const updateRangeNumberChange = (id: string | string[], property: string, value: string) => {
    
+  console.log(id );
+  console.log(property);
+  console.log(value);
+  
   const toolversTool = document.querySelector('.toolvers-tool')
   const el = toolversTool?.querySelector(`[data-id="${id}"]`)
   const toolversWidget = toolversTool?.querySelector('.toolvers-widget')

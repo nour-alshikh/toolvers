@@ -130,51 +130,54 @@ const saveTool = async () => {
       }
     })
   })
-  
-  
+
   const rect = toolContainer.value.getBoundingClientRect()
 
-  const positionTopDesktop = (toolPositionStore.desktopPosition.x*100) / rect.width
-  const positionLeftDesktop = (toolPositionStore.desktopPosition.y*100) / rect.height
-  
-  const positionTopMobile = (toolPositionStore.mobilePosition.x*100) / 375
-  const positionLeftMobile = (toolPositionStore.mobilePosition.y*100) / 667
+  const positionTopDesktop = (toolPositionStore.desktopPosition.x * 100) / rect.width
+  const positionLeftDesktop = (toolPositionStore.desktopPosition.y * 100) / rect.height
 
+  const positionTopMobile = (toolPositionStore.mobilePosition.x * 100) / 375
+  const positionLeftMobile = (toolPositionStore.mobilePosition.y * 100) / 667
 
-  form.append('view[position-top-desktop]', String( Math.round(positionTopDesktop)))
+  form.append('view[position-top-desktop]', String(Math.round(positionTopDesktop)))
   form.append('view[position-left-desktop]', String(Math.round(positionLeftDesktop)))
-  form.append('view[position-top-mobile]', String( Math.round(positionTopMobile)))
+  form.append('view[position-top-mobile]', String(Math.round(positionTopMobile)))
   form.append('view[position-left-mobile]', String(Math.round(positionLeftMobile)))
 
-  if (toolDetails && toolId && !userToolId) {
-    await toolsStore
-      .installTool(Number(toolId), form)
-      .then(() => {
-        router.push('/dashboard')
-      })
-      .then(() => {
-        const $toast = useToast()
-        $toast.success('تم اضافة الاشعار بنجاح')
-      })
 
-      .catch((error) => {
-        console.log(error)
-      })
-  } else if (toolId && userToolId) {
-    await toolsStore
-      .updateToolValues(Number(toolId), Number(userToolId), form)
-      .then(() => {
-        router.push('/dashboard')
-      })
-      .then(() => {
-        const $toast = useToast()
-        $toast.success('تم تعديل الاشعار بنجاح')
-      })
-
-      .catch((error) => {
-        console.log(error)
-      })
+  for (const [key, value] of form.entries()) {
+    console.log(key, value)
   }
+
+  // if (toolDetails && toolId && !userToolId) {
+  //   await toolsStore
+  //     .installTool(Number(toolId), form)
+  //     .then(() => {
+  //       router.push('/dashboard')
+  //     })
+  //     .then(() => {
+  //       const $toast = useToast()
+  //       $toast.success('تم اضافة الاشعار بنجاح')
+  //     })
+
+  //     .catch((error) => {
+  //       console.log(error)
+  //     })
+  // } else if (toolId && userToolId) {
+  //   await toolsStore
+  //     .updateToolValues(Number(toolId), Number(userToolId), form)
+  //     .then(() => {
+  //       router.push('/dashboard')
+  //     })
+  //     .then(() => {
+  //       const $toast = useToast()
+  //       $toast.success('تم تعديل الاشعار بنجاح')
+  //     })
+
+  //     .catch((error) => {
+  //       console.log(error)
+  //     })
+  // }
 }
 
 // Get the update functions
@@ -238,17 +241,18 @@ const onDragging = ({ x, y }: { x: number; y: number }) => {
 
   const toolversWidget = document.querySelector('.toolvers-widget')
 
-  const rect = toolContainer.value.getBoundingClientRect()
-  const width = rect.width
- 
-  if (x > width / 2) {
-    toolversWidget?.classList.remove('flex-row-reverse')
-    toolversWidget?.classList.add('flex-row')
-  } else {
-    toolversWidget?.classList.remove('flex-row')
-    toolversWidget?.classList.add('flex-row-reverse')
+  if (toolPositionStore.screen === 'desktop') {
+    const rect = toolContainer.value.getBoundingClientRect()
+    const width = rect.width
+
+    if (x > width / 2) {
+      toolversWidget?.classList.remove('flex-row-reverse')
+      toolversWidget?.classList.add('flex-row')
+    } else {
+      toolversWidget?.classList.remove('flex-row')
+      toolversWidget?.classList.add('flex-row-reverse')
+    }
   }
-  console.log(x, y)
 
   const position = {
     x,
