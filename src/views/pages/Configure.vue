@@ -25,6 +25,8 @@ import DisplayInputs from './configureTabs/DisplayInputs.vue'
 import { usePositionInputHandler } from '@/composables/usePositionInputHandler'
 import { useToolPositionStore } from '@/store/toolPosition'
 
+const toolContainer = ref<HTMLElement | null>(null)
+
 const toolPositionStore = useToolPositionStore()
 
 const { primary, black, edit, showSettings, backArrow, eye } = icons
@@ -34,7 +36,8 @@ const router = useRouter()
 const tab = ref<'edit' | 'preview' | 'display'>('edit')
 
 const toolsStore = useToolsStore()
-const { toolDetails, toolValues, tool, mainInputs, desktopInputs, mobileInputs } = storeToRefs(toolsStore)
+const { toolDetails, toolValues, tool, mainInputs, desktopInputs, mobileInputs } =
+  storeToRefs(toolsStore)
 
 const toolId = router.currentRoute.value.params.id
 const userToolId = router.currentRoute.value.params.userId
@@ -76,11 +79,11 @@ onMounted(async () => {
 })
 
 const toggleScreen = async () => {
-  toolPositionStore.screen = toolPositionStore.screen === 'desktop' ? 'mobile' : 'desktop';
-setTimeout(() => {
-  handleParentResize();
-}, 350);
-};
+  toolPositionStore.screen = toolPositionStore.screen === 'desktop' ? 'mobile' : 'desktop'
+  setTimeout(() => {
+    handleParentResize()
+  }, 350)
+}
 
 const saveTool = async () => {
   const form = new FormData()
@@ -127,10 +130,22 @@ const saveTool = async () => {
       }
     })
   })
+  
+  
+  const rect = toolContainer.value.getBoundingClientRect()
 
-  for (const [key, value] of form.entries()) {
-    console.log(key, value)
-  }
+  const positionTopDesktop = (toolPositionStore.desktopPosition.x*100) / rect.width
+  const positionLeftDesktop = (toolPositionStore.desktopPosition.y*100) / rect.height
+  
+  const positionTopMobile = (toolPositionStore.mobilePosition.x*100) / 375
+  const positionLeftMobile = (toolPositionStore.mobilePosition.y*100) / 667
+
+
+  form.append('view[position-top-desktop]', String( Math.round(positionTopDesktop)))
+  form.append('view[position-left-desktop]', String(Math.round(positionLeftDesktop)))
+  form.append('view[position-top-mobile]', String( Math.round(positionTopMobile)))
+  form.append('view[position-left-mobile]', String(Math.round(positionLeftMobile)))
+
   if (toolDetails && toolId && !userToolId) {
     await toolsStore
       .installTool(Number(toolId), form)
@@ -219,15 +234,31 @@ onUnmounted(() => {
 
 // runs continuously while dragging
 const onDragging = ({ x, y }: { x: number; y: number }) => {
-  const positionInPercent = {
+  if (!toolContainer.value) return
+
+  const toolversWidget = document.querySelector('.toolvers-widget')
+
+  const rect = toolContainer.value.getBoundingClientRect()
+  const width = rect.width
+ 
+  if (x > width / 2) {
+    toolversWidget?.classList.remove('flex-row-reverse')
+    toolversWidget?.classList.add('flex-row')
+  } else {
+    toolversWidget?.classList.remove('flex-row')
+    toolversWidget?.classList.add('flex-row-reverse')
+  }
+  console.log(x, y)
+
+  const position = {
     x,
     y,
   }
 
   if (toolPositionStore.screen === 'desktop') {
-    toolPositionStore.desktopPosition = positionInPercent
+    toolPositionStore.desktopPosition = position
   } else {
-    toolPositionStore.mobilePosition = positionInPercent
+    toolPositionStore.mobilePosition = position
   }
 }
 
@@ -244,11 +275,11 @@ const onDragStop = ({ x, y }: { x: number; y: number }) => {
   }
 }
 
-const resizeKey = ref(0);
+const resizeKey = ref(0)
 
 const handleParentResize = () => {
-  resizeKey.value += 1;
-};
+  resizeKey.value += 1
+}
 </script>
 
 <template>
@@ -256,15 +287,9 @@ const handleParentResize = () => {
     <Loading v-if="toolsStore.isLoading" />
 
     <div class="grid grid-cols-6">
-      <div class="col-span-6">
-        
-      </div>
-      <div class="col-span-4">
-        
-      </div>
-      <div class="col-span-2">
-        
-      </div>
+      <div class="col-span-6"></div>
+      <div class="col-span-4"></div>
+      <div class="col-span-2"></div>
     </div>
     <div class="py-3">
       <div class="flex flex-col lg:flex-row gap-3 relative">
@@ -334,7 +359,11 @@ const handleParentResize = () => {
                 :main-inputs="mainInputs ?? []"
                 :desktop-inputs="desktopInputs ?? []"
               />
-              <MobileInputs v-else :mobile-inputs="mobileInputs ?? []" :main-inputs="mainInputs ?? []" />
+              <MobileInputs
+                v-else
+                :mobile-inputs="mobileInputs ?? []"
+                :main-inputs="mainInputs ?? []"
+              />
 
               <DisplayInputs />
             </TabsContent>
@@ -364,6 +393,7 @@ const handleParentResize = () => {
           </div>
 
           <div
+            ref="toolContainer"
             class="mt-4 sticky top-[100px] transition-all duration-300"
             :class="
               toolPositionStore.screen === 'desktop'

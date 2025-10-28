@@ -21,7 +21,6 @@ import Switch from '@/components/ui/switch/Switch.vue'
 import { icons } from '@/icons'
 import ar from '@/locales/ar.ts'
 import { useToolPositionStore } from '@/store/toolPosition'
-import { storeToRefs } from 'pinia'
 const { handleTextInputChange } = useTextInputHandler()
 const { handleColorChange } = useColorHandler()
 const { handleRangeNumberInput } = useRangeNumberInputHandler()
@@ -30,17 +29,25 @@ const { handlePositionChange } = usePositionInputHandler()
 
 const toolPositionStore = useToolPositionStore()
 
-const handleFreeMove = () => {
+const handleFreeMove = (inputItem: ToolInputGroup) => {
   if (toolPositionStore.screen === 'desktop') {
     toolPositionStore.freeDesktopPosition = !toolPositionStore.freeDesktopPosition
   } else if (toolPositionStore.screen === 'mobile') {
     toolPositionStore.freeMobilePosition = !toolPositionStore.freeMobilePosition
   }
 
+  if (toolPositionStore.freeDesktopPosition) {
+    inputItem.default = '';
+  }
+
+
   if (!toolPositionStore.freeDesktopPosition) {
-    const toolversTool = document.querySelectorAll('.toolvers-tool')
-    toolversTool.forEach((tool) => {
-      tool.classList.remove(
+    const toolversTool = document.querySelector('.toolvers-tool')
+
+
+
+    if(toolversTool){
+    toolversTool.classList.remove(
         'top-left',
         'top',
         'top-right',
@@ -51,13 +58,11 @@ const handleFreeMove = () => {
         'bottom',
         'bottom-right',
       )
-      console.log(toolversTool)
 
-      toolversTool.forEach((tool) => {
-        tool.style.left = toolPositionStore.desktopPosition.x + 'px !important'
-        tool.style.top = toolPositionStore.desktopPosition.y + 'px !important'
-      })
-    })
+      toolversTool.style.left = toolPositionStore.desktopPosition.x + 'px !important'
+      toolversTool.style.top = toolPositionStore.desktopPosition.y + 'px !important'
+    
+  }
   }
 }
 const props = defineProps<{
@@ -230,55 +235,78 @@ const props = defineProps<{
             <div class="grid grid-cols-3 grid-rows-3 gap-2">
               <div
                 @click="handlePositionChange(inputItem, 'top-left')"
-                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-                :class="inputItem.default === 'top-left' ? 'bg-primary/10 ' : ''"
+                class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
+                :class="[inputItem.default === 'top-left' ? 'bg-primary/10 ' : '', toolPositionStore.freeDesktopPosition ? 'cursor-not-allowed' : 'cursor-pointer']"
               ></div>
               <div
                 @click="handlePositionChange(inputItem, 'top')"
-                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-                :class="inputItem.default === 'top' ? 'bg-primary/10' : ''"
-              ></div>
+                class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
+                :class="[inputItem.default === 'top' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition ? 'cursor-not-allowed' : 'cursor-pointer']"
+              ></div> 
               <div
                 @click="handlePositionChange(inputItem, 'top-right')"
-                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-                :class="inputItem.default === 'top-right' ? 'bg-primary/10' : ''"
+                class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
+                :class="[inputItem.default === 'top-right' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition ? 'cursor-not-allowed' : 'cursor-pointer']"
               ></div>
 
               <div
                 @click="handlePositionChange(inputItem, 'center-left')"
-                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-                :class="inputItem.default === 'center-left' ? 'bg-primary/10' : ''"
+                class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
+                :class="[inputItem.default === 'center-left' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition ? 'cursor-not-allowed' : 'cursor-pointer']"
               ></div>
               <div></div>
               <div
                 @click="handlePositionChange(inputItem, 'center-right')"
-                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-                :class="inputItem.default === 'center-right' ? 'bg-primary/10' : ''"
+                class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
+                :class="[inputItem.default === 'center-right' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition ? 'cursor-not-allowed' : 'cursor-pointer']"
               ></div>
               <div
                 @click="handlePositionChange(inputItem, 'bottom-left')"
-                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-                :class="inputItem.default === 'bottom-left' ? 'bg-primary/10' : ''"
+                class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
+                :class="[inputItem.default === 'bottom-left' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition ? 'cursor-not-allowed' : 'cursor-pointer']"
               ></div>
               <div
                 @click="handlePositionChange(inputItem, 'bottom')"
-                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-                :class="inputItem.default === 'bottom' ? 'bg-primary/10' : ''"
+                class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
+                :class="[inputItem.default === 'bottom' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition ? 'cursor-not-allowed' : 'cursor-pointer']"
               ></div>
               <div
                 @click="handlePositionChange(inputItem, 'bottom-right')"
-                class="col-span-1 row-span-1 bg-neutral-100 cursor-pointer w-[50px] h-[50px] rounded-lg"
-                :class="inputItem.default === 'bottom-right' ? 'bg-primary/10' : ''"
+                class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
+                :class="[inputItem.default === 'bottom-right' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition ? 'cursor-not-allowed' : 'cursor-pointer']"
               ></div>
 
               <div class="col-span-3 row-span-3">
                 <Button
-                  @click="handleFreeMove"
+                  @click="handleFreeMove(inputItem)"
                   class="border border-primary rounded-lg flex items-center gap-2 bg-transparent text-primary mt-2 hover:bg-primary hover:text-white transition-all duration-200 ease-in-out"
                 >
                   التحكم الحر في مكان الاشعار
                   <img :src="icons.freeMove" alt="" />
                 </Button>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="inputItem.type === 'repeater'">
+            
+            <div v-for="input in inputItem.inputs" :key="input.name">
+              <div v-if="input.type === 'text'">
+                <Label
+                  class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[11px] font-normal leading-[15px] tracking-[-0.16px]"
+                  for="color-input "
+                >
+                  {{ ar[input.name] }}
+                </Label>
+
+                <Input
+                  class="flex-1 p-4 h-auto text-right"
+                  placeholder=""
+                  v-model="input.default"
+                  @input="handleTextInputChange"
+                  :data-id="input.id"
+                  :data-property="input.property"
+                />
               </div>
             </div>
           </div>
