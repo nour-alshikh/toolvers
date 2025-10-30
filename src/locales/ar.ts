@@ -306,7 +306,6 @@ export default {
     //
 
     'discount_percentage' : 'نسبة الخصم',
-    'subtitle' : 'العنوان الفرعي',
     'coupon_code' : 'رمز القسيمة',
     'skip_text' : 'نص التخطي',
     'icon' : 'الأيقونة',

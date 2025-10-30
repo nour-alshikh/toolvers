@@ -39,30 +39,8 @@ const handleFreeMove = (inputItem: ToolInputGroup) => {
   if (toolPositionStore.freeDesktopPosition) {
     inputItem.default = '';
   }
-
-
-  if (!toolPositionStore.freeDesktopPosition) {
-    const toolversTool = document.querySelector('.toolvers-tool')
-
-
-
-    if(toolversTool){
-    toolversTool.classList.remove(
-        'top-left',
-        'top',
-        'top-right',
-        'center-left',
-        'center',
-        'center-right',
-        'bottom-left',
-        'bottom',
-        'bottom-right',
-      )
-
-      toolversTool.style.left = toolPositionStore.desktopPosition.x + 'px !important'
-      toolversTool.style.top = toolPositionStore.desktopPosition.y + 'px !important'
-    
-  }
+  if (toolPositionStore.freeMobilePosition) {
+    inputItem.default = '';
   }
 }
 const props = defineProps<{
@@ -236,44 +214,44 @@ const props = defineProps<{
               <div
                 @click="handlePositionChange(inputItem, 'top-left')"
                 class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
-                :class="[inputItem.default === 'top-left' ? 'bg-primary/10 ' : '', toolPositionStore.freeDesktopPosition ? 'cursor-not-allowed' : 'cursor-pointer']"
+                :class="[inputItem.default === 'top-left' ? 'bg-primary/10 ' : '', toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition ? 'cursor-not-allowed' : 'cursor-pointer']"
               ></div>
               <div
                 @click="handlePositionChange(inputItem, 'top')"
                 class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
-                :class="[inputItem.default === 'top' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition ? 'cursor-not-allowed' : 'cursor-pointer']"
+                :class="[inputItem.default === 'top' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition ? 'cursor-not-allowed' : 'cursor-pointer']"
               ></div> 
               <div
                 @click="handlePositionChange(inputItem, 'top-right')"
                 class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
-                :class="[inputItem.default === 'top-right' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition ? 'cursor-not-allowed' : 'cursor-pointer']"
+                :class="[inputItem.default === 'top-right' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition ? 'cursor-not-allowed' : 'cursor-pointer']"
               ></div>
 
               <div
                 @click="handlePositionChange(inputItem, 'center-left')"
                 class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
-                :class="[inputItem.default === 'center-left' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition ? 'cursor-not-allowed' : 'cursor-pointer']"
+                :class="[inputItem.default === 'center-left' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition ? 'cursor-not-allowed' : 'cursor-pointer']"
               ></div>
               <div></div>
               <div
                 @click="handlePositionChange(inputItem, 'center-right')"
                 class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
-                :class="[inputItem.default === 'center-right' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition ? 'cursor-not-allowed' : 'cursor-pointer']"
+                :class="[inputItem.default === 'center-right' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition ? 'cursor-not-allowed' : 'cursor-pointer']"
               ></div>
               <div
                 @click="handlePositionChange(inputItem, 'bottom-left')"
                 class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
-                :class="[inputItem.default === 'bottom-left' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition ? 'cursor-not-allowed' : 'cursor-pointer']"
+                :class="[inputItem.default === 'bottom-left' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition ? 'cursor-not-allowed' : 'cursor-pointer']"
               ></div>
               <div
                 @click="handlePositionChange(inputItem, 'bottom')"
                 class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
-                :class="[inputItem.default === 'bottom' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition ? 'cursor-not-allowed' : 'cursor-pointer']"
+                :class="[inputItem.default === 'bottom' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition ? 'cursor-not-allowed' : 'cursor-pointer']"
               ></div>
               <div
                 @click="handlePositionChange(inputItem, 'bottom-right')"
                 class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
-                :class="[inputItem.default === 'bottom-right' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition ? 'cursor-not-allowed' : 'cursor-pointer']"
+                :class="[inputItem.default === 'bottom-right' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition ? 'cursor-not-allowed' : 'cursor-pointer']"
               ></div>
 
               <div class="col-span-3 row-span-3">
