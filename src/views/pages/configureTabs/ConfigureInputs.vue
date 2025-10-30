@@ -37,10 +37,10 @@ const handleFreeMove = (inputItem: ToolInputGroup) => {
   }
 
   if (toolPositionStore.freeDesktopPosition) {
-    inputItem.default = '';
+    inputItem.default = ''
   }
   if (toolPositionStore.freeMobilePosition) {
-    inputItem.default = '';
+    inputItem.default = ''
   }
 }
 const props = defineProps<{
@@ -214,44 +214,84 @@ const props = defineProps<{
               <div
                 @click="handlePositionChange(inputItem, 'top-left')"
                 class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
-                :class="[inputItem.default === 'top-left' ? 'bg-primary/10 ' : '', toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition ? 'cursor-not-allowed' : 'cursor-pointer']"
+                :class="[
+                  inputItem.default === 'top-left' ? 'bg-primary/10 ' : '',
+                  toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition
+                    ? 'cursor-not-allowed'
+                    : 'cursor-pointer',
+                ]"
               ></div>
               <div
                 @click="handlePositionChange(inputItem, 'top')"
                 class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
-                :class="[inputItem.default === 'top' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition ? 'cursor-not-allowed' : 'cursor-pointer']"
-              ></div> 
+                :class="[
+                  inputItem.default === 'top' ? 'bg-primary/10' : '',
+                  toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition
+                    ? 'cursor-not-allowed'
+                    : 'cursor-pointer',
+                ]"
+              ></div>
               <div
                 @click="handlePositionChange(inputItem, 'top-right')"
                 class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
-                :class="[inputItem.default === 'top-right' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition ? 'cursor-not-allowed' : 'cursor-pointer']"
+                :class="[
+                  inputItem.default === 'top-right' ? 'bg-primary/10' : '',
+                  toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition
+                    ? 'cursor-not-allowed'
+                    : 'cursor-pointer',
+                ]"
               ></div>
 
               <div
                 @click="handlePositionChange(inputItem, 'center-left')"
                 class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
-                :class="[inputItem.default === 'center-left' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition ? 'cursor-not-allowed' : 'cursor-pointer']"
+                :class="[
+                  inputItem.default === 'center-left' ? 'bg-primary/10' : '',
+                  toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition
+                    ? 'cursor-not-allowed'
+                    : 'cursor-pointer',
+                ]"
               ></div>
               <div></div>
               <div
                 @click="handlePositionChange(inputItem, 'center-right')"
                 class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
-                :class="[inputItem.default === 'center-right' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition ? 'cursor-not-allowed' : 'cursor-pointer']"
+                :class="[
+                  inputItem.default === 'center-right' ? 'bg-primary/10' : '',
+                  toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition
+                    ? 'cursor-not-allowed'
+                    : 'cursor-pointer',
+                ]"
               ></div>
               <div
                 @click="handlePositionChange(inputItem, 'bottom-left')"
                 class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
-                :class="[inputItem.default === 'bottom-left' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition ? 'cursor-not-allowed' : 'cursor-pointer']"
+                :class="[
+                  inputItem.default === 'bottom-left' ? 'bg-primary/10' : '',
+                  toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition
+                    ? 'cursor-not-allowed'
+                    : 'cursor-pointer',
+                ]"
               ></div>
               <div
                 @click="handlePositionChange(inputItem, 'bottom')"
                 class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
-                :class="[inputItem.default === 'bottom' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition ? 'cursor-not-allowed' : 'cursor-pointer']"
+                :class="[
+                  inputItem.default === 'bottom' ? 'bg-primary/10' : '',
+                  toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition
+                    ? 'cursor-not-allowed'
+                    : 'cursor-pointer',
+                ]"
               ></div>
               <div
                 @click="handlePositionChange(inputItem, 'bottom-right')"
                 class="col-span-1 row-span-1 bg-neutral-100 w-[50px] h-[50px] rounded-lg"
-                :class="[inputItem.default === 'bottom-right' ? 'bg-primary/10' : '', toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition ? 'cursor-not-allowed' : 'cursor-pointer']"
+                :class="[
+                  inputItem.default === 'bottom-right' ? 'bg-primary/10' : '',
+                  toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition
+                    ? 'cursor-not-allowed'
+                    : 'cursor-pointer',
+                ]"
               ></div>
 
               <div class="col-span-3 row-span-3">
@@ -267,9 +307,13 @@ const props = defineProps<{
           </div>
 
           <div v-if="inputItem.type === 'repeater'">
-            
+            <pre>
+              {{ inputItem }}
+            </pre>
             <div v-for="input in inputItem.inputs" :key="input.name">
-              <div v-if="input.type === 'text'">
+              
+              
+              <div class="relative my-4" v-if="input.type === 'text'">
                 <Label
                   class="text-[#AEA2A7] absolute top-0 right-1 -translate-y-1/2 bg-secondaryBackground px-1 text-right font-almarai text-[11px] font-normal leading-[15px] tracking-[-0.16px]"
                   for="color-input "
@@ -277,6 +321,7 @@ const props = defineProps<{
                   {{ ar[input.name] }}
                 </Label>
 
+              
                 <Input
                   class="flex-1 p-4 h-auto text-right"
                   placeholder=""
@@ -284,7 +329,8 @@ const props = defineProps<{
                   @input="handleTextInputChange"
                   :data-id="input.id"
                   :data-property="input.property"
-                />
+                  />
+              
               </div>
             </div>
           </div>

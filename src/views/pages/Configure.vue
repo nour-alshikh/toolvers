@@ -80,7 +80,7 @@ onMounted(async () => {
 
 const toggleScreen = async () => {
   toolPositionStore.screen = toolPositionStore.screen === 'desktop' ? 'mobile' : 'desktop'
-  
+
   setTimeout(() => {
     handleParentResize()
   }, 350)
@@ -96,9 +96,14 @@ const saveTool = async () => {
   const desktop = desktopInputs.value
   const mobile = mobileInputs.value
 
+
+
   toolInputs?.forEach((input: ToolInputGroup) => {
     input.inputs.forEach((inputItem: ToolInputField) => {
-      form.append(inputItem.name, String(inputItem.default))
+     
+    
+        form.append(inputItem.name, String(inputItem.default))
+      
     })
   })
 
@@ -145,39 +150,41 @@ const saveTool = async () => {
   form.append('view[position-top-mobile]', String(Math.round(positionTopMobile)))
   form.append('view[position-left-mobile]', String(Math.round(positionLeftMobile)))
 
+  console.log("$$$$$$$$$$$$$$$$$$$$$$");
+  
   for (const [key, value] of form.entries()) {
     console.log(key, value)
   }
 
-  if (toolDetails && toolId && !userToolId) {
-    await toolsStore
-      .installTool(Number(toolId), form)
-      .then(() => {
-        router.push('/dashboard')
-      })
-      .then(() => {
-        const $toast = useToast()
-        $toast.success('تم اضافة الاشعار بنجاح')
-      })
+  // if (toolDetails && toolId && !userToolId) {
+  //   await toolsStore
+  //     .installTool(Number(toolId), form)
+  //     .then(() => {
+  //       router.push('/dashboard')
+  //     })
+  //     .then(() => {
+  //       const $toast = useToast()
+  //       $toast.success('تم اضافة الاشعار بنجاح')
+  //     })
 
-      .catch((error) => {
-        console.log(error)
-      })
-  } else if (toolId && userToolId) {
-    await toolsStore
-      .updateToolValues(Number(toolId), Number(userToolId), form)
-      .then(() => {
-        router.push('/dashboard')
-      })
-      .then(() => {
-        const $toast = useToast()
-        $toast.success('تم تعديل الاشعار بنجاح')
-      })
+  //     .catch((error) => {
+  //       console.log(error)
+  //     })
+  // } else if (toolId && userToolId) {
+  //   await toolsStore
+  //     .updateToolValues(Number(toolId), Number(userToolId), form)
+  //     .then(() => {
+  //       router.push('/dashboard')
+  //     })
+  //     .then(() => {
+  //       const $toast = useToast()
+  //       $toast.success('تم تعديل الاشعار بنجاح')
+  //     })
 
-      .catch((error) => {
-        console.log(error)
-      })
-  }
+  //     .catch((error) => {
+  //       console.log(error)
+  //     })
+  // }
 }
 
 // Get the update functions
@@ -190,7 +197,7 @@ const { updatePositionElement } = usePositionInputHandler()
 
 const allInputs = computed(() => {
   const inputs: any[] = []
-  if (toolDetails.value) {
+  if (Array.isArray(toolDetails.value)) {
     toolDetails.value?.forEach((group: any) => inputs.push(...group.inputs))
   }
   mainInputs.value?.forEach((group: any) => inputs.push(...group.inputs))
@@ -419,7 +426,6 @@ const handleParentResize = () => {
               @dragstop="onDragStop"
               :class-name-dragging="'my-dragging-class'"
               :resizable="false"
-
               :draggable="
                 toolPositionStore.freeDesktopPosition || toolPositionStore.freeMobilePosition
               "
